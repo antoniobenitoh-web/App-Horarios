@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Equipo.module.css';
-import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar } from 'lucide-react';
+import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar, ChevronDown, ChevronUp, User } from 'lucide-react';
 
 const turnoIcon = {
   'Mañana': <Sun size={14} color="var(--warning)" />,
@@ -14,8 +14,7 @@ export default function Equipo() {
   const { user } = useAuth();
   const GAS_URL = import.meta.env.VITE_GAS_URL;
   
-  const getISOWeek = (dateStr) => {
-    const date = new Date(dateStr);
+  const getISOWeek = (date) => {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
@@ -24,11 +23,10 @@ export default function Equipo() {
   };
   
   const [busqueda, setBusqueda] = useState('');
-  const [filtroTurno, setFiltroTurno] = useState('todos');
-  const [centroExpanded, setCentroExpanded] = useState(null);
+  const [selectedWeek, setSelectedWeek] = useState(getISOWeek(new Date()));
   
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const selectedWeek = getISOWeek(selectedDate);
+  const [centroExpanded, setCentroExpanded] = useState(null);
+  const [promotorExpanded, setPromotorExpanded] = useState(null);
   
   const [equipoFetch, setEquipoFetch] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,47 +59,33 @@ export default function Equipo() {
     if (!centrosMap[p.centro]) {
       centrosMap[p.centro] = { id: p.centro, nombre: p.centro, promotores: [] };
     }
-    
-    // Buscar el turno de "hoy" (selectedDate)
-    let turnoHoy = 'Descanso / Sin asignar';
-    let iconTurnoHoy = 'Descanso';
-    if (p.semana) {
-      const hoyInfo = p.semana.find(d => d.fecha === selectedDate);
-      if (hoyInfo) {
-        turnoHoy = hoyInfo.horas;
-        iconTurnoHoy = hoyInfo.iconTurno;
-      }
-    }
-
-    centrosMap[p.centro].promotores.push({
-      ...p,
-      turnoHoy,
-      iconTurnoHoy
-    });
+    centrosMap[p.centro].promotores.push(p);
   }
   const centros = Object.values(centrosMap);
 
-  const [year, month, day] = selectedDate.split('-');
-  const displayDate = new Date(year, month - 1, day).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
-  const displayDateCap = displayDate.charAt(0).toUpperCase() + displayDate.slice(1);
-
   const centrosFiltrados = centros.map(c => ({
     ...c,
-    promotores: c.promotores.filter(p => {
-      const coincideBusqueda = p.name.toLowerCase().includes(busqueda.toLowerCase());
-      const coincideTurno = filtroTurno === 'todos' || p.iconTurnoHoy === filtroTurno;
-      return coincideBusqueda && coincideTurno;
-    })
+    promotores: c.promotores.filter(p => p.name.toLowerCase().includes(busqueda.toLowerCase()))
   })).filter(c => c.promotores.length > 0);
 
   const totalPromotores = equipoFetch.length;
+
+  const toggleCentro = (id) => {
+    setCentroExpanded(centroExpanded === id ? null : id);
+    setPromotorExpanded(null); // Reset promotor if centro changes
+  };
+
+  const togglePromotor = (id, e) => {
+    e.stopPropagation();
+    setPromotorExpanded(promotorExpanded === id ? null : id);
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
           <h2 style={{ color: '#1a1a1a', fontSize: '1.6rem' }}>Mi Equipo</h2>
-          <p style={{ color: '#555', marginTop: '0.25rem' }}>Vista de centros y promotores</p>
+          <p style={{ color: '#555', marginTop: '0.25rem' }}>Vista de centros y horarios</p>
         </div>
         <div className={styles.statsHeader}>
           <div className={styles.statChip}>
@@ -115,7 +99,6 @@ export default function Equipo() {
         </div>
       </div>
 
-      {/* Barra de filtros */}
       <div className={styles.filtrosBar}>
         <div className={styles.searchWrapper}>
           <Search size={16} className={styles.searchIcon} />
@@ -127,113 +110,112 @@ export default function Equipo() {
             onChange={e => setBusqueda(e.target.value)}
           />
         </div>
-        <div className={styles.turnoFiltros}>
-          <Filter size={16} style={{ color: '#666' }} />
-          {['todos', 'Mañana', 'Tarde', 'Partido'].map(t => (
-            <button
-              key={t}
-              className={`${styles.turnoBtn} ${filtroTurno === t ? styles.turnoActivo : ''}`}
-              onClick={() => setFiltroTurno(t)}
-            >
-              {t !== 'todos' && (turnoIcon[t] || <Sun size={14}/>)}
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </button>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'white', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
+          <Calendar size={16} color="var(--accent-primary)" />
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Semana</span>
+          <input 
+            type="number" 
+            min="1" max="52"
+            value={selectedWeek} 
+            onChange={e => setSelectedWeek(e.target.value)}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.9rem', width: '40px', fontWeight: 'bold' }}
+          />
         </div>
       </div>
 
-      {/* Vista diaria del día */}
-      <div className="card" style={{ marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h3 style={{ fontSize: '1rem', margin: 0 }}>📍 Vista diaria — {displayDateCap}</h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)' }}>
-            <Calendar size={16} color="var(--accent-primary)" />
-            <input 
-              type="date" 
-              value={selectedDate} 
-              onChange={e => setSelectedDate(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.9rem' }}
-            />
-          </div>
-        </div>
-        
-        {loading ? (
-          <p style={{ color: 'var(--text-secondary)' }}>Cargando datos de Google Sheets...</p>
-        ) : (
-        <div className={styles.diaryGrid}>
-          {centrosFiltrados.flatMap(c =>
-            c.promotores
-              .map(p => (
-                <div key={p.id} className={styles.diaryCard}>
-                  <div className={styles.diaryName}>{p.name}</div>
-                  <div className={styles.diaryCenter}>
-                    <MapPin size={12} /> {c.nombre}
+      {loading ? (
+        <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>Cargando equipo...</p>
+      ) : (
+        <div className={styles.centrosList}>
+          {centrosFiltrados.map(centro => (
+            <div key={centro.id} className="card" style={{ marginBottom: '1rem', padding: '0', overflow: 'hidden' }}>
+              
+              {/* CABECERA CENTRO */}
+              <div 
+                className={styles.centroHeader} 
+                onClick={() => toggleCentro(centro.id)}
+                style={{ padding: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: centroExpanded === centro.id ? 'rgba(255,103,0,0.05)' : 'white' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,103,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <MapPin size={18} color="var(--accent-primary)" />
                   </div>
-                  <div className={styles.diaryTurno}>
-                    {turnoIcon[p.iconTurnoHoy] || <Sun size={14} color="var(--text-secondary)"/>}
-                    <span>{p.turnoHoy}</span>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)' }}>{centro.nombre}</h4>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{centro.promotores.length} promotores</span>
                   </div>
-                </div>
-              ))
-          )}
-          {centrosFiltrados.length === 0 && <p style={{color: 'var(--text-tertiary)'}}>No hay promotores asignados a tu equipo.</p>}
-        </div>
-        )}
-      </div>
-
-      {/* Vista por centros */}
-      <div className={styles.centrosList}>
-        <h3 style={{ fontSize: '1rem', margin: '0 0 1rem 0' }}>🏢 Vista semanal por centros (Semana {selectedWeek})</h3>
-        {centrosFiltrados.map(centro => (
-          <div key={centro.id} className="card" style={{ marginBottom: '1rem', padding: '0' }}>
-            <div className={styles.centroHeader} onClick={() => setCentroExpanded(centroExpanded === centro.id ? null : centro.id)}>
-              <div className={styles.centroInfo}>
-                <div className={styles.centroIconWrapper}>
-                  <MapPin size={20} color="var(--accent-primary)" />
                 </div>
                 <div>
-                  <h4>{centro.nombre}</h4>
+                  {centroExpanded === centro.id ? <ChevronUp size={20} color="var(--text-secondary)"/> : <ChevronDown size={20} color="var(--text-secondary)"/>}
                 </div>
               </div>
-              <div className={styles.centroMeta}>
-                <span className={styles.promCount}>{centro.promotores.length} promotores</span>
-                <span className={styles.expandArrow}>{centroExpanded === centro.id ? '▲' : '▼'}</span>
-              </div>
-            </div>
 
-            {centroExpanded === centro.id && (
-              <div className={styles.promotoresList}>
-                {centro.promotores.map(p => (
-                  <div key={p.id} className={styles.promotorRow} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'stretch' }}>
-                    <div className={styles.promInfo} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
-                      <span className={styles.promName}>{p.name}</span>
-                    </div>
-                    
-                    <div className={styles.weeklyTable}>
-                      {p.semana && p.semana.length > 0 ? (
-                        p.semana.map((dia, idx) => (
-                          <div key={idx} className={styles.dayRow}>
-                            <div className={styles.dayName}>{dia.diaSemana}</div>
-                            <div className={styles.dayHours}>{dia.horas}</div>
-                            <div className={styles.dayIcon}>
-                              {turnoIcon[dia.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
-                            </div>
+              {/* LISTA PROMOTORES (Desplegada si el centro está activo) */}
+              {centroExpanded === centro.id && (
+                <div style={{ borderTop: '1px solid var(--border-color)', background: '#fafafa' }}>
+                  {centro.promotores.map((p, idx) => (
+                    <div key={p.id} style={{ borderBottom: idx < centro.promotores.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
+                      
+                      {/* CABECERA PROMOTOR */}
+                      <div 
+                        onClick={(e) => togglePromotor(p.id, e)}
+                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'white' : 'transparent' }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <User size={14} color="var(--text-secondary)" />
                           </div>
-                        ))
-                      ) : (
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', padding: '0.5rem 0' }}>
-                          Sin horarios esta semana
+                          <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                        </div>
+                        <div>
+                          {promotorExpanded === p.id ? <ChevronUp size={16} color="var(--text-tertiary)"/> : <ChevronDown size={16} color="var(--text-tertiary)"/>}
+                        </div>
+                      </div>
+
+                      {/* HORARIO SEMANAL (Desplegado si el promotor está activo) */}
+                      {promotorExpanded === p.id && (
+                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'white' }}>
+                          {p.semana && p.semana.length > 0 ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
+                              {p.semana.map((dia, dIdx) => (
+                                <div key={dIdx} style={{ 
+                                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
+                                  padding: '0.5rem 0.75rem', 
+                                  background: dia.iconTurno === 'Descanso' ? 'var(--bg-secondary)' : 'white',
+                                  borderBottom: dIdx < p.semana.length - 1 ? '1px solid var(--border-color)' : 'none'
+                                }}>
+                                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', width: '30%' }}>
+                                    {dia.diaSemana}
+                                  </span>
+                                  <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-primary)', flex: 1, textAlign: 'right', paddingRight: '0.5rem' }}>
+                                    {dia.horas}
+                                  </span>
+                                  <span style={{ width: '20px', display: 'flex', justifyContent: 'center' }}>
+                                    {turnoIcon[dia.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textAlign: 'center', margin: '0.5rem 0' }}>Sin horarios registrados esta semana.</p>
+                          )}
                         </div>
                       )}
-                    </div>
 
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          {!loading && centrosFiltrados.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
+              <Users size={40} />
+              <p style={{ marginTop: '1rem' }}>No se encontraron centros o promotores.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
