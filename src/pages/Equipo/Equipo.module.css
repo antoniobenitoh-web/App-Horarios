@@ -148,6 +148,15 @@
   color: var(--text-tertiary);
 }
 
+.diaryTurno {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
 .weeklyTable {
   margin-top: 0.5rem;
   display: flex;
