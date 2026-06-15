@@ -108,7 +108,7 @@ export default function Equipo() {
     <div className={styles.container}>
       <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h2 style={{ color: 'var(--text-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Mi Equipo</h2>
+          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Mi Equipo</h2>
           <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Vista de centros y horarios</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
