@@ -124,9 +124,10 @@ export default function Solicitudes() {
     if (!GAS_URL) return;
 
     let updates = {};
-    if (decision === 'recomendacion_aprobada' || decision === 'recomendacion_rechazada') {
-      updates.recomendacion = decision === 'recomendacion_aprobada' ? 'Aprobar' : 'Rechazar';
-      updates.recomendadoPor = user.name;
+    if (decision === 'voto_aprobar' || decision === 'voto_rechazar') {
+      const voto = decision === 'voto_aprobar' ? 'Aprobar' : 'Rechazar';
+      if (user.role === 'gpv') updates.votoGPV = voto;
+      if (user.role === 'am') updates.votoAM = voto;
     } else {
       updates.estado = decision;
       updates.aprobadaPor = user.name;
@@ -243,14 +244,24 @@ export default function Solicitudes() {
                   {estadoIcon[sol.estado]}
                   {estadoLabel[sol.estado]}
                 </div>
-                {sol.recomendacion && !isPromotor && (
+                {sol.votoGPV && !isPromotor && (
                   <div className={styles.badge} style={{ 
-                    backgroundColor: sol.recomendacion === 'Aprobar' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', 
-                    color: sol.recomendacion === 'Aprobar' ? 'var(--success)' : 'var(--danger)',
-                    border: `1px solid ${sol.recomendacion === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
+                    backgroundColor: sol.votoGPV === 'Aprobar' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', 
+                    color: sol.votoGPV === 'Aprobar' ? 'var(--success)' : 'var(--danger)',
+                    border: `1px solid ${sol.votoGPV === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
                   }}>
-                    {sol.recomendacion === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
-                    Sugiere {sol.recomendacion}
+                    {sol.votoGPV === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
+                    GPV: {sol.votoGPV}
+                  </div>
+                )}
+                {sol.votoAM && !isPromotor && (
+                  <div className={styles.badge} style={{ 
+                    backgroundColor: sol.votoAM === 'Aprobar' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', 
+                    color: sol.votoAM === 'Aprobar' ? 'var(--success)' : 'var(--danger)',
+                    border: `1px solid ${sol.votoAM === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
+                  }}>
+                    {sol.votoAM === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
+                    AM: {sol.votoAM}
                   </div>
                 )}
               </div>
@@ -288,20 +299,28 @@ export default function Solicitudes() {
                   )}
                 </div>
 
-                {sol.recomendacion && !isPromotor && (
+                {sol.votoGPV && !isPromotor && (
                   <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem' }}>
-                    <strong style={{ color: sol.recomendacion === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
-                      Pre-evaluación: Sugiere {sol.recomendacion}
-                    </strong> — {sol.recomendadoPor}
+                    <strong style={{ color: sol.votoGPV === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
+                      Voto GPV: Sugiere {sol.votoGPV}
+                    </strong>
                   </div>
                 )}
 
-                {isManager && sol.estado === 'pendiente' && !sol.recomendacion && (
+                {sol.votoAM && !isPromotor && (
+                  <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem' }}>
+                    <strong style={{ color: sol.votoAM === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
+                      Voto AM: Sugiere {sol.votoAM}
+                    </strong>
+                  </div>
+                )}
+
+                {isManager && sol.estado === 'pendiente' && ((user.role === 'gpv' && !sol.votoGPV) || (user.role === 'am' && !sol.votoAM)) && (
                   <div className={styles.accionesCoord}>
-                    <button className={`btn ${styles.btnRechazar}`} onClick={() => handleDecision(sol.id, 'recomendacion_rechazada')}>
+                    <button className={`btn ${styles.btnRechazar}`} onClick={() => handleDecision(sol.id, 'voto_rechazar')}>
                       <XCircle size={16} /> Sugerir Rechazo
                     </button>
-                    <button className={`btn ${styles.btnAprobar}`} onClick={() => handleDecision(sol.id, 'recomendacion_aprobada')}>
+                    <button className={`btn ${styles.btnAprobar}`} onClick={() => handleDecision(sol.id, 'voto_aprobar')}>
                       <CheckCircle2 size={16} /> Sugerir Aprobación
                     </button>
                   </div>
