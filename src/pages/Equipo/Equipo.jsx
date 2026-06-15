@@ -23,6 +23,7 @@ export default function Equipo() {
   };
   
   const [busqueda, setBusqueda] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedWeek, setSelectedWeek] = useState(getISOWeek(new Date()));
   const [semanasDisponibles, setSemanasDisponibles] = useState([]);
   
@@ -69,10 +70,22 @@ export default function Equipo() {
   }
   const centros = Object.values(centrosMap);
 
-  const centrosFiltrados = centros.map(c => ({
-    ...c,
-    promotores: c.promotores.filter(p => p.name.toLowerCase().includes(busqueda.toLowerCase()))
-  })).filter(c => c.promotores.length > 0);
+  const b = busqueda.toLowerCase();
+  
+  const centrosFiltrados = centros.map(c => {
+    const matchCentro = c.nombre.toLowerCase().includes(b);
+    return {
+      ...c,
+      promotores: c.promotores.filter(p => matchCentro || p.name.toLowerCase().includes(b))
+    };
+  }).filter(c => c.promotores.length > 0);
+
+  let suggestions = [];
+  if (b.length > 0) {
+    const sCentros = centros.filter(c => c.nombre.toLowerCase().includes(b)).slice(0, 3).map(c => ({ type: 'centro', text: c.nombre }));
+    const sPromotores = equipoFetch.filter(p => p.name.toLowerCase().includes(b)).slice(0, 5).map(p => ({ type: 'promotor', text: p.name }));
+    suggestions = [...sCentros, ...sPromotores];
+  }
 
   const totalPromotores = equipoFetch.length;
 
@@ -89,18 +102,14 @@ export default function Equipo() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div>
-          <h2 style={{ color: '#1a1a1a', fontSize: '1.6rem' }}>Mi Equipo</h2>
-          <p style={{ color: '#555', marginTop: '0.25rem' }}>Vista de centros y horarios</p>
-        </div>
-        <div className={styles.statsHeader}>
-          <div className={styles.statChip}>
-            <Users size={16} />
-            <span>{totalPromotores} Promotores</span>
-          </div>
-          <div className={styles.statChip}>
-            <MapPin size={16} />
-            <span>{centros.length} Centros</span>
+        <div style={{ flex: 1 }}>
+          <h2 style={{ color: 'var(--text-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Mi Equipo</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Vista de centros y horarios</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '0.1rem' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Users size={12} /> {totalPromotores} Promotores</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><MapPin size={12} /> {centros.length} Centros</span>
+            </div>
           </div>
         </div>
       </div>
@@ -111,10 +120,34 @@ export default function Equipo() {
           <input
             className={styles.searchInput}
             type="text"
-            placeholder="Buscar promotor..."
+            placeholder="Buscar promotor o centro..."
             value={busqueda}
-            onChange={e => setBusqueda(e.target.value)}
+            onChange={e => {
+              setBusqueda(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           />
+          {showSuggestions && suggestions.length > 0 && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', marginTop: '0.25rem', zIndex: 10, boxShadow: 'var(--glass-shadow)', overflow: 'hidden' }}>
+              {suggestions.map((s, i) => (
+                <div 
+                  key={i} 
+                  style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: 'var(--text-primary)', cursor: 'pointer', borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-color)' : 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  onClick={() => {
+                    setBusqueda(s.text);
+                    setShowSuggestions(false);
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-tertiary)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  {s.type === 'centro' ? <MapPin size={12} color="var(--accent-primary)"/> : <User size={12} color="var(--text-secondary)"/>}
+                  {s.text}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--glass-border)' }}>
           <Calendar size={16} color="var(--accent-primary)" />
