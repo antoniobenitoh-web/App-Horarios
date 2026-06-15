@@ -18,6 +18,11 @@
   top: 0;
   z-index: 10;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  
+  color: var(--text-light-primary);
+  --text-primary: var(--text-light-primary);
+  --text-secondary: var(--text-light-secondary);
+  --text-tertiary: var(--text-light-tertiary);
 }
 
 .topbarLeft {
