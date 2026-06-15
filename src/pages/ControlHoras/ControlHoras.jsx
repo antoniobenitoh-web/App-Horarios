@@ -6,7 +6,7 @@ import { TrendingUp, TrendingDown, Minus, Clock, BarChart3, CalendarDays } from 
 export default function ControlHoras() {
   const { user } = useAuth();
   const [selectedWeek, setSelectedWeek] = useState(null);
-  const [selectedMember, setSelectedMember] = useState(user.role === 'promotor' ? user.username : null);
+  const [selectedMember, setSelectedMember] = useState(user.role === 'promotor' ? user.name : null);
   
   const [team, setTeam] = useState([]);
   const [semanas, setSemanas] = useState([]);
@@ -29,7 +29,7 @@ export default function ControlHoras() {
           );
           setTeam(myTeam);
           if (myTeam.length > 0 && !selectedMember) {
-            setSelectedMember(myTeam[0].username);
+            setSelectedMember(myTeam[0].name);
           }
         }
       } catch (err) {
@@ -47,7 +47,7 @@ export default function ControlHoras() {
       try {
         const res = await fetch(GAS_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'getControlHoras', username: selectedMember })
+          body: JSON.stringify({ action: 'getControlHoras', name: selectedMember })
         });
         const data = await res.json();
         if (data.success) {
@@ -122,8 +122,8 @@ export default function ControlHoras() {
             {team.map(m => (
               <button
                 key={m.username}
-                className={`btn ${selectedMember === m.username ? 'btn-primary' : 'btn-outline'}`}
-                onClick={() => setSelectedMember(m.username)}
+                className={`btn ${selectedMember === m.name ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setSelectedMember(m.name)}
                 style={{ padding: '0.4rem 0.875rem', fontSize: '0.85rem' }}
               >
                 {m.name}

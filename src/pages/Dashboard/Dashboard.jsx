@@ -17,7 +17,7 @@ export default function Dashboard() {
       try {
         const res = await fetch(GAS_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'getSchedule', username: user.username })
+          body: JSON.stringify({ action: 'getSchedule', name: user.name })
         });
         const data = await res.json();
         if (data.success && data.schedule) {
