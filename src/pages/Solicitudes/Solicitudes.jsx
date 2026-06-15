@@ -251,7 +251,7 @@ export default function Solicitudes() {
                     border: `1px solid ${sol.votoGPV === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
                   }}>
                     {sol.votoGPV === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
-                    GPV: {sol.votoGPV}
+                    GPV: {sol.votoGPV === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
                   </div>
                 )}
                 {sol.votoAM && !isPromotor && (
@@ -261,7 +261,7 @@ export default function Solicitudes() {
                     border: `1px solid ${sol.votoAM === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
                   }}>
                     {sol.votoAM === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
-                    AM: {sol.votoAM}
+                    AM: {sol.votoAM === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
                   </div>
                 )}
               </div>
@@ -302,7 +302,7 @@ export default function Solicitudes() {
                 {sol.votoGPV && !isPromotor && (
                   <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem' }}>
                     <strong style={{ color: sol.votoGPV === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
-                      Voto GPV: Sugiere {sol.votoGPV}
+                      GPV: {sol.votoGPV === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
                     </strong>
                   </div>
                 )}
@@ -310,7 +310,7 @@ export default function Solicitudes() {
                 {sol.votoAM && !isPromotor && (
                   <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem' }}>
                     <strong style={{ color: sol.votoAM === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
-                      Voto AM: Sugiere {sol.votoAM}
+                      AM: {sol.votoAM === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
                     </strong>
                   </div>
                 )}
@@ -318,10 +318,10 @@ export default function Solicitudes() {
                 {isManager && sol.estado === 'pendiente' && ((user.role === 'gpv' && !sol.votoGPV) || (user.role === 'am' && !sol.votoAM)) && (
                   <div className={styles.accionesCoord}>
                     <button className={`btn ${styles.btnRechazar}`} onClick={() => handleDecision(sol.id, 'voto_rechazar')}>
-                      <XCircle size={16} /> Sugerir Rechazo
+                      <XCircle size={16} /> Rechazar
                     </button>
                     <button className={`btn ${styles.btnAprobar}`} onClick={() => handleDecision(sol.id, 'voto_aprobar')}>
-                      <CheckCircle2 size={16} /> Sugerir Aprobación
+                      <CheckCircle2 size={16} /> Aprobar
                     </button>
                   </div>
                 )}
