@@ -63,7 +63,7 @@
   width: 100%;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
-  color: var(--text-primary);
+  color: var(--text-light-primary);
   padding: 0.5rem 0.75rem 0.5rem 2.25rem;
   border-radius: var(--border-radius-md);
   font-size: 0.875rem;

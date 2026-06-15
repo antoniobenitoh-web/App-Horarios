@@ -137,7 +137,7 @@ export default function Equipo() {
               {suggestions.map((s, i) => (
                 <div 
                   key={i} 
-                  style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: 'var(--text-primary)', cursor: 'pointer', borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-color)' : 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: 'var(--text-light-primary)', cursor: 'pointer', borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-color)' : 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                   onClick={() => {
                     setBusqueda(s.text);
                     setShowSuggestions(false);
@@ -153,12 +153,12 @@ export default function Equipo() {
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--glass-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
             <Calendar size={14} color="var(--accent-primary)" />
             <select 
               value={selectedWeek} 
               onChange={e => setSelectedWeek(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer' }}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
             >
               {semanasDisponibles.length > 0 ? (
                 semanasDisponibles.map(w => (
