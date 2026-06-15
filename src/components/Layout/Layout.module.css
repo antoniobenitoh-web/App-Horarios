@@ -336,17 +336,25 @@
     padding-bottom: 85px; 
   }
 
+  .notifWrapper {
+    position: static; /* Esto permite que el panel sea relativo a toda la barra superior */
+  }
+
   /* Ajustar panel de notificaciones para que no se salga de la pantalla */
   .notifPanel {
-    position: fixed;
-    top: 60px;
-    left: 10px;
-    right: 10px;
-    width: auto;
-    max-width: none;
-    max-height: 75vh;
+    position: absolute;
+    top: 60px; /* Justo debajo de la barra */
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100vh - 160px);
     overflow-y: auto;
     box-sizing: border-box;
+    border-radius: 0 0 16px 16px; /* Bordes redondeados solo abajo */
+    border-left: none;
+    border-right: none;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.8);
   }
 
   .notifText {
