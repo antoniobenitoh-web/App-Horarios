@@ -335,4 +335,14 @@
     padding: 1rem;
     padding-bottom: 85px; 
   }
+
+  /* Ajustar panel de notificaciones para que no se salga de la pantalla */
+  .notifPanel {
+    position: fixed;
+    top: 65px;
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+  }
 }
