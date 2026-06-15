@@ -24,6 +24,7 @@ export default function Equipo() {
   
   const [busqueda, setBusqueda] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filtroTurno, setFiltroTurno] = useState('todos');
   const [selectedWeek, setSelectedWeek] = useState(getISOWeek(new Date()));
   const [semanasDisponibles, setSemanasDisponibles] = useState([]);
   
@@ -76,7 +77,11 @@ export default function Equipo() {
     const matchCentro = c.nombre.toLowerCase().includes(b);
     return {
       ...c,
-      promotores: c.promotores.filter(p => matchCentro || p.name.toLowerCase().includes(b))
+      promotores: c.promotores.filter(p => {
+        const matchText = matchCentro || p.name.toLowerCase().includes(b);
+        const matchTurno = filtroTurno === 'todos' || (p.semana && p.semana.some(d => d.iconTurno === filtroTurno));
+        return matchText && matchTurno;
+      })
     };
   }).filter(c => c.promotores.length > 0);
 
@@ -101,16 +106,14 @@ export default function Equipo() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div style={{ flex: 1 }}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
           <h2 style={{ color: 'var(--text-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Mi Equipo</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-            <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Vista de centros y horarios</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '0.1rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Users size={12} /> {totalPromotores} Promotores</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><MapPin size={12} /> {centros.length} Centros</span>
-            </div>
-          </div>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Vista de centros y horarios</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Users size={12} /> {totalPromotores} Prom.</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><MapPin size={12} /> {centros.length} Centros</span>
         </div>
       </div>
 
@@ -149,22 +152,45 @@ export default function Equipo() {
             </div>
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--glass-border)' }}>
-          <Calendar size={16} color="var(--accent-primary)" />
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Semana</span>
-          <select 
-            value={selectedWeek} 
-            onChange={e => setSelectedWeek(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer' }}
-          >
-            {semanasDisponibles.length > 0 ? (
-              semanasDisponibles.map(w => (
-                <option key={w} value={w}>{w}</option>
-              ))
-            ) : (
-              <option value={selectedWeek}>{selectedWeek}</option>
-            )}
-          </select>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--glass-border)' }}>
+            <Calendar size={14} color="var(--accent-primary)" />
+            <select 
+              value={selectedWeek} 
+              onChange={e => setSelectedWeek(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              {semanasDisponibles.length > 0 ? (
+                semanasDisponibles.map(w => (
+                  <option key={w} value={w}>Semana {w}</option>
+                ))
+              ) : (
+                <option value={selectedWeek}>Semana {selectedWeek}</option>
+              )}
+            </select>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            {['todos', 'Mañana', 'Tarde', 'Partido'].map(t => (
+              <button
+                key={t}
+                onClick={() => setFiltroTurno(t)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.2rem',
+                  padding: '0.3rem 0.6rem',
+                  borderRadius: 'var(--border-radius-full)',
+                  border: `1px solid ${filtroTurno === t ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
+                  background: filtroTurno === t ? 'rgba(255,103,0,0.1)' : 'transparent',
+                  color: filtroTurno === t ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                  fontSize: '0.75rem',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                {t !== 'todos' && turnoIcon[t]}
+                {t === 'todos' ? 'Todos' : t}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
