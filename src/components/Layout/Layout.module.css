@@ -272,3 +272,67 @@
   font-size: 0.75rem;
   color: var(--text-tertiary);
 }
+
+/* ==========================================
+   📱 MOBILE RESPONSIVE DESIGN
+   ========================================== */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 1rem;
+    height: 60px;
+  }
+
+  .brandSub {
+    display: none; /* Simplificar header en móvil */
+  }
+
+  .userInfo {
+    padding-left: 0.75rem;
+  }
+  
+  .userDetails {
+    display: none; /* Ocultar nombre y rol para ahorrar espacio */
+  }
+
+  .topbarRight {
+    gap: 0.75rem;
+  }
+
+  /* Transformar menú superior en menú inferior estilo App */
+  .topNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    background: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(255, 103, 0, 0.15);
+    justify-content: space-around;
+    padding: 0 0.5rem;
+    z-index: 999;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .navItem {
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.4rem;
+    font-size: 0.6rem;
+    flex: 1;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .navItem svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Page content necesita espacio extra abajo para no chocar con la barra */
+  .pageContent {
+    padding: 1rem;
+    padding-bottom: 85px; 
+  }
+}
