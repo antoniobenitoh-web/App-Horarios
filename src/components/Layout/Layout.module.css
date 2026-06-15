@@ -339,10 +339,18 @@
   /* Ajustar panel de notificaciones para que no se salga de la pantalla */
   .notifPanel {
     position: fixed;
-    top: 65px;
+    top: 60px;
+    left: 10px;
     right: 10px;
-    width: calc(100vw - 20px);
-    max-height: calc(100vh - 160px);
+    width: auto;
+    max-width: none;
+    max-height: 75vh;
     overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .notifText {
+    word-break: break-word;
+    white-space: normal;
   }
 }
