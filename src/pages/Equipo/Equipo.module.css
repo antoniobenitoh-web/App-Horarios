@@ -1,0 +1,287 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.statsHeader {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.statChip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Filtros bar */
+.filtrosBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--border-radius-lg);
+  flex-wrap: wrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+}
+
+.searchInput {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-primary);
+  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+  border-radius: var(--border-radius-md);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+  font-family: inherit;
+}
+
+.searchInput:focus {
+  border-color: var(--accent-primary);
+}
+
+.searchInput::placeholder { color: var(--text-tertiary); }
+
+.turnoFiltros {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.turnoBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.875rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.turnoBtn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+
+.turnoActivo {
+  background: var(--accent-gradient) !important;
+  border-color: transparent !important;
+  color: white !important;
+  box-shadow: 0 2px 10px rgba(255,103,0,0.3);
+}
+
+/* Daily grid */
+.diaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.875rem;
+}
+
+.diaryCard {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: all var(--transition-fast);
+}
+
+.diaryCard:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,103,0,0.2);
+  transform: translateY(-2px);
+}
+
+.diaryName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.diaryCenter {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.diaryTurno {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Turno badges */
+.turnoBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--border-radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.turnoMañana { background: rgba(245,158,11,0.15); color: var(--warning); }
+.turnoTarde  { background: rgba(255,103,0,0.12);  color: var(--accent-primary); }
+.turnoPartido{ background: rgba(59,130,246,0.15); color: var(--info); }
+
+/* Centros list */
+.centroHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.centroHeader:hover { background: rgba(255,255,255,0.03); }
+
+.centroInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.centroIconWrapper {
+  background: var(--accent-light);
+  padding: 0.6rem;
+  border-radius: var(--border-radius-md);
+}
+
+.centroInfo h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.centroCity {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.centroMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.promCount {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.06);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-full);
+}
+
+.expandArrow {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+/* Promotores list inside center */
+.promotoresList {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 0.5rem 0;
+}
+
+.promotorRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background var(--transition-fast);
+  flex-wrap: wrap;
+}
+
+.promotorRow:last-child { border-bottom: none; }
+.promotorRow:hover { background: rgba(255,255,255,0.03); }
+
+.promotorAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.promotorInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 150px;
+}
+
+.promotorInfo strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.promotorInfo span {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+.promotorTurno {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
