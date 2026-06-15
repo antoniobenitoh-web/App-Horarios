@@ -94,22 +94,26 @@ export default function Topbar() {
           </NavLink>
         )}
 
-        {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora') && (
+        {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora' || user.role === 'trainer') && (
           <NavLink to="/equipo" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
             <Users size={18} />
             <span>Mi Equipo</span>
           </NavLink>
         )}
 
-        <NavLink to="/solicitudes" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
-          <CalendarClock size={18} />
-          <span>Solicitudes</span>
-        </NavLink>
+        {user.role !== 'trainer' && (
+          <>
+            <NavLink to="/solicitudes" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
+              <CalendarClock size={18} />
+              <span>Solicitudes</span>
+            </NavLink>
 
-        <NavLink to="/horas" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
-          <Clock size={18} />
-          <span>Control Horas</span>
-        </NavLink>
+            <NavLink to="/horas" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
+              <Clock size={18} />
+              <span>Control Horas</span>
+            </NavLink>
+          </>
+        )}
 
         {(user.role === 'am' || user.role === 'coordinadora') && (
           <NavLink to="/usuarios" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
