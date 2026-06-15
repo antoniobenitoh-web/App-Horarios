@@ -205,50 +205,50 @@ export default function Equipo() {
               <div 
                 className={styles.centroHeader} 
                 onClick={() => toggleCentro(centro.id)}
-                style={{ padding: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: centroExpanded === centro.id ? 'var(--bg-tertiary)' : 'transparent' }}
+                style={{ padding: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: centroExpanded === centro.id ? 'var(--bg-tertiary)' : 'rgba(255,255,255,0.03)' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,103,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,103,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <MapPin size={18} color="var(--accent-primary)" />
                   </div>
                   <div>
-                    <h4 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)' }}>{centro.nombre}</h4>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{centro.promotores.length} promotores</span>
+                    <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--accent-primary)', fontWeight: '600' }}>{centro.nombre}</h4>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>{centro.promotores.length} promotores</span>
                   </div>
                 </div>
                 <div>
-                  {centroExpanded === centro.id ? <ChevronUp size={20} color="var(--text-secondary)"/> : <ChevronDown size={20} color="var(--text-secondary)"/>}
+                  {centroExpanded === centro.id ? <ChevronUp size={20} color="var(--accent-primary)"/> : <ChevronDown size={20} color="var(--text-secondary)"/>}
                 </div>
               </div>
 
               {/* LISTA PROMOTORES (Desplegada si el centro está activo) */}
               {centroExpanded === centro.id && (
-                <div style={{ borderTop: '1px solid var(--border-color)', background: 'var(--bg-tertiary)' }}>
+                <div style={{ borderTop: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)' }}>
                   {centro.promotores.map((p, idx) => (
                     <div key={p.id} style={{ borderBottom: idx < centro.promotores.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
                       
                       {/* CABECERA PROMOTOR */}
                       <div 
                         onClick={(e) => togglePromotor(p.id, e)}
-                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'rgba(255,255,255,0.05)' : 'transparent' }}
+                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'rgba(255,255,255,0.06)' : 'transparent' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
-                          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <User size={14} color="var(--text-secondary)" />
+                          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <User size={14} color="var(--text-primary)" />
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                            <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{p.name}</strong>
                             {(() => {
                               const hoy = p.semana ? p.semana.find(d => d.fecha === todayIso) : null;
                               if (hoy) {
                                 return (
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.1rem' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.15rem' }}>
                                     {turnoIcon[hoy.iconTurno] || <Sun size={12} color="var(--text-secondary)"/>}
-                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Hoy: {hoy.horas}</span>
+                                    <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Hoy: <span style={{ color: 'var(--text-primary)' }}>{hoy.horas}</span></span>
                                   </div>
                                 );
                               }
-                              return <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Hoy: Sin turno</span>;
+                              return <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginTop: '0.15rem' }}>Hoy: Sin turno</span>;
                             })()}
                           </div>
                         </div>
@@ -259,7 +259,7 @@ export default function Equipo() {
 
                       {/* HORARIO SEMANAL (Desplegado si el promotor está activo) */}
                       {promotorExpanded === p.id && (
-                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(255,255,255,0.02)' }}>
+                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(0,0,0,0.15)' }}>
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
                               {p.semana.map((dia, dIdx) => (
