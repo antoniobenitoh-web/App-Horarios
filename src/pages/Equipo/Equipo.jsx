@@ -24,6 +24,9 @@ export default function Equipo() {
   
   const [busqueda, setBusqueda] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(getISOWeek(new Date()));
+  const [semanasDisponibles, setSemanasDisponibles] = useState([]);
+  
+  const todayIso = new Date().toISOString().split('T')[0];
   
   const [centroExpanded, setCentroExpanded] = useState(null);
   const [promotorExpanded, setPromotorExpanded] = useState(null);
@@ -43,6 +46,9 @@ export default function Equipo() {
         const data = await res.json();
         if (data.success) {
           setEquipoFetch(data.equipo);
+          if (data.semanasDisponibles) {
+            setSemanasDisponibles(data.semanasDisponibles);
+          }
         }
       } catch(err) {
         console.error(err);
@@ -113,13 +119,19 @@ export default function Equipo() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'white', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
           <Calendar size={16} color="var(--accent-primary)" />
           <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Semana</span>
-          <input 
-            type="number" 
-            min="1" max="52"
+          <select 
             value={selectedWeek} 
             onChange={e => setSelectedWeek(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.9rem', width: '40px', fontWeight: 'bold' }}
-          />
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            {semanasDisponibles.length > 0 ? (
+              semanasDisponibles.map(w => (
+                <option key={w} value={w}>{w}</option>
+              ))
+            ) : (
+              <option value={selectedWeek}>{selectedWeek}</option>
+            )}
+          </select>
         </div>
       </div>
 
@@ -161,11 +173,25 @@ export default function Equipo() {
                         onClick={(e) => togglePromotor(p.id, e)}
                         style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'white' : 'transparent' }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
                           <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <User size={14} color="var(--text-secondary)" />
                           </div>
-                          <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                            {(() => {
+                              const hoy = p.semana ? p.semana.find(d => d.fecha === todayIso) : null;
+                              if (hoy) {
+                                return (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.1rem' }}>
+                                    {turnoIcon[hoy.iconTurno] || <Sun size={12} color="var(--text-secondary)"/>}
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Hoy: {hoy.horas}</span>
+                                  </div>
+                                );
+                              }
+                              return <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Hoy: Sin turno</span>;
+                            })()}
+                          </div>
                         </div>
                         <div>
                           {promotorExpanded === p.id ? <ChevronUp size={16} color="var(--text-tertiary)"/> : <ChevronDown size={16} color="var(--text-tertiary)"/>}
