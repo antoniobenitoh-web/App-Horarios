@@ -116,7 +116,7 @@ export default function Equipo() {
             onChange={e => setBusqueda(e.target.value)}
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'white', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.4rem 0.75rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--glass-border)' }}>
           <Calendar size={16} color="var(--accent-primary)" />
           <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Semana</span>
           <select 
@@ -146,7 +146,7 @@ export default function Equipo() {
               <div 
                 className={styles.centroHeader} 
                 onClick={() => toggleCentro(centro.id)}
-                style={{ padding: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: centroExpanded === centro.id ? 'rgba(255,103,0,0.05)' : 'white' }}
+                style={{ padding: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: centroExpanded === centro.id ? 'var(--bg-tertiary)' : 'transparent' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,103,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -164,14 +164,14 @@ export default function Equipo() {
 
               {/* LISTA PROMOTORES (Desplegada si el centro está activo) */}
               {centroExpanded === centro.id && (
-                <div style={{ borderTop: '1px solid var(--border-color)', background: '#fafafa' }}>
+                <div style={{ borderTop: '1px solid var(--border-color)', background: 'var(--bg-tertiary)' }}>
                   {centro.promotores.map((p, idx) => (
                     <div key={p.id} style={{ borderBottom: idx < centro.promotores.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
                       
                       {/* CABECERA PROMOTOR */}
                       <div 
                         onClick={(e) => togglePromotor(p.id, e)}
-                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'white' : 'transparent' }}
+                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'rgba(255,255,255,0.05)' : 'transparent' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
                           <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -200,14 +200,14 @@ export default function Equipo() {
 
                       {/* HORARIO SEMANAL (Desplegado si el promotor está activo) */}
                       {promotorExpanded === p.id && (
-                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'white' }}>
+                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(255,255,255,0.02)' }}>
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
                               {p.semana.map((dia, dIdx) => (
                                 <div key={dIdx} style={{ 
                                   display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
                                   padding: '0.5rem 0.75rem', 
-                                  background: dia.iconTurno === 'Descanso' ? 'var(--bg-secondary)' : 'white',
+                                  background: dia.iconTurno === 'Descanso' ? 'transparent' : 'rgba(255,255,255,0.05)',
                                   borderBottom: dIdx < p.semana.length - 1 ? '1px solid var(--border-color)' : 'none'
                                 }}>
                                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', width: '30%' }}>
