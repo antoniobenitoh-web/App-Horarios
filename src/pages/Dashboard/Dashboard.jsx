@@ -53,7 +53,7 @@ export default function Dashboard() {
     };
 
     const fetchManagerData = async () => {
-      if ((user.role !== 'gpv' && user.role !== 'am' && user.role !== 'coordinadora') || !GAS_URL) return;
+      if ((user.role !== 'gpv' && user.role !== 'am' && user.role !== 'coordinadora' && user.role !== 'trainer') || !GAS_URL) return;
       try {
         // Fetch usuarios
         const resUsers = await fetch(GAS_URL, {
@@ -65,7 +65,7 @@ export default function Dashboard() {
         if (dataUsers.success) {
           tSize = dataUsers.users.filter(u => 
             u.role === 'promotor' && 
-            (u.manager.gpv === user.name || u.manager.am === user.name || user.role === 'coordinadora')
+            (u.manager.gpv === user.name || u.manager.am === user.name || user.role === 'coordinadora' || user.role === 'trainer')
           ).length;
         }
 
@@ -171,8 +171,8 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Dashboard para GPV/AM/Coordinadora */}
-      {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora') && (
+      {/* Dashboard para GPV/AM/Coordinadora/Trainer */}
+      {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora' || user.role === 'trainer') && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
           <div className="card" style={{ cursor: 'pointer' }} onClick={() => navigate('/equipo')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
@@ -188,7 +188,8 @@ export default function Dashboard() {
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Promotores asignados</p>
           </div>
 
-          <div className="card" style={{ cursor: 'pointer' }} onClick={() => navigate('/solicitudes')}>
+          {user.role !== 'trainer' && (
+            <div className="card" style={{ cursor: 'pointer' }} onClick={() => navigate('/solicitudes')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
               <div style={{ padding: '0.75rem', background: 'rgba(245,158,11,0.12)', borderRadius: '10px', color: 'var(--warning)' }}>
                 <CalendarClock size={28} />
@@ -200,9 +201,11 @@ export default function Dashboard() {
               {managerStats.loading ? '...' : managerStats.pendingRequests}
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Requieren atención</p>
-          </div>
+            </div>
+          )}
 
-          <div className="card" style={{ cursor: 'pointer' }} onClick={() => navigate('/horas')}>
+          {user.role !== 'trainer' && (
+            <div className="card" style={{ cursor: 'pointer' }} onClick={() => navigate('/horas')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
               <div style={{ padding: '0.75rem', background: 'rgba(59,130,246,0.12)', borderRadius: '10px', color: 'var(--info)' }}>
                 <CalendarDays size={28} />
@@ -214,7 +217,8 @@ export default function Dashboard() {
               {new Date().toLocaleString('es-ES', { month: 'long', year: 'numeric' })}
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Ver horarios de tu equipo</p>
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>
