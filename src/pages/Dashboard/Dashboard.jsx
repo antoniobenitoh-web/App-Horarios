@@ -65,7 +65,7 @@ export default function Dashboard() {
         if (dataUsers.success) {
           tSize = dataUsers.users.filter(u => 
             u.role === 'promotor' && 
-            (u.manager.gpv === user.name || u.manager.am === user.name || user.role === 'coordinadora' || user.role === 'trainer')
+            (u.manager.gpv === user.name || u.manager.am === user.name || user.role === 'coordinadora' || (user.role === 'trainer' && u.manager.trainer === user.name))
           ).length;
         }
 
