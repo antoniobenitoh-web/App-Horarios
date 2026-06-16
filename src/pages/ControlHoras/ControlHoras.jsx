@@ -230,7 +230,7 @@ export default function ControlHoras() {
 
       {/* Tabla de semanas */}
       <div className="card">
-        <h3 style={{ marginBottom: '1.25rem' }}>
+        <h3 className={styles.tableTitle}>
           Histórico Semanal ({new Date().toLocaleString('es-ES', { month: 'long' })})
         </h3>
         {loading ? (
@@ -253,12 +253,13 @@ export default function ControlHoras() {
               </tr>
             </thead>
             <tbody>
-              {semanas.map((s) => {
+              {semanas.map((s, i) => {
                 const diff = s.cobertura - s.planificadas;
                 const badge = getBadge(diff);
+                const displayNum = String(s.num).toLowerCase().includes('semana') ? s.num : `Semana ${s.num}`;
                 return (
-                  <tr key={s.num}>
-                    <td><strong>Semana {s.num}</strong></td>
+                  <tr key={i}>
+                    <td><strong>{displayNum}</strong></td>
                     <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{s.dias}</td>
                     <td>{s.cobertura} h</td>
                     <td>{s.planificadas} h</td>

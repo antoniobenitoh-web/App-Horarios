@@ -195,3 +195,28 @@
   font-size: 0.78rem;
   color: var(--text-tertiary);
 }
+
+.tableTitle {
+  margin-bottom: 1.25rem;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .tableTitle {
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .table {
+    font-size: 0.75rem;
+  }
+  
+  .table th, .table td {
+    padding: 0.5rem 0.2rem;
+  }
+
+  .diffBadge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
