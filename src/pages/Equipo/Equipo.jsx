@@ -313,7 +313,7 @@ export default function Equipo() {
                               )}
                             </div>
                             {(() => {
-                              const hoy = p.semana ? p.semana.find(d => d.fecha === todayIso) : null;
+                              const hoy = p.semana ? p.semana?.find(d => d.fecha === todayIso) : null;
                               if (hoy) {
                                 return (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.15rem' }}>
@@ -336,7 +336,7 @@ export default function Equipo() {
                         <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(0,0,0,0.15)' }}>
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
-                              {p.semana.map((dia, dIdx) => (
+                              {p.semana?.map((dia, dIdx) => (
                                 <div key={dIdx} style={{ 
                                   display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
                                   padding: '0.5rem 0.75rem', 
