@@ -284,3 +284,20 @@
   color: var(--text-tertiary);
   text-align: center;
 }
+
+@media (max-width: 600px) {
+  .filtros {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .filtros::-webkit-scrollbar {
+    display: none;
+  }
+  .filtroBtn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+}
