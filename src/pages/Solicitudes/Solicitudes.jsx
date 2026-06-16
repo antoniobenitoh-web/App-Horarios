@@ -88,18 +88,14 @@ export default function Solicitudes() {
     e.preventDefault();
     if (!GAS_URL) return;
 
-    // Formatear fecha para enviar
-    const [year, month, day] = form.dia.split('-');
-    const formattedDia = new Date(year, month - 1, day).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-
     const solicitud = {
       promotorUsername: user.username,
       promotorName: user.name,
-      dia: formattedDia,
+      dia: form.dia,
       horarioActual: form.horarioActual,
       horarioSolicitado: form.horarioSolicitado,
       motivo: form.motivo,
-      fechaCreacion: new Date().toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
+      fechaCreacion: new Date().toLocaleDateString('sv-SE') // Uses YYYY-MM-DD natively
     };
 
     try {
