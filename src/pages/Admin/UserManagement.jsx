@@ -119,13 +119,13 @@ export default function UserManagement() {
           <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Administra el equipo y las credenciales de acceso</span>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn btn-outline" onClick={fetchUsers} disabled={loading}>
-            <RefreshCw size={16} className={loading ? styles.spin : ''} />
-            Actualizar
-          </button>
           <button className="btn btn-primary" onClick={() => handleOpenModal()} disabled={loading || !GAS_URL}>
             <Plus size={16} />
             Nuevo Usuario
+          </button>
+          <button className="btn btn-outline" onClick={fetchUsers} disabled={loading}>
+            <RefreshCw size={16} className={loading ? styles.spin : ''} />
+            Actualizar
           </button>
         </div>
       </div>
