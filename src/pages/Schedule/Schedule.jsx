@@ -166,13 +166,13 @@ export default function Schedule() {
               const cfg = shiftConfig[shiftType] || shiftConfig['Descanso'];
               const isRest = shiftType === 'Descanso' || shift.horas.toLowerCase().includes('descanso');
 
-              let horasStyle = { color: '#ffffff', fontWeight: 'bold' };
+              let horasStyle = { color: 'var(--text-primary)', fontWeight: 'bold' };
               const lowerHoras = shift.horas.toLowerCase();
-              if (lowerHoras.includes('festivo')) horasStyle = { color: '#38bdf8', fontWeight: 'bold' };
-              else if (lowerHoras.includes('day off')) horasStyle = { color: '#4ade80', fontWeight: 'bold' };
-              else if (lowerHoras.includes('permiso')) horasStyle = { color: '#e879f9', fontWeight: 'bold' };
-              else if (lowerHoras.includes('vacaciones')) horasStyle = { color: '#a78bfa', fontWeight: 'bold' };
-              else if (lowerHoras.includes('baja')) horasStyle = { color: '#f87171', fontWeight: 'bold' };
+              if (lowerHoras.includes('festivo')) horasStyle = { color: '#0284c7', fontWeight: 'bold' };
+              else if (lowerHoras.includes('day off')) horasStyle = { color: '#16a34a', fontWeight: 'bold' };
+              else if (lowerHoras.includes('permiso')) horasStyle = { color: '#c026d3', fontWeight: 'bold' };
+              else if (lowerHoras.includes('vacaciones')) horasStyle = { color: '#7c3aed', fontWeight: 'bold' };
+              else if (lowerHoras.includes('baja')) horasStyle = { color: '#dc2626', fontWeight: 'bold' };
 
               return (
                 <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''}`}>
