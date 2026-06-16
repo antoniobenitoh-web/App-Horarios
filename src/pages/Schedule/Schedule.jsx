@@ -106,6 +106,7 @@ export default function Schedule() {
           body: JSON.stringify({ 
             action: 'confirmWeek', 
             name: user.name, 
+            username: user.username,
             weekId: activeTab,
             month: activeMonth
           })
