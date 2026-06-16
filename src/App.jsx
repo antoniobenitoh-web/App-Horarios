@@ -9,6 +9,7 @@ import Solicitudes from './pages/Solicitudes/Solicitudes';
 import ControlHoras from './pages/ControlHoras/ControlHoras';
 import Equipo from './pages/Equipo/Equipo';
 import UserManagement from './pages/Admin/UserManagement';
+import { ErrorBoundary } from './ErrorBoundary';
 
 function App() {
   return (
@@ -20,8 +21,8 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="horario" element={<Schedule />} />
             <Route path="solicitudes" element={<Solicitudes />} />
-            <Route path="equipo" element={<Equipo />} />
-            <Route path="horas" element={<ControlHoras />} />
+            <Route path="equipo" element={<ErrorBoundary><Equipo /></ErrorBoundary>} />
+            <Route path="horas" element={<ErrorBoundary><ControlHoras /></ErrorBoundary>} />
             <Route path="usuarios" element={<UserManagement />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
