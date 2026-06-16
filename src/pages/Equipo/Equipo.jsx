@@ -39,7 +39,10 @@ export default function Equipo() {
   // Cargar meses disponibles al montar
   React.useEffect(() => {
     const fetchMonths = async () => {
-      if (!GAS_URL || user.role === 'promotor') return;
+      if (!GAS_URL || user.role === 'promotor') {
+        setLoading(false);
+        return;
+      }
       try {
         const res = await fetch(GAS_URL, {
           method: 'POST',
@@ -51,9 +54,12 @@ export default function Equipo() {
           setSelectedMonth(data.meses[0].mes);
           setSemanasDisponibles(data.meses[0].semanas);
           setSelectedWeek(data.meses[0].semanas[0]);
+        } else {
+          setLoading(false); // No hay meses, terminar carga
         }
       } catch (err) {
         console.error(err);
+        setLoading(false);
       }
     };
     fetchMonths();
@@ -72,7 +78,11 @@ export default function Equipo() {
   // Cargar equipo cuando cambia la semana
   React.useEffect(() => {
     const fetchEquipo = async () => {
-      if (!GAS_URL || user.role === 'promotor' || !selectedWeek) return;
+      if (!GAS_URL || user.role === 'promotor') return;
+      if (!selectedWeek) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
         const res = await fetch(GAS_URL, {

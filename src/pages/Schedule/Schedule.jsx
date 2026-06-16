@@ -214,7 +214,7 @@ export default function Schedule() {
               <span className={styles.colTotal} style={{ textAlign: 'right' }}>Total</span>
             </div>
 
-            {currentWeekData.detalle.map((shift, idx) => {
+            {currentWeekData?.detalle?.map((shift, idx) => {
               // Determinar turno visual
               let shiftType = normalizeTurno(shift.turno);
               if (!shiftType) { // Fallback por si hay filas antiguas
