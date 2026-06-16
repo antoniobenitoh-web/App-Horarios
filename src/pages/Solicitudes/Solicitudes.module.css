@@ -287,17 +287,18 @@
 
 @media (max-width: 600px) {
   .filtros {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    scrollbar-width: none;
-  }
-  .filtros::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   .filtroBtn {
-    padding: 0.4rem 0.6rem;
+    padding: 0.5rem;
     font-size: 0.75rem;
-    white-space: nowrap;
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+  }
+  .filtroBtn:first-child {
+    flex: 0 0 100%;
+    margin-bottom: 0.2rem;
   }
 }
