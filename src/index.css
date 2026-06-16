@@ -208,6 +208,11 @@ a:hover {
   box-shadow: 0 0 0 3px var(--accent-light);
 }
 
+.input-field option {
+  background-color: var(--bg-primary);
+  color: #000;
+}
+
 /* Utilities */
 .text-success { color: var(--success); }
 .text-danger { color: var(--danger); }

@@ -162,15 +162,15 @@ export default function UserManagement() {
             <tbody>
               {users.map(u => (
                 <tr key={u.id}>
-                  <td><strong>{u.name}</strong></td>
-                  <td><span className={styles.userBadge}>{u.username}</span></td>
-                  <td><span className={`${styles.roleBadge} ${styles['role_' + u.role]}`}>{u.role.toUpperCase()}</span></td>
-                  <td><span className={styles.pwdCensored}>••••••</span> <span className={styles.pwdReal}>{u.password}</span></td>
-                  <td className={styles.managersCell}>
+                  <td data-label="Nombre"><strong>{u.name}</strong></td>
+                  <td data-label="Usuario"><span className={styles.userBadge}>{u.username}</span></td>
+                  <td data-label="Rol"><span className={`${styles.roleBadge} ${styles['role_' + u.role]}`}>{u.role.toUpperCase()}</span></td>
+                  <td data-label="Contraseña"><span className={styles.pwdCensored}>••••••</span> <span className={styles.pwdReal}>{u.password}</span></td>
+                  <td data-label="Responsables" className={styles.managersCell}>
                     {u.manager?.gpv && <div>GPV: {u.manager.gpv}</div>}
                     {u.manager?.am && <div>AM: {u.manager.am}</div>}
                   </td>
-                  <td>
+                  <td data-label="Acciones">
                     <button className={styles.actionBtn} onClick={() => handleOpenModal(u)} title="Editar usuario">
                       <Edit2 size={16} />
                     </button>

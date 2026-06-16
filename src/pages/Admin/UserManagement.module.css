@@ -210,3 +210,46 @@ td:hover .pwdReal { display: inline-block; }
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+@media (max-width: 600px) {
+  .table thead {
+    display: none;
+  }
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+  .table tr {
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+  }
+  .table td {
+    padding: 0.4rem 0;
+    border: none;
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+  }
+  .managersCell {
+    text-align: right;
+  }
+
+  .modalContent {
+    padding: 1.25rem;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
