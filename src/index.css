@@ -125,7 +125,7 @@ a:hover {
 .btn-outline {
   background-color: transparent;
   border: 1px solid var(--glass-border);
-  color: var(--text-primary);
+  color: var(--text-light-primary);
 }
 
 .btn-outline:hover {
@@ -136,7 +136,7 @@ a:hover {
   background-color: var(--glass-bg);
   backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--glass-border);
-  color: var(--text-primary);
+  color: var(--text-light-primary);
 }
 
 .btn-glass:hover {
