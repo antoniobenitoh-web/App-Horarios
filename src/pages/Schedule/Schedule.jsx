@@ -134,6 +134,7 @@ export default function Schedule() {
             {horarioMes.map((week) => (
               <button
                 key={week.id}
+                type="button"
                 className={`${styles.weekTab} ${activeTab === week.id ? styles.weekTabActive : ''}`}
                 onClick={() => setActiveTab(week.id)}
               >
@@ -144,7 +145,7 @@ export default function Schedule() {
           </div>
 
           <div className={styles.monthNav}>
-            <button className={styles.navBtn} onClick={handlePrevWeek} disabled={currentWeekIndex <= 0}>
+            <button type="button" className={styles.navBtn} onClick={handlePrevWeek} disabled={currentWeekIndex <= 0}>
               <ChevronLeft size={20} />
             </button>
             
@@ -158,7 +159,7 @@ export default function Schedule() {
               )}
             </div>
             
-            <button className={styles.navBtn} onClick={handleNextWeek} disabled={currentWeekIndex >= horarioMes.length - 1}>
+            <button type="button" className={styles.navBtn} onClick={handleNextWeek} disabled={currentWeekIndex >= horarioMes.length - 1}>
               <ChevronRight size={20} />
             </button>
           </div>
@@ -184,28 +185,28 @@ export default function Schedule() {
               const cfg = shiftConfig[shiftType] || shiftConfig['Descanso'];
               const isRest = shiftType === 'Descanso' || shift.horas.toLowerCase().includes('descanso');
 
-              let horasStyle = { color: 'var(--text-primary)', fontWeight: 'bold' };
+              let horasStyle = { fontWeight: 'bold' };
               const lowerHoras = shift.horas.toLowerCase();
-              if (lowerHoras.includes('festivo')) horasStyle = { color: '#0284c7', fontWeight: 'bold' };
-              else if (lowerHoras.includes('day off')) horasStyle = { color: '#16a34a', fontWeight: 'bold' };
-              else if (lowerHoras.includes('permiso')) horasStyle = { color: '#c026d3', fontWeight: 'bold' };
-              else if (lowerHoras.includes('vacaciones')) horasStyle = { color: '#7c3aed', fontWeight: 'bold' };
-              else if (lowerHoras.includes('baja')) horasStyle = { color: '#dc2626', fontWeight: 'bold' };
+              if (lowerHoras.includes('festivo')) horasStyle.color = '#0284c7';
+              else if (lowerHoras.includes('day off')) horasStyle.color = '#16a34a';
+              else if (lowerHoras.includes('permiso')) horasStyle.color = '#c026d3';
+              else if (lowerHoras.includes('vacaciones')) horasStyle.color = '#7c3aed';
+              else if (lowerHoras.includes('baja')) horasStyle.color = '#dc2626';
 
               return (
                 <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''}`}>
                   <div className={styles.colDay}>
                     <div className={styles.dayLabel}>
-                      <span className={styles.dayName}>{shift.dia}</span>
-                      <span className={styles.dayDate}>{shift.fecha}</span>
+                      <span className={`${styles.dayName} dayNameEl`}>{shift.dia}</span>
+                      <span className={`${styles.dayDate} dayDateEl`}>{shift.fecha}</span>
                     </div>
                   </div>
 
                   <div className={styles.colHours}>
-                    {isRest && Object.keys(horasStyle).length === 0 ? (
-                      <span className={styles.restLabel}>— Descanso —</span>
+                    {isRest && Object.keys(horasStyle).length === 1 ? (
+                      <span className={`${styles.restLabel} restLabelEl`}>— Descanso —</span>
                     ) : (
-                      <div className={styles.hoursCell} style={horasStyle}>
+                      <div className={`${styles.hoursCell} hoursCellEl`} style={horasStyle}>
                         <Clock size={14} style={{ color: horasStyle.color ? 'inherit' : 'var(--text-tertiary)', flexShrink: 0 }} />
                         <span>{shift.horas}</span>
                       </div>
