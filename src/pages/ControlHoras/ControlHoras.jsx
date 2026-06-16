@@ -40,7 +40,9 @@ export default function ControlHoras() {
   const [busqueda, setBusqueda] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState([]); // Array of { type: 'promotor'|'centro', text: string }
-  const [selectedMonth, setSelectedMonth] = useState('todos');
+  
+  const currentMonthNum = new Date().getMonth(); // 0 to 11
+  const [selectedMonth, setSelectedMonth] = useState(meses[currentMonthNum + 1].id);
   
   const [dailyCoverage, setDailyCoverage] = useState({ covered: 0, total: 0 });
 
@@ -68,7 +70,6 @@ export default function ControlHoras() {
     fetchTeam();
   }, [user, GAS_URL]);
 
-  // Si es promotor, selectedFilters siempre es él mismo
   useEffect(() => {
     if (user.role === 'promotor') {
       setSelectedFilters([{ type: 'promotor', text: user.name }]);
@@ -143,7 +144,6 @@ export default function ControlHoras() {
         if (data.success && data.equipo) {
           let filteredEquipo = data.equipo;
           
-          // Filtrar equipo por selectedFilters (igual que arriba)
           if (selectedFilters.length > 0) {
             const centros = selectedFilters.filter(f => f.type === 'centro').map(f => f.text);
             const promos = selectedFilters.filter(f => f.type === 'promotor').map(f => f.text);
@@ -151,7 +151,6 @@ export default function ControlHoras() {
             filteredEquipo = filteredEquipo.filter(p => promos.includes(p.name) || centros.includes(p.centro));
           }
 
-          // Agrupar promotores filtrados por centro
           const centrosMap = {};
           filteredEquipo.forEach(p => {
             if (p.centro && p.centro !== 'Sin asignar') {
@@ -164,7 +163,6 @@ export default function ControlHoras() {
           let coveredCentros = 0;
 
           Object.values(centrosMap).forEach(promotersInCentro => {
-            // Verificar si al menos un promotor en este centro NO está de descanso hoy
             const hasCoverage = promotersInCentro.some(p => {
               if (!p.semana) return false;
               const todayShift = p.semana.find(d => d.fecha === todayIso);
@@ -194,7 +192,6 @@ export default function ControlHoras() {
     }
   }, [semanasRaw, selectedMonth]);
 
-  // Helper getters
   const getBadge = (diff) => {
     if (diff === 0) return { cls: styles.balanceNeutro, icon: <Minus size={14} />, label: '0 h — Compensado' };
     if (diff > 0) return { cls: styles.balancePositivo, icon: <TrendingUp size={14} />, label: `+${diff} h — Exceso` };
@@ -204,7 +201,6 @@ export default function ControlHoras() {
   const balanceAcumulado = semanas.reduce((acc, s) => acc + (s.planificadas - s.cobertura), 0);
   const acumBadge = getBadge(balanceAcumulado);
 
-  // Suggestions logic
   const b = busqueda.toLowerCase();
   let suggestions = [];
   if (b.length > 0) {
@@ -254,90 +250,33 @@ export default function ControlHoras() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      {/* HEADER: Balance to the right, followed by Month Filter */}
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Control de Horas</h2>
-          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Vista de centros y horarios</span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Users size={12} /> {calculatePromotersAssigned()} Prom.</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><MapPin size={12} /> {calculateUniqueCenters()} Centros</span>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-        <div className={`${styles.acumBadge} ${acumBadge.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: 'var(--border-radius-full)' }}>
-          <BarChart3 size={18} />
-          <span>Balance acumulado: <strong>{acumBadge.label}</strong></span>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Balance de horas de cobertura vs planificadas</span>
         </div>
         
-        {/* Filtro de mes */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.4rem 0.8rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
-          <Calendar size={14} color="var(--accent-primary)" />
-          <select 
-            value={selectedMonth} 
-            onChange={e => setSelectedMonth(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer' }}
-          >
-            {meses.map(m => (
-              <option key={m.id} value={m.id}>{m.name}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {user.role !== 'promotor' && (
-        <div className={styles.filtrosBar} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--bg-secondary)', padding: '1rem', borderRadius: 'var(--border-radius-lg)', border: '1px solid var(--glass-border)', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
-          <div style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
-            <input
-              style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-light-primary)', padding: '0.5rem 0.75rem 0.5rem 2.25rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.875rem', outline: 'none' }}
-              type="text"
-              placeholder="Buscar promotor o centro..."
-              value={busqueda}
-              onChange={e => {
-                setBusqueda(e.target.value);
-                setShowSuggestions(true);
-              }}
-              onFocus={() => setShowSuggestions(true)}
-              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            />
-            {showSuggestions && suggestions.length > 0 && (
-              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', marginTop: '0.25rem', zIndex: 10, boxShadow: 'var(--glass-shadow)', overflow: 'hidden' }}>
-                {suggestions.map((s, i) => (
-                  <div 
-                    key={i} 
-                    style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: 'var(--text-light-primary)', cursor: 'pointer', borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-color)' : 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                    onClick={() => addFilter(s)}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-tertiary)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    {s.type === 'centro' ? <MapPin size={12} color="var(--accent-primary)"/> : <User size={12} color="var(--text-secondary)"/>}
-                    {s.text}
-                  </div>
-                ))}
-              </div>
-            )}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+          <div className={`${styles.acumBadge} ${acumBadge.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: 'var(--border-radius-full)' }}>
+            <BarChart3 size={18} />
+            <span>Balance acumulado: <strong>{acumBadge.label}</strong></span>
           </div>
           
-          {selectedFilters.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {selectedFilters.map((f, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: f.type === 'centro' ? 'rgba(255,103,0,0.15)' : 'rgba(255,255,255,0.1)', border: f.type === 'centro' ? '1px solid rgba(255,103,0,0.3)' : '1px solid rgba(255,255,255,0.15)', padding: '0.25rem 0.6rem', borderRadius: 'var(--border-radius-full)', fontSize: '0.75rem', color: 'var(--text-light-primary)' }}>
-                  {f.type === 'centro' ? <MapPin size={10} color="var(--accent-primary)"/> : <User size={10} />}
-                  {f.text}
-                  <X size={12} style={{ cursor: 'pointer', marginLeft: '0.2rem' }} onClick={() => removeFilter(f)} />
-                </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.4rem 0.8rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
+            <Calendar size={14} color="var(--accent-primary)" />
+            <select 
+              value={selectedMonth} 
+              onChange={e => setSelectedMonth(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer' }}
+            >
+              {meses.map(m => (
+                <option key={m.id} value={m.id}>{m.name}</option>
               ))}
-            </div>
-          )}
-          {selectedFilters.length === 0 && (
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-              Mostrando el histórico de todo tu equipo. Busca un promotor o centro para filtrar.
-            </div>
-          )}
+            </select>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Resumen Cards */}
       <div className={styles.statsRow}>
@@ -371,6 +310,61 @@ export default function ControlHoras() {
         </div>
       </div>
 
+      {/* BUSCADOR / FILTRO INTELIGENTE debajo de las cards y encima de la tabla */}
+      {user.role !== 'promotor' && (
+        <div className={styles.filtrosBar} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'var(--bg-secondary)', padding: '1rem', borderRadius: 'var(--border-radius-lg)', border: '1px solid var(--glass-border)', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+          <h3 style={{ fontSize: '0.9rem', color: 'var(--text-light-primary)', margin: 0 }}>Filtrar Datos</h3>
+          <div style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
+            <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
+            <input
+              style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-light-primary)', padding: '0.5rem 0.75rem 0.5rem 2.25rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.875rem', outline: 'none' }}
+              type="text"
+              placeholder="Buscar promotor o centro..."
+              value={busqueda}
+              onChange={e => {
+                setBusqueda(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            />
+            {showSuggestions && suggestions.length > 0 && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', marginTop: '0.25rem', zIndex: 10, boxShadow: 'var(--glass-shadow)', overflow: 'hidden' }}>
+                {suggestions.map((s, i) => (
+                  <div 
+                    key={i} 
+                    style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: 'var(--text-light-primary)', cursor: 'pointer', borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-color)' : 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    onMouseDown={() => addFilter(s)}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-tertiary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    {s.type === 'centro' ? <MapPin size={12} color="var(--accent-primary)"/> : <User size={12} color="var(--text-secondary)"/>}
+                    {s.text}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {selectedFilters.length > 0 && (
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {selectedFilters.map((f, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: f.type === 'centro' ? 'rgba(255,103,0,0.15)' : 'rgba(255,255,255,0.1)', border: f.type === 'centro' ? '1px solid rgba(255,103,0,0.3)' : '1px solid rgba(255,255,255,0.15)', padding: '0.25rem 0.6rem', borderRadius: 'var(--border-radius-full)', fontSize: '0.75rem', color: 'var(--text-light-primary)' }}>
+                  {f.type === 'centro' ? <MapPin size={10} color="var(--accent-primary)"/> : <User size={10} />}
+                  {f.text}
+                  <X size={12} style={{ cursor: 'pointer', marginLeft: '0.2rem' }} onClick={() => removeFilter(f)} />
+                </div>
+              ))}
+            </div>
+          )}
+          {selectedFilters.length === 0 && (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
+              Mostrando el histórico y cobertura de todo tu equipo. Busca un promotor o centro para filtrar.
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Tabla de semanas */}
       <div className="card">
         <h3 style={{ marginBottom: '1.25rem' }}>Histórico Semanal</h3>
@@ -379,7 +373,7 @@ export default function ControlHoras() {
         ) : error ? (
           <p style={{ color: 'var(--danger)' }}>Error: {error}</p>
         ) : semanas.length === 0 ? (
-          <p>No hay registro de horas para los filtros seleccionados.</p>
+          <p>No hay registro de horas para los filtros seleccionados o el mes en curso.</p>
         ) : (
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
