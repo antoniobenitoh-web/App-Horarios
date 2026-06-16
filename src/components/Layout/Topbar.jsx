@@ -18,6 +18,31 @@ export default function Topbar() {
     const fetchNotifications = async () => {
       if (!GAS_URL) return;
       try {
+        let newNotifs = [];
+        
+        // 1. Obtener notificaciones desde la DB (Aprobadas/Rechazadas)
+        try {
+          const dbRes = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'getNotificaciones', username: user.username })
+          });
+          const dbData = await dbRes.json();
+          if (dbData.success && dbData.notificaciones) {
+            dbData.notificaciones.forEach(n => {
+              newNotifs.push({
+                id: n.id,
+                type: n.mensaje.includes('aprobada') ? 'success' : 'warning',
+                text: n.mensaje,
+                time: n.fecha,
+                read: false,
+                link: `/solicitudes?id=${n.solicitudId}`,
+                isDbNotif: true
+              });
+            });
+          }
+        } catch(e) { console.error("Error fetching DB notifs", e); }
+
+        // 2. Notificaciones locales antiguas
         if (user.role === 'promotor') {
           const res = await fetch(GAS_URL, {
             method: 'POST',
@@ -25,14 +50,13 @@ export default function Topbar() {
           });
           const data = await res.json();
           if (data.success && data.schedule && data.schedule.length > 0) {
-            // Recoger las semanas únicas disponibles en el horario
             const weeks = [...new Set(data.schedule.map(w => w.semana_num))].sort((a,b)=>a-b);
             if (weeks.length > 0) {
-               setNotifs([{
-                 id: 1, type: 'info', 
+               newNotifs.push({
+                 id: 'local_sched', type: 'info', 
                  text: `Se te han subido los horarios de la(s) semana(s) ${weeks.join(', ')}. Por favor compruébalos y da el ok.`,
-                 time: 'Nuevo', read: false, link: '/horario'
-               }]);
+                 time: 'Nuevo', read: false, link: '/horario', isDbNotif: false
+               });
             }
           }
         } else {
@@ -45,14 +69,16 @@ export default function Topbar() {
           if (data.success) {
             const pending = data.solicitudes.filter(s => s.estado === 'pendiente').length;
             if (pending > 0) {
-              setNotifs([{
-                id: 1, type: 'warning',
+              newNotifs.push({
+                id: 'local_sols', type: 'warning',
                 text: `Tienes ${pending} solicitud(es) pendiente(s) de revisión.`,
-                time: 'Nuevo', read: false, link: '/solicitudes'
-              }]);
+                time: 'Nuevo', read: false, link: '/solicitudes', isDbNotif: false
+              });
             }
           }
         }
+        
+        setNotifs(newNotifs);
       } catch (err) {
         console.error(err);
       }
@@ -142,7 +168,16 @@ export default function Topbar() {
                   <div 
                     key={n.id} 
                     className={`${styles.notifItem} ${n.read ? styles.notifRead : ''}`}
-                    onClick={() => {
+                    onClick={async () => {
+                      if (n.isDbNotif && !n.read) {
+                        try {
+                          await fetch(GAS_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({ action: 'markNotificacionLeida', id: n.id })
+                          });
+                          setNotifs(current => current.filter(x => x.id !== n.id)); // Remove or mark read
+                        } catch(e) {}
+                      }
                       if (n.link) {
                         navigate(n.link);
                         setNotifOpen(false);

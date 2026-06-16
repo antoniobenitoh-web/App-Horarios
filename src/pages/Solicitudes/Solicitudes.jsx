@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 import styles from './Solicitudes.module.css';
 import {
   PlusCircle, Clock, CheckCircle2, XCircle, ChevronDown, ChevronUp,
@@ -25,6 +26,7 @@ export default function Solicitudes() {
   const [form, setForm] = useState({ dia: '', horarioActual: '', horarioSolicitado: '', motivo: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const location = useLocation();
   const GAS_URL = import.meta.env.VITE_GAS_URL;
 
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,19 @@ export default function Solicitudes() {
   React.useEffect(() => {
     fetchSolicitudes();
   }, [user, GAS_URL]);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const targetId = params.get('id');
+    if (targetId && solicitudes.length > 0) {
+      // Find the specific solicitud to make sure it exists, then expand
+      const found = solicitudes.find(s => String(s.id) === targetId);
+      if (found) {
+        setExpanded(found.id); // Guarantees correct type matching
+        setFiltro('todas'); // Ensure it's not hidden by filters
+      }
+    }
+  }, [location.search, solicitudes]);
 
   const handleDateChange = async (e) => {
     const newDate = e.target.value;
