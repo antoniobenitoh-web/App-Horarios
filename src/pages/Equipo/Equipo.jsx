@@ -22,6 +22,8 @@ export default function Equipo() {
     return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
   };
   
+  const todayIso = new Date().toISOString().split('T')[0];
+
   const [busqueda, setBusqueda] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtroTurno, setFiltroTurno] = useState('todos');
