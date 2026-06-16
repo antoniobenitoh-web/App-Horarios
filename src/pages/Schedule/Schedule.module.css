@@ -320,17 +320,83 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .daysHeader,
-  .dayRow {
-    grid-template-columns: 110px 1fr 100px;
+  .daysHeader {
+    display: none;
   }
 
-  .colHours,
+  .daysList {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dayRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto auto;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .dayRowRest {
+    opacity: 0.65;
+  }
+
+  .colDay {
+    grid-column: 1 / -1;
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-bottom: 0.75rem;
+  }
+
+  .dayLabel {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .dayName {
+    font-size: 1.1rem;
+  }
+
+  .colHours {
+    grid-column: 1 / -1;
+    display: flex !important;
+  }
+
+  .hoursCell {
+    font-size: 1.15rem;
+  }
+
+  .restLabel {
+    font-size: 1rem;
+  }
+
+  .colShift {
+    grid-column: 1;
+    align-self: center;
+    display: flex !important;
+  }
+  
   .colTotal {
-    display: none;
+    grid-column: 2;
+    align-self: center;
+    text-align: right;
+    display: flex !important;
   }
 
   .weekTabs {
     flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
   }
 }
+
