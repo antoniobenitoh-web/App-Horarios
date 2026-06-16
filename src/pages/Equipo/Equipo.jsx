@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Equipo.module.css';
-import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar, ChevronDown, ChevronUp, User } from 'lucide-react';
+import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar, ChevronDown, ChevronUp, User, CheckCircle2 } from 'lucide-react';
 
 const turnoIcon = {
   'Mañana': <Sun size={14} color="var(--warning)" />,
@@ -25,10 +25,10 @@ export default function Equipo() {
   const [busqueda, setBusqueda] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtroTurno, setFiltroTurno] = useState('todos');
-  const [selectedWeek, setSelectedWeek] = useState(getISOWeek(new Date()));
+  const [selectedWeek, setSelectedWeek] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [mesesDisponibles, setMesesDisponibles] = useState([]);
   const [semanasDisponibles, setSemanasDisponibles] = useState([]);
-  
-  const todayIso = new Date().toISOString().split('T')[0];
   
   const [centroExpanded, setCentroExpanded] = useState(null);
   const [promotorExpanded, setPromotorExpanded] = useState(null);
@@ -36,9 +36,43 @@ export default function Equipo() {
   const [equipoFetch, setEquipoFetch] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Cargar meses disponibles al montar
+  React.useEffect(() => {
+    const fetchMonths = async () => {
+      if (!GAS_URL || user.role === 'promotor') return;
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'getAvailableMonths', role: user.role, name: user.name })
+        });
+        const data = await res.json();
+        if (data.success && data.meses && data.meses.length > 0) {
+          setMesesDisponibles(data.meses);
+          setSelectedMonth(data.meses[0].mes);
+          setSemanasDisponibles(data.meses[0].semanas);
+          setSelectedWeek(data.meses[0].semanas[0]);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchMonths();
+  }, [user, GAS_URL]);
+
+  // Al cambiar el mes seleccionado, actualizar las semanas disponibles
+  React.useEffect(() => {
+    if (!selectedMonth) return;
+    const mesObj = mesesDisponibles.find(m => m.mes === selectedMonth);
+    if (mesObj && mesObj.semanas) {
+      setSemanasDisponibles(mesObj.semanas);
+      setSelectedWeek(mesObj.semanas[0]);
+    }
+  }, [selectedMonth, mesesDisponibles]);
+
+  // Cargar equipo cuando cambia la semana
   React.useEffect(() => {
     const fetchEquipo = async () => {
-      if (!GAS_URL || user.role === 'promotor') return;
+      if (!GAS_URL || user.role === 'promotor' || !selectedWeek) return;
       setLoading(true);
       try {
         const res = await fetch(GAS_URL, {
@@ -48,9 +82,6 @@ export default function Equipo() {
         const data = await res.json();
         if (data.success) {
           setEquipoFetch(data.equipo);
-          if (data.semanasDisponibles) {
-            setSemanasDisponibles(data.semanasDisponibles);
-          }
         }
       } catch(err) {
         console.error(err);
@@ -153,6 +184,26 @@ export default function Equipo() {
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          
+          {/* Selector de Mes */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
+            <Calendar size={14} color="var(--accent-primary)" />
+            <select 
+              value={selectedMonth} 
+              onChange={e => setSelectedMonth(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
+            >
+              {mesesDisponibles.length > 0 ? (
+                mesesDisponibles.map(m => (
+                  <option key={m.mes} value={m.mes}>{m.mes}</option>
+                ))
+              ) : (
+                <option value="">Cargando meses...</option>
+              )}
+            </select>
+          </div>
+
+          {/* Selector de Semana */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
             <Calendar size={14} color="var(--accent-primary)" />
             <select 
@@ -237,7 +288,14 @@ export default function Equipo() {
                             <User size={14} color="var(--text-primary)" />
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                              <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                              {p.confirmado && (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(34,197,94,0.15)', color: 'var(--success)', borderRadius: '50%', width: '18px', height: '18px' }} title="Semana confirmada">
+                                  <CheckCircle2 size={12} strokeWidth={3} />
+                                </span>
+                              )}
+                            </div>
                             {(() => {
                               const hoy = p.semana ? p.semana.find(d => d.fecha === todayIso) : null;
                               if (hoy) {
