@@ -29,7 +29,7 @@ export default function Schedule() {
   const [error, setError] = useState(null);
   const [confirmedWeeks, setConfirmedWeeks] = useState(() => {
     try {
-      const stored = localStorage.getItem(`confirmed_${user.username}`);
+      const stored = localStorage.getItem(`confirmed_v2_${user.name}`);
       return stored ? JSON.parse(stored) : {};
     } catch {
       return {};
@@ -71,12 +71,9 @@ export default function Schedule() {
   }, [user.name, GAS_URL]);
 
   const handleConfirm = async () => {
-    const now = new Date().toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
-    
-    // Save locally
     setConfirmedWeeks(prev => {
-      const updated = { ...prev, [activeTab]: now };
-      localStorage.setItem(`confirmed_${user.username}`, JSON.stringify(updated));
+      const updated = { ...prev, [activeTab]: new Date().toISOString() };
+      localStorage.setItem(`confirmed_v2_${user.name}`, JSON.stringify(updated));
       return updated;
     });
 
@@ -142,12 +139,12 @@ export default function Schedule() {
         {user.role === 'promotor' && currentWeekData && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {isConfirmed ? (
-              <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', color: 'var(--success)', border: '1px solid var(--success)', borderRadius: 'var(--border-radius-full)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <CheckCircle2 size={12} /> Confirmado
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(34,197,94,0.1)', color: 'var(--success)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-full)', fontSize: '0.75rem', fontWeight: '600', border: '1px solid rgba(34,197,94,0.3)' }}>
+                <CheckCircle2 size={14} /> Confirmado
               </span>
             ) : (
-              <button onClick={handleConfirm} style={{ background: 'var(--success)', color: 'white', border: 'none', borderRadius: 'var(--border-radius-full)', padding: '0.2rem 0.6rem', fontSize: '0.7rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
-                <CheckCircle2 size={12} /> Confirmar
+              <button onClick={handleConfirm} className="glow-effect" style={{ background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: 'var(--border-radius-full)', padding: '0.3rem 0.8rem', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(255,103,0,0.3)' }}>
+                <Clock size={14} /> Pendiente Confirmación
               </button>
             )}
           </div>
