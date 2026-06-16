@@ -251,7 +251,7 @@ export default function Solicitudes() {
                     border: `1px solid ${sol.votoGPV === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
                   }}>
                     {sol.votoGPV === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
-                    GPV: {sol.votoGPV === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
+                    GPV: {sol.votoGPV === 'Aprobar' ? 'Recomienda Aprobar' : 'Recomienda Rechazo'}
                   </div>
                 )}
                 {sol.votoAM && !isPromotor && (
@@ -261,7 +261,7 @@ export default function Solicitudes() {
                     border: `1px solid ${sol.votoAM === 'Aprobar' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`
                   }}>
                     {sol.votoAM === 'Aprobar' ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
-                    AM: {sol.votoAM === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
+                    AM: {sol.votoAM === 'Aprobar' ? 'Recomienda Aprobar' : 'Recomienda Rechazo'}
                   </div>
                 )}
               </div>
@@ -302,7 +302,7 @@ export default function Solicitudes() {
                 {sol.votoGPV && !isPromotor && (
                   <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem' }}>
                     <strong style={{ color: sol.votoGPV === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
-                      GPV: {sol.votoGPV === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
+                      GPV: {sol.votoGPV === 'Aprobar' ? 'Recomienda Aprobar' : 'Recomienda Rechazo'}
                     </strong>
                   </div>
                 )}
@@ -310,29 +310,29 @@ export default function Solicitudes() {
                 {sol.votoAM && !isPromotor && (
                   <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem' }}>
                     <strong style={{ color: sol.votoAM === 'Aprobar' ? 'var(--success)' : 'var(--danger)' }}>
-                      AM: {sol.votoAM === 'Aprobar' ? 'Aprobada' : 'Rechazada'}
+                      AM: {sol.votoAM === 'Aprobar' ? 'Recomienda Aprobar' : 'Recomienda Rechazo'}
                     </strong>
                   </div>
                 )}
 
                 {isManager && sol.estado === 'pendiente' && ((user.role === 'gpv' && !sol.votoGPV) || (user.role === 'am' && !sol.votoAM)) && (
-                  <div className={styles.accionesCoord}>
+                  <div className={styles.accionesCoord} style={{ flexWrap: 'wrap' }}>
                     <button className={`btn ${styles.btnRechazar}`} onClick={() => handleDecision(sol.id, 'voto_rechazar')}>
-                      <XCircle size={16} /> Rechazar
+                      <XCircle size={16} /> Recomendar Rechazo
                     </button>
                     <button className={`btn ${styles.btnAprobar}`} onClick={() => handleDecision(sol.id, 'voto_aprobar')}>
-                      <CheckCircle2 size={16} /> Aprobar
+                      <CheckCircle2 size={16} /> Recomendar Aprobación
                     </button>
                   </div>
                 )}
 
                 {isCoord && sol.estado === 'pendiente' && (
-                  <div className={styles.accionesCoord}>
+                  <div className={styles.accionesCoord} style={{ flexWrap: 'wrap' }}>
                     <button className={`btn ${styles.btnRechazar}`} onClick={() => handleDecision(sol.id, 'rechazada')}>
                       <XCircle size={16} /> Rechazar
                     </button>
                     <button className={`btn ${styles.btnAprobar}`} onClick={() => handleDecision(sol.id, 'aprobada')}>
-                      <CheckCircle2 size={16} /> Aprobar
+                      <CheckCircle2 size={16} /> Aceptar Oficialmente
                     </button>
                   </div>
                 )}
