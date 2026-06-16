@@ -104,7 +104,10 @@ export default function ControlHoras() {
   // 3. Filtrar semanas automáticamente por el mes en curso usando ISO Weeks
   useEffect(() => {
     const currentWeeks = getCurrentMonthWeeks();
-    const filtered = semanasRaw.filter(s => currentWeeks.includes(Number(s.num)));
+    const filtered = semanasRaw.filter(s => {
+      const numParsed = parseInt(String(s.num).replace(/\D/g, ''), 10);
+      return currentWeeks.includes(numParsed);
+    });
     setSemanas(filtered);
   }, [semanasRaw]);
 
@@ -114,7 +117,7 @@ export default function ControlHoras() {
     return { cls: styles.balanceNegativo, icon: <TrendingDown size={14} />, label: `${diff} h — Déficit` };
   };
 
-  const balanceAcumulado = semanas.reduce((acc, s) => acc + (s.planificadas - s.cobertura), 0);
+  const balanceAcumulado = semanas.reduce((acc, s) => acc + (s.cobertura - s.planificadas), 0);
   const acumBadge = getBadge(balanceAcumulado);
 
   // Filtrado de la lista de botones
@@ -251,7 +254,7 @@ export default function ControlHoras() {
             </thead>
             <tbody>
               {semanas.map((s) => {
-                const diff = s.planificadas - s.cobertura;
+                const diff = s.cobertura - s.planificadas;
                 const badge = getBadge(diff);
                 return (
                   <tr key={s.num}>
