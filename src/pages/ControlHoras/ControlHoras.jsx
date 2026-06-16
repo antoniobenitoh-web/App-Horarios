@@ -148,9 +148,9 @@ export default function ControlHoras() {
       {/* Lista vertical de Promotores (Solo Managers) */}
       {user.role !== 'promotor' && (
         <div className="card" style={{ marginBottom: '1rem', padding: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <h3 style={{ fontSize: '1rem', color: 'var(--text-light-primary)', margin: 0 }}>Seleccionar Promotor</h3>
-            <div style={{ position: 'relative', width: '200px' }}>
+          <div className={styles.promotorHeader}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--text-light-primary)', margin: 0 }}>Promotor</h3>
+            <div className={styles.promotorSearch}>
               <Search size={14} style={{ position: 'absolute', left: '0.5rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
               <input
                 style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-light-primary)', padding: '0.35rem 0.5rem 0.35rem 1.8rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.8rem', outline: 'none' }}
@@ -169,25 +169,18 @@ export default function ControlHoras() {
                 <button
                   key={p.name}
                   onClick={() => setSelectedPromotor(p.name)}
+                  className={styles.promotorBtn}
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '0.75rem 1rem',
                     background: isSelected ? 'rgba(255,103,0,0.1)' : 'var(--bg-tertiary)',
                     border: isSelected ? '1px solid var(--accent-primary)' : '1px solid var(--border-color)',
-                    borderRadius: 'var(--border-radius-md)',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'all 0.2s'
                   }}
                   onMouseEnter={(e) => { if(!isSelected) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)' }}
                   onMouseLeave={(e) => { if(!isSelected) e.currentTarget.style.borderColor = 'var(--border-color)' }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: isSelected ? '600' : '400', color: isSelected ? 'var(--accent-primary)' : 'var(--text-light-primary)', fontSize: '0.9rem' }}>
+                  <span className={styles.promotorName} style={{ fontWeight: isSelected ? '600' : '400', color: isSelected ? 'var(--accent-primary)' : 'var(--text-light-primary)' }}>
                     <User size={14} /> {p.name}
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
+                  <span className={styles.promotorCenter}>
                     <MapPin size={12} /> {p.centro || 'Sin asignar'}
                   </span>
                 </button>
