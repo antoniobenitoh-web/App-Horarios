@@ -328,6 +328,12 @@
     flex: 1;
     justify-content: center;
     border-radius: 8px;
+    text-align: center;
+  }
+
+  .navItem span {
+    text-align: center;
+    line-height: 1.1;
   }
 
   .navItem svg {
