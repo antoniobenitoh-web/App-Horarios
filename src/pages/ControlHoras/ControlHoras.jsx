@@ -136,10 +136,12 @@ export default function ControlHoras() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-          <div className={`${styles.acumBadge} ${acumBadge.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: 'var(--border-radius-full)' }}>
-            <BarChart3 size={18} />
-            <span>Balance del mes: <strong>{acumBadge.label}</strong></span>
-          </div>
+          {user.role === 'promotor' && (
+            <div className={`${styles.acumBadge} ${acumBadge.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: 'var(--border-radius-full)' }}>
+              <BarChart3 size={18} />
+              <span>Balance del mes: <strong>{acumBadge.label}</strong></span>
+            </div>
+          )}
         </div>
       </div>
 
