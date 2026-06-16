@@ -26,22 +26,25 @@ export default function Dashboard() {
 
           let found = null;
           // Buscar el próximo turno
-          for (const week of data.schedule) {
-            for (const shift of week.detalle) {
-              const shiftDate = new Date(shift.fecha);
-              shiftDate.setHours(0,0,0,0);
-              
-              const isRest = (shift.turno || '').toLowerCase() === 'descanso' || (shift.horas || '').toLowerCase().includes('descanso');
-              
-              if (shiftDate > today && !isRest) {
-                found = {
-                  dia: shift.dia,
-                  fecha: shift.fecha,
-                  horas: shift.horas,
-                  turno: shift.turno || 'Mañana'
-                };
-                break;
+          for (const mes of data.schedule) {
+            for (const semana of mes.semanas) {
+              for (const shift of semana.detalle) {
+                const shiftDate = new Date(shift.fecha);
+                shiftDate.setHours(0,0,0,0);
+                
+                const isRest = (shift.turno || '').toLowerCase() === 'descanso' || (shift.horas || '').toLowerCase().includes('descanso') || (shift.horas || '').toLowerCase().includes('day off');
+                
+                if (shiftDate > today && !isRest) {
+                  found = {
+                    dia: shift.dia,
+                    fecha: shift.fecha,
+                    horas: shift.horas,
+                    turno: shift.turno || 'Mañana'
+                  };
+                  break;
+                }
               }
+              if (found) break;
             }
             if (found) break;
           }
