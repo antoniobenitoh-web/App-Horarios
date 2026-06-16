@@ -153,10 +153,10 @@ export default function Solicitudes() {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <div className={styles.header}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h2 style={{ color: '#1a1a1a', fontSize: '1.6rem' }}>Solicitudes de Cambio</h2>
-          <p style={{ color: '#555', marginTop: '0.25rem' }}>Gestión de modificaciones de horario</p>
+          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Solicitudes de Cambio</h2>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Gestión de modificaciones de horario</span>
         </div>
         {isPromotor && (
           <button className="btn btn-primary" onClick={() => setShowForm(s => !s)}>

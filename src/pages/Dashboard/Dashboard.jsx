@@ -93,9 +93,11 @@ export default function Dashboard() {
   return (
     <div>
       {/* Saludo */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ color: '#1a1a1a', fontSize: '1.6rem' }}>Hola, {user.name} 👋</h2>
-        <p style={{ color: '#555555', marginTop: '0.25rem' }}>Bienvenido al portal de promotores. Aquí tienes el resumen de tu actividad.</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+        <div>
+          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Hola, {user.name} 👋</h2>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Bienvenido al portal de promotores. Aquí tienes el resumen de tu actividad.</span>
+        </div>
       </div>
 
       {/* Panel de Coordinación - siempre primero para promotores */}

@@ -70,10 +70,10 @@ export default function Schedule() {
   return (
     <div className={styles.container}>
 
-      <div className={styles.header}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h2 style={{ color: '#1a1a1a', fontSize: '1.6rem' }}>Mi Horario</h2>
-          <p style={{ color: '#555', marginTop: '0.25rem' }}>Consulta tus turnos y confirma la recepción</p>
+          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Mi Horario</h2>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Consulta tus turnos y confirma la recepción</span>
         </div>
         {user.role === 'promotor' && (
           <div className={styles.confirmationBox}>

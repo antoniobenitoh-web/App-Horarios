@@ -113,10 +113,10 @@ export default function UserManagement() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h2 style={{ color: '#1a1a1a', fontSize: '1.6rem' }}>Gestión de Usuarios</h2>
-          <p style={{ color: '#555', marginTop: '0.25rem' }}>Administra el equipo y las credenciales de acceso</p>
+          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Gestión de Usuarios</h2>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Administra el equipo y las credenciales de acceso</span>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button className="btn btn-outline" onClick={fetchUsers} disabled={loading}>
