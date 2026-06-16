@@ -26,8 +26,14 @@ export default function Schedule() {
   const [horarioMes, setHorarioMes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isConfirmed, setIsConfirmed] = useState(false);
-  const [confirmDate, setConfirmDate] = useState(null);
+  const [confirmedWeeks, setConfirmedWeeks] = useState(() => {
+    try {
+      const stored = localStorage.getItem(`confirmed_${user.username}`);
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
 
@@ -56,13 +62,19 @@ export default function Schedule() {
       }
     };
     fetchSchedule();
-  }, [user.username, GAS_URL]);
+  }, [user.name, GAS_URL]);
 
   const handleConfirm = () => {
-    setIsConfirmed(true);
-    const now = new Date();
-    setConfirmDate(now.toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }));
+    const now = new Date().toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
+    setConfirmedWeeks(prev => {
+      const updated = { ...prev, [activeTab]: now };
+      localStorage.setItem(`confirmed_${user.username}`, JSON.stringify(updated));
+      return updated;
+    });
   };
+
+  const isConfirmed = !!confirmedWeeks[activeTab];
+  const confirmDate = confirmedWeeks[activeTab];
 
   const currentWeekData = horarioMes.find(s => s.id === activeTab);
   const totalHours = currentWeekData ? currentWeekData.detalle.reduce((acc, s) => acc + s.total, 0) : 0;
