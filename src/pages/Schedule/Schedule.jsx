@@ -77,7 +77,7 @@ export default function Schedule() {
   const confirmDate = confirmedWeeks[activeTab];
 
   const currentWeekData = horarioMes.find(s => s.id === activeTab);
-  const totalHours = currentWeekData ? currentWeekData.detalle.reduce((acc, s) => acc + s.total, 0) : 0;
+  const totalHours = currentWeekData ? currentWeekData.detalle.reduce((acc, s) => acc + (Number(s.total) || 0), 0) : 0;
 
   return (
     <div className={styles.container}>
