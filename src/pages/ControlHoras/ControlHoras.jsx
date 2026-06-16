@@ -42,7 +42,7 @@ export default function ControlHoras() {
   const [selectedFilters, setSelectedFilters] = useState([]); // Array of { type: 'promotor'|'centro', text: string }
   
   const currentMonthNum = new Date().getMonth(); // 0 to 11
-  const [selectedMonth, setSelectedMonth] = useState(meses[currentMonthNum + 1].id);
+  const [selectedMonth, setSelectedMonth] = useState('todos');
   
   const [dailyCoverage, setDailyCoverage] = useState({ covered: 0, total: 0 });
 
