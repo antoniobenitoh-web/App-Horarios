@@ -78,6 +78,16 @@ export default function Schedule() {
 
   const currentWeekData = horarioMes.find(s => s.id === activeTab);
   const totalHours = currentWeekData ? currentWeekData.detalle.reduce((acc, s) => acc + (Number(s.total) || 0), 0) : 0;
+  
+  const currentWeekIndex = horarioMes.findIndex(s => s.id === activeTab);
+  
+  const handlePrevWeek = () => {
+    if (currentWeekIndex > 0) setActiveTab(horarioMes[currentWeekIndex - 1].id);
+  };
+  
+  const handleNextWeek = () => {
+    if (currentWeekIndex < horarioMes.length - 1) setActiveTab(horarioMes[currentWeekIndex + 1].id);
+  };
 
   return (
     <div className={styles.container}>
@@ -134,15 +144,23 @@ export default function Schedule() {
           </div>
 
           <div className={styles.monthNav}>
-            <button className={styles.navBtn}><ChevronLeft size={18} /></button>
+            <button className={styles.navBtn} onClick={handlePrevWeek} disabled={currentWeekIndex <= 0}>
+              <ChevronLeft size={20} />
+            </button>
+            
             <div className={styles.monthInfo}>
-              <Calendar size={18} style={{ color: 'var(--accent-primary)' }} />
-              <h3 className={styles.monthTitle}>Semana {currentWeekData?.semana}</h3>
+              <h3 className={styles.monthTitle}>
+                <Calendar size={20} style={{ color: 'var(--accent-primary)' }} />
+                Semana {currentWeekData?.semana}
+              </h3>
               {currentWeekData && (
                 <span className={styles.weekHours}>{totalHours} h esta semana</span>
               )}
             </div>
-            <button className={styles.navBtn}><ChevronRight size={18} /></button>
+            
+            <button className={styles.navBtn} onClick={handleNextWeek} disabled={currentWeekIndex >= horarioMes.length - 1}>
+              <ChevronRight size={20} />
+            </button>
           </div>
 
           <div className={styles.daysList}>
