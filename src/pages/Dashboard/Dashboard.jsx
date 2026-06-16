@@ -65,7 +65,7 @@ export default function Dashboard() {
         if (dataUsers.success) {
           tSize = dataUsers.users.filter(u => 
             u.role === 'promotor' && 
-            (u.manager.gpv === user.name || u.manager.am === user.name || user.role === 'coordinadora' || (user.role === 'trainer' && u.manager.trainer === user.name))
+            (String(u.manager.gpv || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || String(u.manager.am || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || user.role === 'coordinadora' || (user.role === 'trainer' && String(u.manager.trainer || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase()))
           ).length;
         }
 

@@ -53,7 +53,7 @@ export default function ControlHoras() {
         if (data.success) {
           const myTeam = data.users.filter(u => 
             u.role === 'promotor' && 
-            (u.manager.gpv === user.name || u.manager.am === user.name || user.role === 'coordinadora')
+            (String(u.manager.gpv || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || String(u.manager.am || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || user.role === 'coordinadora')
           );
           setTeam(myTeam);
           // Auto-seleccionar el primero si no hay ninguno
