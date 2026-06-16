@@ -68,7 +68,7 @@ export default function Solicitudes() {
       try {
         const res = await fetch(GAS_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'getDailySchedule', username: user.username, date: newDate })
+          body: JSON.stringify({ action: 'getDailySchedule', name: user.name, date: newDate })
         });
         const data = await res.json();
         if (data.success) {
