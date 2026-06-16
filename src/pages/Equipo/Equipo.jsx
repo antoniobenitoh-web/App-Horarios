@@ -87,7 +87,13 @@ export default function Equipo() {
       try {
         const res = await fetch(GAS_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'getEquipoWeekly', weekNum: selectedWeek, role: user.role, name: user.name })
+          body: JSON.stringify({ 
+            action: 'getEquipoWeekly', 
+            month: selectedMonth, 
+            weekNum: selectedWeek, 
+            role: user.role, 
+            name: user.name 
+          })
         });
         const data = await res.json();
         if (data.success) {
