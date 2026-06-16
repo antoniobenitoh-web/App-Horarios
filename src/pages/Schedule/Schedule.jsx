@@ -52,6 +52,27 @@ export default function Schedule() {
         
         if (data.success) {
           setHorarioMes(data.schedule);
+          
+          // Sync confirmaciones back from the backend
+          const backendConfirms = {};
+          data.schedule.forEach(m => {
+            m.semanas.forEach(s => {
+              if (s.confirmado) {
+                backendConfirms[s.id] = s.fechaConfirmacion || new Date().toISOString();
+              }
+            });
+          });
+          
+          setConfirmedWeeks(prev => {
+            const merged = { ...prev, ...backendConfirms };
+            // Ensure any local confirm that doesn't exist in backend is REMOVED! (reset sync)
+            const trueSynced = { ...backendConfirms };
+            // Wait, to allow true reset: ONLY trust backend if backend sends confirmed
+            // Actually, if we just use backendConfirms it will correctly RESET if deleted from sheets!
+            localStorage.setItem(`confirmed_v2_${user.name}`, JSON.stringify(trueSynced));
+            return trueSynced;
+          });
+
           if (data.schedule.length > 0) {
             setActiveMonth(data.schedule[0].mes);
             if (data.schedule[0].semanas.length > 0) {
