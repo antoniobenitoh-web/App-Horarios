@@ -348,9 +348,16 @@ export default function Equipo() {
                                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', width: '30%' }}>
                                     {dia.diaSemana}
                                   </span>
-                                  <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-primary)', flex: 1, textAlign: 'right', paddingRight: '0.5rem' }}>
-                                    {dia.horas}
-                                  </span>
+                                  <div style={{ flex: 1, textAlign: 'right', paddingRight: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.1rem' }}>
+                                    <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-primary)' }}>
+                                      {dia.horas}
+                                    </span>
+                                    {dia.centroAsignado && dia.centroAsignado !== p.centro && (
+                                      <span style={{ fontSize: '0.65rem', color: 'var(--warning)', background: 'rgba(234, 179, 8, 0.1)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>
+                                        📍 {dia.centroAsignado}
+                                      </span>
+                                    )}
+                                  </div>
                                   <span style={{ width: '20px', display: 'flex', justifyContent: 'center' }}>
                                     {turnoIcon[dia.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
                                   </span>

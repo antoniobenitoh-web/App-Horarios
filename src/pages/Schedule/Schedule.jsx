@@ -344,6 +344,11 @@ export default function Schedule() {
                       <span className={`${styles.dayName} dayNameEl`}>{shift.dia}</span>
                       <span className={`${styles.dayDate} dayDateEl`}>{shift.fecha}</span>
                     </div>
+                    {shift.centroAsignado && shift.centroAsignado !== user.centro && (
+                      <div style={{ fontSize: '0.65rem', color: 'var(--warning)', marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.2rem', background: 'rgba(234, 179, 8, 0.1)', padding: '0.2rem 0.4rem', borderRadius: '4px', border: '1px solid rgba(234, 179, 8, 0.3)' }}>
+                        📍 {shift.centroAsignado}
+                      </div>
+                    )}
                   </div>
 
                   <div className={styles.colHours}>
