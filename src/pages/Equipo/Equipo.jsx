@@ -33,7 +33,7 @@ export default function Equipo() {
   const [semanasDisponibles, setSemanasDisponibles] = useState([]);
   
   const [centroExpanded, setCentroExpanded] = useState(null);
-  const [promotorExpanded, setPromotorExpanded] = useState(null);
+  const [promotorExpanded, setPromotorExpanded] = useState({});
   
   const [equipoFetch, setEquipoFetch] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -145,12 +145,15 @@ export default function Equipo() {
 
   const toggleCentro = (id) => {
     setCentroExpanded(centroExpanded === id ? null : id);
-    setPromotorExpanded(null); // Reset promotor if centro changes
+    setPromotorExpanded({}); // Reset promotor if centro changes
   };
 
   const togglePromotor = (id, e) => {
     e.stopPropagation();
-    setPromotorExpanded(promotorExpanded === id ? null : id);
+    setPromotorExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   return (
@@ -299,7 +302,7 @@ export default function Equipo() {
                       {/* CABECERA PROMOTOR */}
                       <div 
                         onClick={(e) => togglePromotor(p.id, e)}
-                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded === p.id ? 'rgba(255,255,255,0.06)' : 'transparent' }}
+                        style={{ padding: '0.75rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: promotorExpanded[p.id] ? 'rgba(255,255,255,0.06)' : 'transparent' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
                           <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -334,12 +337,12 @@ export default function Equipo() {
                           </div>
                         </div>
                         <div>
-                          {promotorExpanded === p.id ? <ChevronUp size={16} color="var(--text-tertiary)"/> : <ChevronDown size={16} color="var(--text-tertiary)"/>}
+                          {promotorExpanded[p.id] ? <ChevronUp size={16} color="var(--text-tertiary)"/> : <ChevronDown size={16} color="var(--text-tertiary)"/>}
                         </div>
                       </div>
 
                       {/* HORARIO SEMANAL (Desplegado si el promotor está activo) */}
-                      {promotorExpanded === p.id && (
+                      {promotorExpanded[p.id] && (
                         <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(0,0,0,0.15)' }}>
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
