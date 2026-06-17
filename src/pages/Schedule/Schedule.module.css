@@ -439,9 +439,7 @@
   }
 
   .weekTabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
+    display: none;
   }
 }
 
