@@ -306,8 +306,13 @@ export default function Equipo() {
                             <User size={14} color="var(--text-primary)" />
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                               <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{p.name}</strong>
+                              {p.isSubstituteIn && (
+                                <span style={{ fontSize: '0.65rem', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--warning)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>
+                                  Sustituto de {p.originalCentro}
+                                </span>
+                              )}
                               {p.confirmado && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(34,197,94,0.15)', color: 'var(--success)', borderRadius: '50%', width: '18px', height: '18px' }} title="Semana confirmada">
                                   <CheckCircle2 size={12} strokeWidth={3} />
@@ -349,12 +354,12 @@ export default function Equipo() {
                                     {dia.diaSemana}
                                   </span>
                                   <div style={{ flex: 1, textAlign: 'right', paddingRight: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.1rem' }}>
-                                    <span style={{ fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-primary)' }}>
+                                    <span style={{ fontSize: '0.85rem', fontWeight: '500', color: dia.isSubstitutingOut ? 'var(--text-tertiary)' : 'var(--text-primary)' }}>
                                       {dia.horas}
                                     </span>
-                                    {dia.centroAsignado && dia.centroAsignado !== p.centro && (
+                                    {dia.isSubstitutingOut && (
                                       <span style={{ fontSize: '0.65rem', color: 'var(--warning)', background: 'rgba(234, 179, 8, 0.1)', padding: '0.1rem 0.3rem', borderRadius: '4px' }}>
-                                        📍 {dia.centroAsignado}
+                                        📍 Sustituyendo en {dia.centroAsignado}
                                       </span>
                                     )}
                                   </div>
