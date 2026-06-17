@@ -11,15 +11,14 @@ const getISOWeek = (date) => {
   return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
 };
 
-// Obtiene las semanas ISO que caen dentro del mes en curso
-const getCurrentMonthWeeks = () => {
+// Obtiene las semanas ISO que caen dentro de un mes dado
+const getMonthWeeks = (monthIndex) => {
   const now = new Date();
   const year = now.getFullYear();
-  const month = now.getMonth();
   const weeks = [];
-  const numDays = new Date(year, month + 1, 0).getDate();
+  const numDays = new Date(year, monthIndex + 1, 0).getDate();
   for (let d = 1; d <= numDays; d++) {
-    const date = new Date(year, month, d);
+    const date = new Date(year, monthIndex, d);
     const week = getISOWeek(date);
     if (!weeks.includes(week)) {
       weeks.push(week);
@@ -27,6 +26,21 @@ const getCurrentMonthWeeks = () => {
   }
   return weeks;
 };
+
+const mesesDisponibles = [
+  { label: 'Enero', value: 0 },
+  { label: 'Febrero', value: 1 },
+  { label: 'Marzo', value: 2 },
+  { label: 'Abril', value: 3 },
+  { label: 'Mayo', value: 4 },
+  { label: 'Junio', value: 5 },
+  { label: 'Julio', value: 6 },
+  { label: 'Agosto', value: 7 },
+  { label: 'Septiembre', value: 8 },
+  { label: 'Octubre', value: 9 },
+  { label: 'Noviembre', value: 10 },
+  { label: 'Diciembre', value: 11 }
+];
 
 export default function ControlHoras() {
   const { user } = useAuth();
@@ -40,6 +54,7 @@ export default function ControlHoras() {
   
   const [selectedPromotor, setSelectedPromotor] = useState(user.role === 'promotor' ? user.name : null);
   const [busqueda, setBusqueda] = useState(''); // Por si quieren buscar entre los botones
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
 
@@ -101,15 +116,15 @@ export default function ControlHoras() {
     fetchHours();
   }, [selectedPromotor, GAS_URL]);
 
-  // 3. Filtrar semanas automáticamente por el mes en curso usando ISO Weeks
+  // 3. Filtrar semanas automáticamente por el mes seleccionado usando ISO Weeks
   useEffect(() => {
-    const currentWeeks = getCurrentMonthWeeks();
+    const monthWeeks = getMonthWeeks(selectedMonth);
     const filtered = semanasRaw.filter(s => {
       const numParsed = parseInt(String(s.num).replace(/\D/g, ''), 10);
-      return currentWeeks.includes(numParsed);
+      return monthWeeks.includes(numParsed);
     });
     setSemanas(filtered);
-  }, [semanasRaw]);
+  }, [semanasRaw, selectedMonth]);
 
   const getBadge = (diff) => {
     if (diff === 0) return { cls: styles.balanceNeutro, icon: <Minus size={14} />, label: '0 h — Compensado' };
@@ -136,10 +151,28 @@ export default function ControlHoras() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+          <select 
+            value={selectedMonth} 
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            style={{
+              padding: '0.5rem',
+              borderRadius: 'var(--border-radius-md)',
+              background: 'var(--bg-tertiary)',
+              color: 'var(--text-light-primary)',
+              border: '1px solid var(--border-color)',
+              outline: 'none',
+              cursor: 'pointer',
+              minWidth: '140px'
+            }}
+          >
+            {mesesDisponibles.map(m => (
+              <option key={m.value} value={m.value}>{m.label}</option>
+            ))}
+          </select>
           {user.role === 'promotor' && (
             <div className={`${styles.acumBadge} ${acumBadge.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: 'var(--border-radius-full)' }}>
               <BarChart3 size={18} />
-              <span>Balance del mes: <strong>{acumBadge.label}</strong></span>
+              <span>Balance mensual: <strong>{acumBadge.label}</strong></span>
             </div>
           )}
         </div>
@@ -226,14 +259,14 @@ export default function ControlHoras() {
       {/* Tabla de semanas */}
       <div className="card">
         <h3 className={styles.tableTitle}>
-          Histórico Semanal ({new Date().toLocaleString('es-ES', { month: 'long' })})
+          Histórico Semanal
         </h3>
         {loading ? (
           <p>Cargando datos desde Google Sheets...</p>
         ) : error ? (
           <p style={{ color: 'var(--danger)' }}>Error: {error}</p>
         ) : semanas.length === 0 ? (
-          <p>No hay registro de horas para el mes en curso.</p>
+          <p>No hay registro de horas para el mes seleccionado.</p>
         ) : (
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
