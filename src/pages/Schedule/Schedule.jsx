@@ -229,20 +229,35 @@ export default function Schedule() {
                   }
                   
                   const cfg = shiftConfig[shiftType] || shiftConfig['Descanso'];
-                  const isRest = shiftType === 'Descanso' || shift.horas.toLowerCase().includes('descanso') || shift.horas.toLowerCase().includes('day off');
-                  const dateNum = shift.fecha.split('/')[0]; // Extraer solo el día "01" de "01/06/2026"
+                  
+                  // Formatear el número del día (soportando YYYY-MM-DD y DD/MM/YYYY)
+                  const isIso = shift.fecha.includes('-');
+                  const dateNum = parseInt(isIso ? shift.fecha.split('-')[2] : shift.fecha.split('/')[0], 10);
+
+                  // Detectar casos especiales (Descanso, Vacaciones, Permiso, Baja, Festivo, Day off)
+                  const lowerHoras = shift.horas.toLowerCase();
+                  let specialColor = null;
+                  let specialLabel = shift.horas;
+                  
+                  if (lowerHoras.includes('festivo')) specialColor = '#0284c7';
+                  else if (lowerHoras.includes('day off') || shiftType === 'Descanso' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#16a34a'; specialLabel = 'Descanso'; }
+                  else if (lowerHoras.includes('permiso')) specialColor = '#c026d3';
+                  else if (lowerHoras.includes('vacaciones')) specialColor = '#7c3aed';
+                  else if (lowerHoras.includes('baja')) specialColor = '#dc2626';
+
+                  const isSpecial = !!specialColor;
 
                   return (
                     <div key={`${wIdx}-${dIdx}`} className={styles.calendarCell}>
                       <span className={styles.calendarDate}>{dateNum}</span>
-                      {!isRest ? (
+                      {!isSpecial ? (
                         <div className={styles.calendarEvent} style={{ '--event-color': cfg.color }}>
                           <span className={styles.calendarHours}>{shift.horas}</span>
                           <span className={styles.calendarShift} style={{ color: cfg.color }}>{shiftType}</span>
                         </div>
                       ) : (
-                        <div className={styles.calendarEvent} style={{ opacity: 0.5 }}>
-                          <span className={styles.calendarHours} style={{ color: 'var(--success)' }}>Descanso</span>
+                        <div className={styles.calendarSpecial} style={{ backgroundColor: specialColor }}>
+                          <span className={styles.calendarSpecialText}>{specialLabel}</span>
                         </div>
                       )}
                     </div>

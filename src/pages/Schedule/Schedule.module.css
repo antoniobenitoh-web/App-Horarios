@@ -526,6 +526,7 @@
 
 .calendarCell {
   min-height: 100px;
+  min-width: 0;
   padding: 0.5rem;
   border-right: 1px solid rgba(255,255,255,0.03);
   display: flex;
@@ -545,8 +546,8 @@
 .calendarDate {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-primary);
-  align-self: flex-end;
+  color: #ffffff;
+  align-self: flex-start;
 }
 
 .calendarEvent {
@@ -574,6 +575,24 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.calendarSpecial {
+  border-radius: 4px;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 40px;
+}
+
+.calendarSpecialText {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .monthlyWarning {
@@ -618,5 +637,15 @@
   }
   .calendarShift {
     display: none;
+  }
+  .calendarSpecial {
+    padding: 0.2rem;
+    min-height: 30px;
+  }
+  .calendarSpecialText {
+    font-size: 0.55rem;
+    line-height: 1.1;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 }
