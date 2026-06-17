@@ -12,6 +12,7 @@ const getISOWeek = (date) => {
 };
 
 // Obtiene las semanas ISO que caen dentro de un mes dado
+// Se asigna cada semana exclusivamente al mes que contiene su jueves (mayoría de días)
 const getMonthWeeks = (monthIndex) => {
   const now = new Date();
   const year = now.getFullYear();
@@ -19,9 +20,12 @@ const getMonthWeeks = (monthIndex) => {
   const numDays = new Date(year, monthIndex + 1, 0).getDate();
   for (let d = 1; d <= numDays; d++) {
     const date = new Date(year, monthIndex, d);
-    const week = getISOWeek(date);
-    if (!weeks.includes(week)) {
-      weeks.push(week);
+    // 4 = Jueves. Esto evita que semanas superpuestas aparezcan en dos meses.
+    if (date.getDay() === 4) {
+      const week = getISOWeek(date);
+      if (!weeks.includes(week)) {
+        weeks.push(week);
+      }
     }
   }
   return weeks;
