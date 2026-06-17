@@ -33,6 +33,11 @@
   animation: slideUp 0.5s ease-out;
   position: relative;
   z-index: 1;
+
+  color: var(--text-light-primary);
+  --text-primary: var(--text-light-primary);
+  --text-secondary: var(--text-light-secondary);
+  --text-tertiary: var(--text-light-tertiary);
 }
 
 @keyframes slideUp {
@@ -98,12 +103,24 @@
 .inputIcon {
   position: absolute;
   left: 1rem;
-  color: var(--text-tertiary);
+  color: var(--text-light-secondary);
 }
 
 .inputWrapper input {
   width: 100%;
   padding-left: 2.75rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.inputWrapper input:focus {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-primary);
+}
+
+.inputWrapper input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .submitBtn {
