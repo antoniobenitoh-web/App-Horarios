@@ -154,22 +154,22 @@ export default function Schedule() {
   return (
     <div className={styles.container}>
 
-      <div className={styles.header}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h2 className={styles.pageTitle}>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>
             <CalendarDays size={24} /> Mi Horario
           </h2>
-          <span className={styles.pageSubtitle}>Consulta tus turnos y confirma la recepción</span>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Consulta tus turnos y confirma la recepción</span>
         </div>
 
         {user.role === 'promotor' && currentWeekData && viewMode === 'weekly' && (
-          <div className={styles.confirmBox}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {isConfirmed ? (
-              <span className={styles.confirmedBadge}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(34,197,94,0.1)', color: 'var(--success)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-full)', fontSize: '0.75rem', fontWeight: '600', border: '1px solid rgba(34,197,94,0.3)' }}>
                 <CheckCircle2 size={14} /> Confirmado
               </span>
             ) : (
-              <button onClick={handleConfirm} className={`glow-effect ${styles.confirmBtn}`}>
+              <button onClick={handleConfirm} className="glow-effect" style={{ background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: 'var(--border-radius-full)', padding: '0.3rem 0.8rem', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(255,103,0,0.3)' }}>
                 <Clock size={14} /> Pendiente
               </button>
             )}
@@ -177,7 +177,7 @@ export default function Schedule() {
         )}
       </div>
 
-      <div className={styles.toggleWrapper}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5rem', marginBottom: '1rem' }}>
         <div className={styles.viewToggle}>
           <button className={`${styles.viewToggleBtn} ${viewMode === 'monthly' ? styles.viewToggleBtnActive : ''}`} onClick={() => setViewMode('monthly')}>
             <Calendar size={16} /> Mensual
@@ -188,18 +188,16 @@ export default function Schedule() {
         </div>
       </div>
 
-      <div className={styles.monthSelectorWrapper}>
-        <div className={styles.monthSelector}>
-          <button type="button" onClick={handlePrevMonth} disabled={currentMonthIndex <= 0} className={styles.monthSelectorBtn}>
-            <ChevronLeft size={18} />
-          </button>
-          <span className={styles.monthSelectorLabel}>
-            {activeMonth || 'Mes Actual'}
-          </span>
-          <button type="button" onClick={handleNextMonth} disabled={currentMonthIndex >= horarioMes.length - 1} className={styles.monthSelectorBtn}>
-            <ChevronRight size={18} />
-          </button>
-        </div>
+      <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#1a1a1a', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem', width: 'fit-content', margin: '0 auto 1rem auto' }}>
+        <button type="button" onClick={handlePrevMonth} disabled={currentMonthIndex <= 0} style={{ background: 'transparent', border: 'none', color: currentMonthIndex <= 0 ? 'rgba(255,255,255,0.2)' : 'var(--text-primary)', cursor: currentMonthIndex <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+          <ChevronLeft size={18} />
+        </button>
+        <span style={{ fontWeight: '600', fontSize: '0.9rem', color: 'var(--accent-primary)', minWidth: '100px', textAlign: 'center' }}>
+          {activeMonth || 'Mes Actual'}
+        </span>
+        <button type="button" onClick={handleNextMonth} disabled={currentMonthIndex >= horarioMes.length - 1} style={{ background: 'transparent', border: 'none', color: currentMonthIndex >= horarioMes.length - 1 ? 'rgba(255,255,255,0.2)' : 'var(--text-primary)', cursor: currentMonthIndex >= horarioMes.length - 1 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+          <ChevronRight size={18} />
+        </button>
       </div>
 
       {loading && <div className="card">Cargando horario desde Google Sheets...</div>}
