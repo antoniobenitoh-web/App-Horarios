@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Layout.module.css';
-import { CalendarDays, CalendarClock, Clock, Users, Bell, LogOut, UserCircle, X, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { CalendarDays, CalendarClock, Clock, Users, Bell, LogOut, UserCircle, X, CheckCircle, AlertCircle, Info, Trash2 } from 'lucide-react';
 
 // Notificaciones dinámicas
 
@@ -20,7 +20,7 @@ export default function Topbar() {
       try {
         let newNotifs = [];
         
-        // 1. Obtener notificaciones desde la DB (Aprobadas/Rechazadas)
+        // 1. Obtener notificaciones desde la DB
         try {
           const dbRes = await fetch(GAS_URL, {
             method: 'POST',
@@ -31,53 +31,17 @@ export default function Topbar() {
             dbData.notificaciones.forEach(n => {
               newNotifs.push({
                 id: n.id,
-                type: n.mensaje.includes('aprobada') ? 'success' : 'warning',
+                type: n.tipo || 'sistema',
                 text: n.mensaje,
                 time: n.fecha,
-                read: false,
-                link: `/solicitudes?id=${n.solicitudId}`,
+                read: n.leida,
+                link: n.ruta,
                 isDbNotif: true
               });
             });
           }
         } catch(e) { console.error("Error fetching DB notifs", e); }
 
-        // 2. Notificaciones locales antiguas
-        if (user.role === 'promotor') {
-          const res = await fetch(GAS_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'getSchedule', name: user.name })
-          });
-          const data = await res.json();
-          if (data.success && data.schedule && data.schedule.length > 0) {
-            const weeks = [...new Set(data.schedule.map(w => w.semana_num))].sort((a,b)=>a-b);
-            if (weeks.length > 0) {
-               newNotifs.push({
-                 id: 'local_sched', type: 'info', 
-                 text: `Se te han subido los horarios de la(s) semana(s) ${weeks.join(', ')}. Por favor compruébalos y da el ok.`,
-                 time: 'Nuevo', read: false, link: '/horario', isDbNotif: false
-               });
-            }
-          }
-        } else {
-          // Managers
-          const res = await fetch(GAS_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'getSolicitudes', username: user.username, role: user.role, name: user.name })
-          });
-          const data = await res.json();
-          if (data.success) {
-            const pending = data.solicitudes.filter(s => s.estado === 'pendiente').length;
-            if (pending > 0) {
-              newNotifs.push({
-                id: 'local_sols', type: 'warning',
-                text: `Tienes ${pending} solicitud(es) pendiente(s) de revisión.`,
-                time: 'Nuevo', read: false, link: '/solicitudes', isDbNotif: false
-              });
-            }
-          }
-        }
-        
         setNotifs(newNotifs);
       } catch (err) {
         console.error(err);
@@ -94,6 +58,17 @@ export default function Topbar() {
   };
 
   const markAllRead = () => setNotifs(n => n.map(x => ({ ...x, read: true })));
+
+  const handleDeleteNotif = async (e, id) => {
+    e.stopPropagation(); // Prevent opening the link
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'deleteNotificacion', id })
+      });
+      setNotifs(current => current.filter(x => x.id !== id));
+    } catch(err) {}
+  };
 
   return (
     <header className={styles.topbar}>
@@ -175,7 +150,7 @@ export default function Topbar() {
                             method: 'POST',
                             body: JSON.stringify({ action: 'markNotificacionLeida', id: n.id })
                           });
-                          setNotifs(current => current.filter(x => x.id !== n.id)); // Remove or mark read
+                          setNotifs(current => current.map(x => x.id === n.id ? { ...x, read: true } : x));
                         } catch(e) {}
                       }
                       if (n.link) {
@@ -186,14 +161,19 @@ export default function Topbar() {
                     style={{ cursor: n.link ? 'pointer' : 'default' }}
                   >
                     <span className={styles.notifIcon}>
-                      {n.type === 'success' && <CheckCircle size={16} color="var(--success)" />}
-                      {n.type === 'info' && <Info size={16} color="var(--info)" />}
-                      {n.type === 'warning' && <AlertCircle size={16} color="var(--warning)" />}
+                      {n.type === 'solicitud_resuelta' && <CheckCircle size={16} color="var(--success)" />}
+                      {n.type === 'solicitud_nueva' && <AlertCircle size={16} color="var(--warning)" />}
+                      {n.type === 'horario_modificado' && <CalendarClock size={16} color="var(--info)" />}
+                      {n.type === 'sistema' && <Info size={16} color="var(--info)" />}
+                      {(!['solicitud_resuelta', 'solicitud_nueva', 'horario_modificado', 'sistema'].includes(n.type)) && <Info size={16} color="var(--text-tertiary)" />}
                     </span>
                     <div className={styles.notifContent}>
                       <p className={styles.notifText}>{n.text}</p>
                       <span className={styles.notifTime}>{n.time}</span>
                     </div>
+                    <button className={styles.notifDeleteBtn} onClick={(e) => handleDeleteNotif(e, n.id)} title="Eliminar">
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 ))}
               </div>

@@ -278,6 +278,26 @@
   color: var(--text-tertiary);
 }
 
+.notifDeleteBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.notifDeleteBtn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ef4444;
+}
+
 /* ==========================================
    📱 MOBILE RESPONSIVE DESIGN
    ========================================== */
