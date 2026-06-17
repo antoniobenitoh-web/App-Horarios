@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './ControlHoras.module.css';
-import { TrendingUp, TrendingDown, Minus, Clock, BarChart3, CalendarDays, Search, User, MapPin, Users } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Clock, BarChart3, CalendarDays, Search, User, MapPin, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const getISOWeek = (date) => {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -139,11 +139,24 @@ export default function ControlHoras() {
   const balanceAcumulado = semanas.reduce((acc, s) => acc + (s.cobertura - s.planificadas), 0);
   const acumBadge = getBadge(balanceAcumulado);
 
-  // Filtrado de la lista de botones
   const b = busqueda.toLowerCase();
   const filteredTeam = team.filter(p => 
     p.name.toLowerCase().includes(b) || (p.centro && p.centro.toLowerCase().includes(b))
   );
+
+  const handlePrevMonth = () => {
+    if (selectedMonth > 0) setSelectedMonth(prev => prev - 1);
+  };
+
+  const handleNextMonth = () => {
+    if (selectedMonth < 11) setSelectedMonth(prev => prev + 1);
+  };
+
+  const currentYear = new Date().getFullYear();
+  const getMonthNameYear = (monthIndex) => {
+    const m = mesesDisponibles.find(x => x.value === monthIndex);
+    return m ? `${m.label} ${currentYear}` : '';
+  };
 
   return (
     <div className={styles.container}>
@@ -155,24 +168,17 @@ export default function ControlHoras() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-          <select 
-            value={selectedMonth} 
-            onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            style={{
-              padding: '0.5rem',
-              borderRadius: 'var(--border-radius-md)',
-              background: 'var(--bg-tertiary)',
-              color: 'var(--text-light-primary)',
-              border: '1px solid var(--border-color)',
-              outline: 'none',
-              cursor: 'pointer',
-              minWidth: '140px'
-            }}
-          >
-            {mesesDisponibles.map(m => (
-              <option key={m.value} value={m.value}>{m.label}</option>
-            ))}
-          </select>
+          <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#1a1a1a', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', minWidth: '220px' }}>
+            <button type="button" onClick={handlePrevMonth} disabled={selectedMonth <= 0} style={{ background: 'transparent', border: 'none', color: selectedMonth <= 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: selectedMonth <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+              <ChevronLeft size={18} />
+            </button>
+            <span style={{ fontWeight: '600', fontSize: '0.9rem', color: 'var(--accent-primary)', minWidth: '100px', textAlign: 'center', flex: 1 }}>
+              {getMonthNameYear(selectedMonth)}
+            </span>
+            <button type="button" onClick={handleNextMonth} disabled={selectedMonth >= 11} style={{ background: 'transparent', border: 'none', color: selectedMonth >= 11 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: selectedMonth >= 11 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+              <ChevronRight size={18} />
+            </button>
+          </div>
           {user.role === 'promotor' && (
             <div className={`${styles.acumBadge} ${acumBadge.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: 'var(--border-radius-full)' }}>
               <BarChart3 size={18} />

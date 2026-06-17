@@ -189,13 +189,13 @@ export default function Schedule() {
       </div>
 
       <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#1a1a1a', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem', width: 'fit-content', margin: '0 auto 1rem auto' }}>
-        <button type="button" onClick={handlePrevMonth} disabled={currentMonthIndex <= 0} style={{ background: 'transparent', border: 'none', color: currentMonthIndex <= 0 ? 'rgba(255,255,255,0.2)' : 'var(--text-primary)', cursor: currentMonthIndex <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+        <button type="button" onClick={handlePrevMonth} disabled={currentMonthIndex <= 0} style={{ background: 'transparent', border: 'none', color: currentMonthIndex <= 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: currentMonthIndex <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
           <ChevronLeft size={18} />
         </button>
         <span style={{ fontWeight: '600', fontSize: '0.9rem', color: 'var(--accent-primary)', minWidth: '100px', textAlign: 'center' }}>
           {activeMonth || 'Mes Actual'}
         </span>
-        <button type="button" onClick={handleNextMonth} disabled={currentMonthIndex >= horarioMes.length - 1} style={{ background: 'transparent', border: 'none', color: currentMonthIndex >= horarioMes.length - 1 ? 'rgba(255,255,255,0.2)' : 'var(--text-primary)', cursor: currentMonthIndex >= horarioMes.length - 1 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+        <button type="button" onClick={handleNextMonth} disabled={currentMonthIndex >= horarioMes.length - 1} style={{ background: 'transparent', border: 'none', color: currentMonthIndex >= horarioMes.length - 1 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: currentMonthIndex >= horarioMes.length - 1 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
           <ChevronRight size={18} />
         </button>
       </div>

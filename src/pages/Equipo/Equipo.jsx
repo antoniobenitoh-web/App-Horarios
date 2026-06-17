@@ -216,10 +216,10 @@ export default function Equipo() {
             >
               {mesesDisponibles.length > 0 ? (
                 mesesDisponibles.map(m => (
-                  <option key={m.mes} value={m.mes}>{m.mes}</option>
+                  <option key={m.mes} value={m.mes} style={{ background: '#1a1a1a', color: '#ffffff' }}>{m.mes}</option>
                 ))
               ) : (
-                <option value="">Cargando meses...</option>
+                <option value="" style={{ background: '#1a1a1a', color: '#ffffff' }}>Cargando meses...</option>
               )}
             </select>
           </div>
@@ -234,10 +234,10 @@ export default function Equipo() {
             >
               {semanasDisponibles.length > 0 ? (
                 semanasDisponibles.map(w => (
-                  <option key={w} value={w}>Semana {w}</option>
+                  <option key={w} value={w} style={{ background: '#1a1a1a', color: '#ffffff' }}>Semana {w}</option>
                 ))
               ) : (
-                <option value={selectedWeek}>Semana {selectedWeek}</option>
+                <option value={selectedWeek} style={{ background: '#1a1a1a', color: '#ffffff' }}>Semana {selectedWeek}</option>
               )}
             </select>
           </div>
