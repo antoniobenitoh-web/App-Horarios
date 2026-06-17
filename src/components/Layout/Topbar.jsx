@@ -263,7 +263,7 @@ export default function Topbar() {
               <div className={styles.profileInfoRow}>
                 <div className={styles.profileInfoLabel}>Contraseña Actual Registrada</div>
                 <div className={styles.profileInfoValue} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span>{showPassword ? user.password : '••••••••'}</span>
+                  <span>{showPassword ? (user.password || '(Inicia sesión de nuevo para verla)') : '••••••••'}</span>
                   <button onClick={() => setShowPassword(!showPassword)} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '0 0.2rem' }}>
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>

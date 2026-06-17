@@ -317,7 +317,7 @@
 }
 
 .profileModal {
-  background: var(--bg-card);
+  background: #1a1a1a;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   width: 100%;
