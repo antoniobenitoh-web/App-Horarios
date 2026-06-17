@@ -254,16 +254,16 @@ export default function ControlHoras() {
                 const displayNum = String(s.num).toLowerCase().includes('semana') ? s.num : `Semana ${s.num}`;
                 return (
                   <tr key={i}>
-                    <td><strong>{displayNum}</strong></td>
-                    <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{s.dias}</td>
-                    <td>{s.cobertura} h</td>
-                    <td>{s.planificadas} h</td>
-                    <td>
+                    <td data-label="Semana"><strong>{displayNum}</strong></td>
+                    <td data-label="Período" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{s.dias}</td>
+                    <td data-label="Habitual">{s.cobertura} h</td>
+                    <td data-label="Planificadas">{s.planificadas} h</td>
+                    <td data-label="Diferencia">
                       <span className={`${styles.diffBadge} ${badge.cls}`}>
                         {badge.icon} {diff > 0 ? `+${diff}` : diff} h
                       </span>
                     </td>
-                    <td>
+                    <td data-label="Balance">
                       <div className={styles.barWrapper}>
                         <div className={styles.bar} style={{
                           width: `${Math.min(Math.abs(diff) / 10 * 100, 100)}%`,
