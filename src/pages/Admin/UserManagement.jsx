@@ -19,7 +19,9 @@ export default function UserManagement() {
     role: 'promotor',
     gpv: '',
     am: '',
-    coordinadora: ''
+    coordinadora: '',
+    centro: '',
+    fechaIncorporacion: ''
   });
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
@@ -63,11 +65,13 @@ export default function UserManagement() {
         role: u.role,
         gpv: u.manager?.gpv || '',
         am: u.manager?.am || '',
-        coordinadora: u.manager?.coordinadora || ''
+        coordinadora: u.manager?.coordinadora || '',
+        centro: u.centro || '',
+        fechaIncorporacion: u.fechaIncorporacion ? String(u.fechaIncorporacion).split('T')[0] : ''
       });
     } else {
       setEditingUser(null);
-      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '' });
+      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', centro: '', fechaIncorporacion: '' });
     }
     setShowModal(true);
   };
@@ -85,7 +89,9 @@ export default function UserManagement() {
             gpv: form.gpv,
             am: form.am,
             coordinadora: form.coordinadora
-          }
+          },
+          centro: form.centro,
+          fechaIncorporacion: form.fechaIncorporacion
         }
       };
 
@@ -233,6 +239,16 @@ export default function UserManagement() {
                     <div className="input-group">
                       <label className="input-label">Asignar AM</label>
                       <input className="input-field" value={form.am} onChange={e => setForm({...form, am: e.target.value})} />
+                    </div>
+                  </div>
+                  <div className={styles.formRow}>
+                    <div className="input-group">
+                      <label className="input-label">Centro Base</label>
+                      <input className="input-field" value={form.centro} onChange={e => setForm({...form, centro: e.target.value})} placeholder="Ej: Carrefour Diagonal" />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label">Fecha de Incorporación</label>
+                      <input type="date" className="input-field" value={form.fechaIncorporacion} onChange={e => setForm({...form, fechaIncorporacion: e.target.value})} />
                     </div>
                   </div>
                   <div className="input-group">
