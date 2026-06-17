@@ -118,7 +118,7 @@ export default function Equipo() {
     }
     centrosMap[p.centro].promotores.push(p);
   }
-  const centros = Object.values(centrosMap);
+  const centros = Object.values(centrosMap).sort((a, b) => a.nombre.localeCompare(b.nombre));
 
   const b = busqueda.toLowerCase();
   
