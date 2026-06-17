@@ -23,6 +23,7 @@ const normalizeTurno = (t) => {
 export default function Schedule() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('Semana 1');
+  const [viewMode, setViewMode] = useState('weekly');
   const [activeMonth, setActiveMonth] = useState(null);
   const [horarioMes, setHorarioMes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,12 +154,24 @@ export default function Schedule() {
   return (
     <div className={styles.container}>
 
-      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Mi Horario</h2>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>
+            <CalendarDays size={24} /> Mi Horario
+          </h2>
           <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Consulta tus turnos y confirma la recepción</span>
         </div>
-        {user.role === 'promotor' && currentWeekData && (
+        
+        <div className={styles.viewToggle} style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className={`${styles.viewToggleBtn} ${viewMode === 'monthly' ? styles.viewToggleBtnActive : ''}`} onClick={() => setViewMode('monthly')}>
+            <Calendar size={16} /> Mensual
+          </button>
+          <button className={`${styles.viewToggleBtn} ${viewMode === 'weekly' ? styles.viewToggleBtnActive : ''}`} onClick={() => setViewMode('weekly')}>
+            <CalendarDays size={16} /> Semanal
+          </button>
+        </div>
+
+        {user.role === 'promotor' && currentWeekData && viewMode === 'weekly' && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {isConfirmed ? (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(34,197,94,0.1)', color: 'var(--success)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-full)', fontSize: '0.75rem', fontWeight: '600', border: '1px solid rgba(34,197,94,0.3)' }}>
@@ -189,7 +202,57 @@ export default function Schedule() {
       {error && <div className="card">Error: {error}</div>}
       {!loading && !error && horarioMes.length === 0 && <div className="card">No hay horarios planificados para este mes.</div>}
 
-      {!loading && !error && currentMonthData.semanas.length > 0 && (
+      {!loading && !error && currentMonthData.semanas.length > 0 && viewMode === 'monthly' && (
+        <div className={styles.calendarContainer}>
+          {user.role === 'promotor' && (
+             <div className={styles.monthlyWarning}>
+               Para confirmar tu horario, debes cambiar a la vista <strong>Semanal</strong> y revisar cada semana.
+             </div>
+          )}
+          <div className={styles.calendarHeader}>
+            {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(d => (
+              <div key={d} className={styles.calendarHeaderDay}>{d}</div>
+            ))}
+          </div>
+          <div className={styles.calendarGrid}>
+            {currentMonthData.semanas.map((week, wIdx) => (
+              <div key={week.id} className={styles.calendarRow}>
+                {week.detalle.map((shift, dIdx) => {
+                  let shiftType = normalizeTurno(shift.turno);
+                  if (!shiftType) { 
+                    shiftType = 'Mañana';
+                    if (shift.horas === 'Descanso' || shift.horas === '-') shiftType = 'Descanso';
+                    else if (shift.horas.includes('/')) shiftType = 'Partido';
+                    else if (shift.horas.startsWith('14') || shift.horas.startsWith('15') || shift.horas.startsWith('16')) shiftType = 'Tarde';
+                  }
+                  
+                  const cfg = shiftConfig[shiftType] || shiftConfig['Descanso'];
+                  const isRest = shiftType === 'Descanso' || shift.horas.toLowerCase().includes('descanso') || shift.horas.toLowerCase().includes('day off');
+                  const dateNum = shift.fecha.split('/')[0]; // Extraer solo el día "01" de "01/06/2026"
+
+                  return (
+                    <div key={`${wIdx}-${dIdx}`} className={styles.calendarCell}>
+                      <span className={styles.calendarDate}>{dateNum}</span>
+                      {!isRest ? (
+                        <div className={styles.calendarEvent} style={{ borderLeftColor: cfg.color }}>
+                          <span className={styles.calendarHours}>{shift.horas}</span>
+                          <span className={styles.calendarShift} style={{ color: cfg.color }}>{shiftType}</span>
+                        </div>
+                      ) : (
+                        <div className={styles.calendarEvent} style={{ opacity: 0.5 }}>
+                          <span className={styles.calendarHours} style={{ color: 'var(--success)' }}>Descanso</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!loading && !error && currentMonthData.semanas.length > 0 && viewMode === 'weekly' && (
         <>
           <div className={styles.weekTabs}>
             {currentMonthData.semanas.map((week) => (
