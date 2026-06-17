@@ -296,7 +296,10 @@ export default function Schedule() {
                 Semana {currentWeekData?.semana}
               </h3>
               {currentWeekData && (
-                <span className={styles.weekHours}>{totalHours} h esta semana</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{currentWeekData.dias}</span>
+                  <span className={styles.weekHours}>{totalHours} h esta semana</span>
+                </div>
               )}
             </div>
             
