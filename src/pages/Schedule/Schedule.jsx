@@ -23,7 +23,7 @@ const normalizeTurno = (t) => {
 export default function Schedule() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('Semana 1');
-  const [viewMode, setViewMode] = useState('weekly');
+  const [viewMode, setViewMode] = useState('monthly');
   const [activeMonth, setActiveMonth] = useState(null);
   const [horarioMes, setHorarioMes] = useState([]);
   const [loading, setLoading] = useState(true);
