@@ -1,0 +1,7 @@
+--- src/pages/Schedule/Schedule.jsx
++++ src/pages/Schedule/Schedule.jsx
+@@ -216,3 +216,3 @@
+                       {!isRest ? (
+-                        <div className={styles.calendarEvent} style={{ borderLeft: `3px solid ${cfg.color}` }}>
++                        <div className={styles.calendarEvent} style={{ '--event-color': cfg.color }}>
+                           <span className={styles.calendarHours}>{shift.horas}</span>

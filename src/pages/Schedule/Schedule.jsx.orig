@@ -236,7 +236,7 @@ export default function Schedule() {
                     <div key={`${wIdx}-${dIdx}`} className={styles.calendarCell}>
                       <span className={styles.calendarDate}>{dateNum}</span>
                       {!isRest ? (
-                        <div className={styles.calendarEvent} style={{ '--event-color': cfg.color }}>
+                        <div className={styles.calendarEvent} style={{ borderLeftColor: cfg.color }}>
                           <span className={styles.calendarHours}>{shift.horas}</span>
                           <span className={styles.calendarShift} style={{ color: cfg.color }}>{shiftType}</span>
                         </div>
