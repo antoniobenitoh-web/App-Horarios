@@ -32,7 +32,7 @@ export default function Solicitudes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const isCoord = user.role === 'coordinadora';
+  const isCoord = user.role === 'coordinadora' || user.role === 'project';
   const isManager = user.role === 'gpv' || user.role === 'am';
   const isPromotor = user.role === 'promotor';
 
