@@ -305,8 +305,11 @@ export default function Solicitudes() {
                 </div>
                 <div className={styles.detalleFooter}>
                   <span>Enviada: {sol.fecha}</span>
-                  {sol.aprobadaPor && (
+                  {sol.aprobadaPor && !isPromotor && (
                     <span>{sol.estado === 'aprobada' ? '✓ Aprobada' : '✗ Rechazada'} por {sol.aprobadaPor} · {sol.aprobadaEl}</span>
+                  )}
+                  {sol.aprobadaPor && isPromotor && (
+                    <span>{sol.estado === 'aprobada' ? '✓ Aprobada' : '✗ Rechazada'} · {sol.aprobadaEl}</span>
                   )}
                 </div>
 
