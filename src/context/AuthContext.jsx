@@ -34,6 +34,13 @@ const mockUsers = [
     name: 'Ana Martínez',
     role: 'coordinadora'
   }
+{
+    id: 5,
+    username: 'alicia',
+    password: '123',
+    name: 'Alicia Admin',
+    role: 'administradora'
+  }
 ];
 
 const AuthContext = createContext(null);
@@ -56,6 +63,9 @@ export const AuthProvider = ({ children }) => {
         });
         const data = await res.json();
         if (data.success) {
+          if (data.user && data.user.role) {
+            data.user.role = String(data.user.role).toLowerCase().trim();
+          }
           setUser(data.user);
           localStorage.setItem('user', JSON.stringify(data.user));
           return { success: true };
