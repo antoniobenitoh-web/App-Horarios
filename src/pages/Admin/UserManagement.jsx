@@ -23,7 +23,8 @@ export default function UserManagement() {
     trainer: '',
     project: '',
     centro: '',
-    fechaIncorporacion: ''
+    fechaIncorporacion: '',
+    email: ''
   });
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
@@ -71,11 +72,12 @@ export default function UserManagement() {
         trainer: u.manager?.trainer || '',
         project: u.manager?.project || '',
         centro: u.centro || '',
-        fechaIncorporacion: u.fechaIncorporacion ? String(u.fechaIncorporacion).split('T')[0] : ''
+        fechaIncorporacion: u.fechaIncorporacion ? String(u.fechaIncorporacion).split('T')[0] : '',
+        email: u.email || ''
       });
     } else {
       setEditingUser(null);
-      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', trainer: '', project: '', centro: '', fechaIncorporacion: '' });
+      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', trainer: '', project: '', centro: '', fechaIncorporacion: '', email: '' });
     }
     setShowModal(true);
   };
@@ -97,7 +99,8 @@ export default function UserManagement() {
             project: form.project
           },
           centro: form.centro,
-          fechaIncorporacion: form.fechaIncorporacion
+          fechaIncorporacion: form.fechaIncorporacion,
+          email: form.email
         }
       };
 
@@ -269,9 +272,15 @@ export default function UserManagement() {
                       <input className="input-field" value={form.centro} onChange={e => setForm({...form, centro: e.target.value})} placeholder="Ej: Carrefour Diagonal" />
                     </div>
                   </div>
-                  <div className="input-group">
-                    <label className="input-label">Fecha de Incorporación</label>
-                    <input type="date" className="input-field" value={form.fechaIncorporacion} onChange={e => setForm({...form, fechaIncorporacion: e.target.value})} />
+                  <div className={styles.formRow}>
+                    <div className="input-group">
+                      <label className="input-label">Fecha de Incorporación</label>
+                      <input type="date" className="input-field" value={form.fechaIncorporacion} onChange={e => setForm({...form, fechaIncorporacion: e.target.value})} />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label">Email de Trabajo</label>
+                      <input type="email" className="input-field" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="ejemplo@empresa.com" />
+                    </div>
                   </div>
                 </>
               )}
