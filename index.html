@@ -1,15 +1,532 @@
-<!doctype html>
-<html lang="es" translate="no">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#111111" />
-    <link rel="apple-touch-icon" href="/icon-192.png">
-    <title>APP Horarios</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema interactivo de gestión de horarios, firmas de conformidad y solicitudes de cambio para promotores y coordinadores.">
+  <title>Gestor de Horarios y Turnos - Fase 1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app">
+    <!-- Main Application Header (Sticky) -->
+    <header id="app-header" class="hidden">
+      <a href="#" class="logo">
+        <div class="logo-icon">🕒</div>
+        <span>TimeFlow</span>
+      </a>
+      <div class="user-profile">
+        <div class="user-info">
+          <span class="user-name" id="nav-user-name">Nombre Usuario</span>
+          <span class="user-role" id="nav-user-role">Rol</span>
+        </div>
+        <button id="btn-logout" class="btn-logout">
+          <span>Cerrar Sesión</span>
+          <span>🚪</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- App Main Workspace -->
+    <main>
+
+      <!-- 1. LOGIN SCREEN -->
+      <section id="screen-login" class="login-container app-screen">
+        <div class="login-card">
+          <div class="login-header">
+            <div class="login-logo">🕒</div>
+            <h1 class="login-title">Control de Horarios</h1>
+            <p class="login-subtitle">Fase 1: Estructura base del sistema</p>
+          </div>
+
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-username" class="form-label">Usuario</label>
+              <input type="text" id="login-username" class="form-input" placeholder="Ej: promotor1, coord1..." required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+              <label for="login-password" class="form-label">Contraseña</label>
+              <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" id="btn-login-submit" class="btn-primary">Iniciar Sesión</button>
+          </form>
+
+          <div style="margin-top: 2rem; text-align: left; background: rgba(255,255,255,0.02); padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem;">
+              <span>💡</span> Cuentas demo (todas usan password: <code>password123</code>):
+            </div>
+            <ul style="font-size: 0.75rem; color: var(--text-secondary); list-style-type: none; display: flex; flex-direction: column; gap: 0.25rem;">
+              <li><strong>Promotor (Norte):</strong> <code>promotor1</code> (Pedro Gómez - 40h)</li>
+              <li><strong>Promotor (Sur):</strong> <code>promotor3</code> (Javier López - 40h)</li>
+              <li><strong>GPV (Norte):</strong> <code>gpv1</code> (Carlos GPV)</li>
+              <li><strong>GPV (Sur):</strong> <code>gpv2</code> (Marta GPV)</li>
+              <li><strong>Area Manager:</strong> <code>am1</code> (Ana AM)</li>
+              <li><strong>Coordinadora:</strong> <code>coord1</code> (Elena Coord)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. PROMOTOR DASHBOARD -->
+      <section id="screen-promotor" class="dashboard-grid app-screen hidden">
+        <div>
+          <!-- Blocking signature banner (Lectura Obligatoria UX rule) -->
+          <div id="promotor-blocking-banner" class="blocking-banner hidden">
+            <div>
+              <div class="blocking-banner-title">🔴 Lectura y Conformidad Obligatoria</div>
+              <div class="blocking-banner-desc">Tienes horarios pendientes de firma. Debes confirmar su conformidad antes de poder solicitar cambios en tus turnos.</div>
+            </div>
+            <button class="btn btn-success" onclick="signAllPending()">Firmar Pendientes</button>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">📅 Mis Horarios de Turno</h2>
+              <div class="panel-actions">
+                <span class="badge badge-success" style="font-size: 0.8rem;">Modo Promotor</span>
+              </div>
+            </div>
+
+            <div class="schedule-table-wrapper">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Turno / Horario</th>
+                    <th>Ubicación / Punto Venta</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="promotor-schedule-tbody">
+                  <!-- Injected via app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <!-- Weekly Balance widget (Control de Horas UX rule) -->
+          <div class="dashboard-panel" style="width: 100%;">
+            <div class="panel-header">
+              <h3 class="panel-title">📊 Control de Horas Semanales</h3>
+            </div>
+            <div class="balance-widget">
+              <div class="balance-metric">
+                <div class="balance-metric-val" id="promotor-contract-hours">-</div>
+                <div class="balance-metric-lbl">Contrato</div>
+              </div>
+              <div style="color: var(--text-muted); font-size: 1.25rem;">➔</div>
+              <div class="balance-metric">
+                <div class="balance-metric-val" id="promotor-planned-hours">-</div>
+                <div class="balance-metric-lbl">Planificadas</div>
+              </div>
+              <div style="color: var(--text-muted); font-size: 1.25rem;">=</div>
+              <div class="balance-metric">
+                <div class="balance-metric-val" id="promotor-balance-hours">-</div>
+                <div class="balance-metric-lbl">Balance</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-panel" style="width: 100%;">
+            <div class="panel-header">
+              <h3 class="panel-title">👥 Mis Responsables</h3>
+            </div>
+            <div id="promotor-contacts">
+              <!-- Injected via app.js -->
+            </div>
+          </div>
+
+          <div class="dashboard-panel" style="width: 100%;">
+            <div class="panel-header">
+              <h3 class="panel-title">📨 Mis Solicitudes de Cambio</h3>
+            </div>
+            <div id="promotor-requests-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Injected via app.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. GPV DASHBOARD -->
+      <section id="screen-gpv" class="dashboard-grid app-screen hidden" style="grid-template-columns: 320px 1fr;">
+        <!-- Left: Promoters of Zone List -->
+        <div class="dashboard-panel" style="max-height: calc(100vh - var(--header-height) - 4rem); overflow: hidden; display: flex; flex-direction: column;">
+          <div class="panel-header">
+            <h2 class="panel-title">📍 Promotores <span id="gpv-zone-name" style="color: var(--primary);">Zona</span></h2>
+          </div>
+          <div class="promoters-list" id="gpv-promoters-list">
+            <!-- Injected via app.js -->
+          </div>
+        </div>
+
+        <!-- Right: Detail view + requests -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <!-- KPI Row -->
+          <div class="kpi-row">
+            <div class="kpi-card">
+              <div class="kpi-value" id="gpv-stat-promoters">0</div>
+              <div class="kpi-label">Promotores en Zona</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value" id="gpv-stat-conformed">0/0</div>
+              <div class="kpi-label">Horarios Conformados</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value" id="gpv-stat-requests">0</div>
+              <div class="kpi-label">Cambios Pendientes</div>
+            </div>
+          </div>
+
+          <!-- Selected promoter schedules detail -->
+          <div class="dashboard-panel">
+            <div id="gpv-detail-placeholder" class="panel-header" style="justify-content: center; border: none; padding: 3rem 0;">
+              <span style="color: var(--text-muted);">Selecciona un promotor para ver sus detalles</span>
+            </div>
+            
+            <div id="gpv-detail-content" class="hidden">
+              <div class="panel-header" style="flex-wrap: wrap; gap: 1rem;">
+                <div>
+                  <h3 class="panel-title" id="gpv-detail-name">Nombre Promotor</h3>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Email: <span id="gpv-detail-email">-</span> | Zona: <span id="gpv-detail-zone">-</span>
+                  </div>
+                </div>
+
+                <!-- Balance widget in detail -->
+                <div class="balance-widget" style="margin-bottom: 0; padding: 0.5rem 1rem; gap: 1rem;">
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Contrato: <strong id="gpv-detail-contract-hours">-</strong></div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Planificadas: <strong id="gpv-detail-planned-hours">-</strong></div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Balance: <strong id="gpv-detail-balance-hours">-</strong></div>
+                </div>
+              </div>
+
+              <div class="schedule-table-wrapper">
+                <table class="schedule-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Turno / Horario</th>
+                      <th>Ubicación</th>
+                      <th>Conformidad Lectura</th>
+                    </tr>
+                  </thead>
+                  <tbody id="gpv-detail-schedules-tbody">
+                    <!-- Injected via app.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zone requests history -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">📨 Solicitudes de Cambio de la Zona</h3>
+            </div>
+            <div id="gpv-zone-requests" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem;">
+              <!-- Injected via app.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. AM DASHBOARD -->
+      <section id="screen-am" class="dashboard-grid app-screen hidden" style="grid-template-columns: 320px 1fr;">
+        <!-- Left Sidebar: All promoters list -->
+        <div class="dashboard-panel" style="max-height: calc(100vh - var(--header-height) - 4rem); overflow: hidden; display: flex; flex-direction: column;">
+          <div class="panel-header">
+            <h2 class="panel-title">🌎 Todos los Promotores</h2>
+          </div>
+          <div class="promoters-list" id="am-promoters-list">
+            <!-- Injected via app.js -->
+          </div>
+        </div>
+
+        <!-- Right Side: Details & Actions -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <!-- Top Row: KPIs & Quick action -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;">
+            <div class="kpi-row" style="flex: 1; margin-bottom: 0;">
+              <div class="kpi-card">
+                <div class="kpi-value" id="am-stat-promoters">0</div>
+                <div class="kpi-label">Promotores Globales</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="am-stat-conformed">0/0</div>
+                <div class="kpi-label">Firmados Global</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="am-stat-requests">0</div>
+                <div class="kpi-label">Cambios Pendientes</div>
+      <!-- 4. MANAGER DASHBOARD -->
+      <section id="screen-manager" class="dashboard-grid app-screen hidden" style="grid-template-columns: 320px 1fr;">
+        <div class="dashboard-panel" style="max-height: calc(100vh - var(--header-height) - 4rem); overflow: hidden; display: flex; flex-direction: column;">
+          <div class="panel-header" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h2 class="panel-title" id="manager-title-role">👥 Mi Equipo</h2>
+            </div>
+            <!-- FILTRO REGIONAL -->
+            <select id="manager-region-filter" class="form-input" style="font-size: 0.85rem; padding: 0.5rem;">
+              <option value="all">Todas mis regiones</option>
+            </select>
+          </div>
+          <div class="promoters-list" id="manager-promoters-list">
+            <!-- Injected via app.js -->
+          </div>
+        </div>
+
+        <!-- Right: KPIs, Request moderation & Account creation -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <!-- Header stats & actions -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;">
+            <div class="kpi-row" style="flex: 1; margin-bottom: 0;">
+              <div class="kpi-card">
+                <div class="kpi-value" id="manager-stat-promoters">0</div>
+                <div class="kpi-label">Equipo</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="manager-stat-conformed">0/0</div>
+                <div class="kpi-label">Firmados</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="manager-stat-requests">0</div>
+                <div class="kpi-label">Pendientes</div>
+              </div>
+            </div>
+            
+            <div class="dashboard-panel" style="padding: 1.25rem; margin-bottom: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+              <h4 style="font-size: 0.9rem; color: var(--text-secondary);">⚙ Panel de Control</h4>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-success btn-sm" onclick="openCreateUserModal()">+ Crear Usuario</button>
+                <button class="btn btn-secondary btn-sm" onclick="openResetPasswordModal('manager')">Reset Contraseña</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected promoter detail view -->
+          <div class="dashboard-panel">
+            <div id="manager-detail-placeholder" class="panel-header" style="justify-content: center; border: none; padding: 3rem 0;">
+              <span style="color: var(--text-muted);">Selecciona a alguien del equipo para ver sus detalles</span>
+            </div>
+
+            <div id="manager-detail-content" class="hidden">
+              <div class="panel-header" style="flex-wrap: wrap; gap: 1rem;">
+                <div>
+                  <h3 class="panel-title" id="manager-detail-name">Nombre</h3>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Rol: <span id="manager-detail-role">-</span> | Zona: <span id="manager-detail-zone">-</span> | Email: <span id="manager-detail-email">-</span>
+                  </div>
+                </div>
+
+                <!-- Balance widget in detail -->
+                <div class="balance-widget" style="margin-bottom: 0; padding: 0.5rem 1rem; gap: 1rem;">
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Contrato: <strong id="manager-detail-contract-hours">-</strong></div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Planificadas: <strong id="manager-detail-planned-hours">-</strong></div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Balance: <strong id="manager-detail-balance-hours">-</strong></div>
+                </div>
+              </div>
+
+              <div class="schedule-table-wrapper">
+                <table class="schedule-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Turno / Horario</th>
+                      <th>Ubicación</th>
+                      <th>Conformidad Lectura</th>
+                    </tr>
+                  </thead>
+                  <tbody id="manager-detail-schedules-tbody">
+                    <!-- Injected via app.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audit Timeline & Moderation Row -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <!-- Running Audit Log (Trazabilidad UX rule) -->
+            <div class="dashboard-panel">
+              <div class="panel-header">
+                <h3 class="panel-title">📋 Registro de Auditoría (Trazabilidad)</h3>
+              </div>
+              <div id="manager-audit-timeline" class="audit-list">
+                <!-- Injected via app.js -->
+              </div>
+            </div>
+
+            <!-- Moderation Queue -->
+            <div class="dashboard-panel">
+              <div class="panel-header">
+                <h3 class="panel-title">📥 Moderación de Solicitudes</h3>
+              </div>
+              <div id="manager-pending-requests" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 250px; overflow-y: auto;">
+                <!-- Injected via app.js -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FLOATING DEVELOPER QUICK ACCOUNTS SWITCHER -->
+    <div class="demo-switcher">
+      <div class="demo-title">Simular Rol (Demo Switcher)</div>
+      <div class="demo-buttons">
+        <button class="btn-demo" onclick="switchUser('promotor1')">Promotor 1 (Nte)</button>
+        <button class="btn-demo" onclick="switchUser('promotor3')">Promotor 3 (Sur)</button>
+        <button class="btn-demo" onclick="switchUser('gpv1')">GPV Norte</button>
+        <button class="btn-demo" onclick="switchUser('gpv2')">GPV Sur</button>
+        <button class="btn-demo" onclick="switchUser('am1')">Area Manager</button>
+        <button class="btn-demo" onclick="switchUser('coord1')">Coordinadora</button>
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+    <!-- MODALS SECTION                                       -->
+    <!-- ---------------------------------------------------- -->
+
+    <!-- A. REQUEST SHIFT CHANGE MODAL (Promotor) -->
+    <div id="request-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="panel-title">Solicitar Cambio de Horario</h3>
+          <button class="modal-close" onclick="closeRequestModal()">&times;</button>
+        </div>
+        <form id="request-change-form">
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="hidden" id="req-modal-sch-id">
+            <input type="hidden" id="req-modal-date">
+
+            <div>
+              <span class="form-label" style="margin-bottom: 0.25rem;">Fecha del Turno</span>
+              <div id="req-modal-date-display" style="font-weight: 600; color: var(--text-primary);">Lunes, 15 de Junio</div>
+            </div>
+
+            <div class="form-group">
+              <label for="req-modal-original" class="form-label">Turno Original</label>
+              <input type="text" id="req-modal-original" class="form-input" readonly style="opacity: 0.7;">
+            </div>
+
+            <div class="form-group">
+              <label for="req-modal-requested" class="form-label">Turno Solicitado</label>
+              <input type="text" id="req-modal-requested" class="form-input" placeholder="Ej: 09:00 - 15:00" required>
+            </div>
+
+            <div class="form-group">
+              <label for="req-modal-reason" class="form-label">Motivo de la Solicitud</label>
+              <textarea id="req-modal-reason" class="form-input" rows="3" placeholder="Indica el motivo justificado de tu solicitud..." required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeRequestModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" style="width: auto;">Enviar Solicitud</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- B. RESET PASSWORD MODAL (AM & Coordinator) -->
+    <div id="reset-password-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="panel-title">Resetear Contraseña de Usuario</h3>
+          <button class="modal-close" onclick="closeResetPasswordModal()">&times;</button>
+        </div>
+        <form id="reset-password-form">
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="form-group">
+              <label for="reset-user-select" class="form-label">Seleccionar Usuario</label>
+              <select id="reset-user-select" class="form-input" style="background: rgba(10, 11, 18, 0.95);">
+                <!-- Filled via app.js -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="reset-modal-new-pw" class="form-label">Nueva Contraseña</label>
+              <input type="text" id="reset-modal-new-pw" class="form-input" placeholder="Ingresa la nueva contraseña..." required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeResetPasswordModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" style="width: auto;">Guardar Contraseña</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- C. CREATE USER MODAL (Coordinator Only) -->
+    <div id="create-user-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="panel-title">Crear Nuevo Usuario</h3>
+          <button class="modal-close" onclick="closeCreateUserModal()">&times;</button>
+        </div>
+        <form id="create-user-form">
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+            
+            <div class="form-group">
+              <label for="create-username" class="form-label">Nombre de Usuario (Login)</label>
+              <input type="text" id="create-username" class="form-input" placeholder="Ej: promotor5" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+              <label for="create-name" class="form-label">Nombre Completo</label>
+              <input type="text" id="create-name" class="form-input" placeholder="Ej: Juan Pérez" required>
+            </div>
+
+            <div class="form-group">
+              <label for="create-email" class="form-label">Correo Electrónico</label>
+              <input type="email" id="create-email" class="form-input" placeholder="Ej: juan.perez@empresa.com" required>
+            </div>
+
+            <div class="form-group">
+              <label for="create-password" class="form-label">Contraseña Inicial</label>
+              <input type="text" id="create-password" class="form-input" value="password123" required>
+            </div>
+
+            <div class="form-group">
+              <label for="create-role" class="form-label">Rol del Usuario</label>
+              <select id="create-role" class="form-input" style="background: rgba(10, 11, 18, 0.95);" onchange="document.getElementById('create-zone-group').style.display = (this.value === 'promotor' || this.value === 'gpv') ? 'block' : 'none'; document.getElementById('create-contract-group').style.display = (this.value === 'promotor') ? 'block' : 'none'">
+                <option value="promotor">Promotor</option>
+                <option value="gpv">GPV (Gestor Punto de Venta)</option>
+                <option value="am">AM (Area Manager)</option>
+                <option value="coordinadora">Coordinadora</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="create-zone-group">
+              <label for="create-zone" class="form-label">Zona Asignada</label>
+              <select id="create-zone" class="form-input" style="background: rgba(10, 11, 18, 0.95);">
+                <option value="Norte">Zona Norte</option>
+                <option value="Sur">Zona Sur</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="create-contract-group">
+              <label for="create-contract-hours" class="form-label">Horas Semanales de Contrato</label>
+              <input type="number" id="create-contract-hours" class="form-input" value="40" min="1" max="100">
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeCreateUserModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" style="width: auto;">Crear Usuario</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
 </html>
