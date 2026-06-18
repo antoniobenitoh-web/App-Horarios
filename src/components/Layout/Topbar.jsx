@@ -138,7 +138,7 @@ export default function Topbar() {
           </NavLink>
         )}
 
-        {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora' || user.role === 'trainer') && (
+        {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora' || user.role === 'trainer' || user.role === 'project') && (
           <NavLink to="/equipo" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
             <Users size={18} />
             <span>Mi Equipo</span>
