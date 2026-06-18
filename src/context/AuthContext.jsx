@@ -33,8 +33,8 @@ const mockUsers = [
     password: '123',
     name: 'Ana Martínez',
     role: 'coordinadora'
-  }
-{
+  },
+  {
     id: 5,
     username: 'alicia',
     password: '123',
@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }) => {
   const GAS_URL = import.meta.env.VITE_GAS_URL;
 
   const login = async (username, password) => {
-    // Si tenemos configurada la URL del backend, llamamos a Google Apps Script
     if (GAS_URL) {
       try {
         const res = await fetch(GAS_URL, {
@@ -76,7 +75,6 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    // Fallback: Si no hay URL, usamos los datos simulados por ahora
     const found = mockUsers.find(u => u.username === username && u.password === password);
     if (found) {
       setUser(found);
