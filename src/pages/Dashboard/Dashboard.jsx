@@ -56,7 +56,7 @@ export default function Dashboard() {
     };
 
     const fetchManagerData = async () => {
-      if ((user.role !== 'gpv' && user.role !== 'am' && user.role !== 'coordinadora' && user.role !== 'trainer' && user.role !== 'project') || !GAS_URL) return;
+      if ((user.role !== 'gpv' && user.role !== 'am' && user.role !== 'coordinadora' && user.role !== 'trainer' && user.role !== 'administradora') || !GAS_URL) return;
       try {
         // Fetch usuarios
         const resUsers = await fetch(GAS_URL, {
@@ -71,7 +71,7 @@ export default function Dashboard() {
             (String(u.manager.gpv || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
              String(u.manager.am || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
              String(u.manager.coordinadora || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
-             String(u.manager.project || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
+             String(u.manager.administradora || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
              String(u.manager.trainer || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase())
           ).length;
         }
@@ -119,7 +119,7 @@ export default function Dashboard() {
               { rol: 'Area Manager', nombre: user.manager.am },
               { rol: 'Coordinadora', nombre: user.manager.coordinadora },
               { rol: 'Trainer', nombre: user.manager.trainer },
-              { rol: 'Project Manager', nombre: user.manager.project },
+              { rol: 'Administradora', nombre: user.manager.administradora },
             ].map(({ rol, nombre }) => (
               <div key={rol} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '1rem' }}>
                 <p style={{ fontSize: '0.72rem', color: 'var(--accent-primary)', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.3rem' }}>{rol}</p>
@@ -183,7 +183,7 @@ export default function Dashboard() {
       )}
 
       {/* Dashboard para GPV/AM/Coordinadora/Trainer */}
-      {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora' || user.role === 'trainer' || user.role === 'project') && (
+      {(user.role === 'gpv' || user.role === 'am' || user.role === 'coordinadora' || user.role === 'trainer' || user.role === 'administradora') && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
           <div className="card" style={{ cursor: 'pointer' }} onClick={() => navigate('/equipo')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
