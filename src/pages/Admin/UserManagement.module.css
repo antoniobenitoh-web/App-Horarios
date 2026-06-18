@@ -167,17 +167,21 @@ td:hover .pwdReal { display: inline-block; }
 }
 
 .modalContent {
-  background: var(--bg-primary, #0a0a0a); /* Color más oscuro para que resalte más el texto y el contraste */
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--bg-tertiary); /* Gris elevado para contraste sin ser negro */
+  color: var(--text-light-primary);
+  --text-primary: var(--text-light-primary);
+  --text-secondary: var(--text-light-secondary);
+  --text-tertiary: var(--text-light-tertiary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-lg);
   padding: 2.5rem;
   width: 100%;
   max-width: 550px;
-  max-height: 90vh; /* Allow vertical scrolling if too long */
-  overflow-y: auto; /* Allow vertical scrolling if too long */
-  box-sizing: border-box; /* Fundamental para que el padding no desborde y descentre */
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
   margin: 0 auto;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
   animation: modalIn 0.2s ease-out;
 }
 
