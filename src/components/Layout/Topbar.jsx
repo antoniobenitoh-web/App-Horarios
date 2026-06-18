@@ -159,7 +159,7 @@ export default function Topbar() {
           </>
         )}
 
-        {(user.role === 'am' || user.role === 'coordinadora') && (
+        {(user.role === 'am' || user.role === 'coordinadora' || user.role === 'project') && (
           <NavLink to="/usuarios" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
             <UserCircle size={18} />
             <span>Usuarios</span>

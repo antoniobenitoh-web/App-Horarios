@@ -20,6 +20,8 @@ export default function UserManagement() {
     gpv: '',
     am: '',
     coordinadora: '',
+    trainer: '',
+    project: '',
     centro: '',
     fechaIncorporacion: ''
   });
@@ -66,12 +68,14 @@ export default function UserManagement() {
         gpv: u.manager?.gpv || '',
         am: u.manager?.am || '',
         coordinadora: u.manager?.coordinadora || '',
+        trainer: u.manager?.trainer || '',
+        project: u.manager?.project || '',
         centro: u.centro || '',
         fechaIncorporacion: u.fechaIncorporacion ? String(u.fechaIncorporacion).split('T')[0] : ''
       });
     } else {
       setEditingUser(null);
-      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', centro: '', fechaIncorporacion: '' });
+      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', trainer: '', project: '', centro: '', fechaIncorporacion: '' });
     }
     setShowModal(true);
   };
@@ -88,7 +92,9 @@ export default function UserManagement() {
           manager: {
             gpv: form.gpv,
             am: form.am,
-            coordinadora: form.coordinadora
+            coordinadora: form.coordinadora,
+            trainer: form.trainer,
+            project: form.project
           },
           centro: form.centro,
           fechaIncorporacion: form.fechaIncorporacion
@@ -113,7 +119,7 @@ export default function UserManagement() {
     }
   };
 
-  if (user.role !== 'coordinadora' && user.role !== 'am') {
+  if (user.role !== 'coordinadora' && user.role !== 'am' && user.role !== 'project') {
     return <div className="card">No tienes permiso para ver esta página.</div>;
   }
 
@@ -226,6 +232,8 @@ export default function UserManagement() {
                   <option value="gpv">GPV</option>
                   <option value="am">Area Manager</option>
                   <option value="coordinadora">Coordinadora</option>
+                  <option value="trainer">Trainer</option>
+                  <option value="project">Project Manager</option>
                 </select>
               </div>
 
@@ -243,17 +251,27 @@ export default function UserManagement() {
                   </div>
                   <div className={styles.formRow}>
                     <div className="input-group">
+                      <label className="input-label">Asignar Coordinadora</label>
+                      <input className="input-field" value={form.coordinadora} onChange={e => setForm({...form, coordinadora: e.target.value})} />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label">Asignar Trainer</label>
+                      <input className="input-field" value={form.trainer} onChange={e => setForm({...form, trainer: e.target.value})} />
+                    </div>
+                  </div>
+                  <div className={styles.formRow}>
+                    <div className="input-group">
+                      <label className="input-label">Asignar Project Manager</label>
+                      <input className="input-field" value={form.project} onChange={e => setForm({...form, project: e.target.value})} />
+                    </div>
+                    <div className="input-group">
                       <label className="input-label">Centro Base</label>
                       <input className="input-field" value={form.centro} onChange={e => setForm({...form, centro: e.target.value})} placeholder="Ej: Carrefour Diagonal" />
                     </div>
-                    <div className="input-group">
-                      <label className="input-label">Fecha de Incorporación</label>
-                      <input type="date" className="input-field" value={form.fechaIncorporacion} onChange={e => setForm({...form, fechaIncorporacion: e.target.value})} />
-                    </div>
                   </div>
                   <div className="input-group">
-                    <label className="input-label">Asignar Coordinadora</label>
-                    <input className="input-field" value={form.coordinadora} onChange={e => setForm({...form, coordinadora: e.target.value})} />
+                    <label className="input-label">Fecha de Incorporación</label>
+                    <input type="date" className="input-field" value={form.fechaIncorporacion} onChange={e => setForm({...form, fechaIncorporacion: e.target.value})} />
                   </div>
                 </>
               )}
