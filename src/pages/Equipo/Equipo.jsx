@@ -216,7 +216,7 @@ export default function Equipo() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           
           {/* Selector de Región (Solo Project y Coordinadora) */}
-          {(user.role === 'project' || user.role === 'coordinadora') && (
+          {(user.role === 'administradora' || user.role === 'coordinadora') && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
               <MapPin size={14} color="var(--accent-primary)" />
               <select 
