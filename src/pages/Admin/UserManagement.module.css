@@ -173,6 +173,8 @@ td:hover .pwdReal { display: inline-block; }
   padding: 2.5rem;
   width: 100%;
   max-width: 550px;
+  max-height: 90vh; /* Allow vertical scrolling if too long */
+  overflow-y: auto; /* Allow vertical scrolling if too long */
   box-sizing: border-box; /* Fundamental para que el padding no desborde y descentre */
   margin: 0 auto;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);

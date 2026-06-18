@@ -126,6 +126,14 @@ export default function UserManagement() {
     return <div className="card">No tienes permiso para ver esta página.</div>;
   }
 
+  const visibleUsers = users.filter(u => {
+    if (user.role === 'project') return true;
+    if (user.role === 'coordinadora' || user.role === 'am') {
+      return u.role === 'promotor' || u.role === 'gpv';
+    }
+    return false;
+  });
+
   return (
     <div className={styles.container}>
       <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
@@ -175,7 +183,7 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody>
-              {users.map(u => (
+              {visibleUsers.map(u => (
                 <tr key={u.id}>
                   <td data-label="Nombre"><strong>{u.name}</strong></td>
                   <td data-label="Usuario"><span className={styles.userBadge}>{u.username}</span></td>
@@ -192,9 +200,9 @@ export default function UserManagement() {
                   </td>
                 </tr>
               ))}
-              {users.length === 0 && !loading && GAS_URL && (
+              {visibleUsers.length === 0 && !loading && GAS_URL && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '3rem' }}>No hay usuarios en la base de datos.</td>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '3rem' }}>No hay usuarios visibles en este nivel.</td>
                 </tr>
               )}
               {loading && GAS_URL && (
@@ -244,27 +252,52 @@ export default function UserManagement() {
                   <div className={styles.formRow}>
                     <div className="input-group">
                       <label className="input-label">Asignar GPV (Nombre)</label>
-                      <input className="input-field" value={form.gpv} onChange={e => setForm({...form, gpv: e.target.value})} />
+                      <select className="input-field" value={form.gpv} onChange={e => setForm({...form, gpv: e.target.value})}>
+                        <option value="">-- Ninguno --</option>
+                        {users.filter(u => u.role === 'gpv').map(u => (
+                          <option key={u.id} value={u.name}>{u.name}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="input-group">
                       <label className="input-label">Asignar AM</label>
-                      <input className="input-field" value={form.am} onChange={e => setForm({...form, am: e.target.value})} />
+                      <select className="input-field" value={form.am} onChange={e => setForm({...form, am: e.target.value})}>
+                        <option value="">-- Ninguno --</option>
+                        {users.filter(u => u.role === 'am').map(u => (
+                          <option key={u.id} value={u.name}>{u.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className={styles.formRow}>
                     <div className="input-group">
                       <label className="input-label">Asignar Coordinadora</label>
-                      <input className="input-field" value={form.coordinadora} onChange={e => setForm({...form, coordinadora: e.target.value})} />
+                      <select className="input-field" value={form.coordinadora} onChange={e => setForm({...form, coordinadora: e.target.value})}>
+                        <option value="">-- Ninguno --</option>
+                        {users.filter(u => u.role === 'coordinadora').map(u => (
+                          <option key={u.id} value={u.name}>{u.name}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="input-group">
                       <label className="input-label">Asignar Trainer</label>
-                      <input className="input-field" value={form.trainer} onChange={e => setForm({...form, trainer: e.target.value})} />
+                      <select className="input-field" value={form.trainer} onChange={e => setForm({...form, trainer: e.target.value})}>
+                        <option value="">-- Ninguno --</option>
+                        {users.filter(u => u.role === 'trainer').map(u => (
+                          <option key={u.id} value={u.name}>{u.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className={styles.formRow}>
                     <div className="input-group">
                       <label className="input-label">Asignar Project Manager</label>
-                      <input className="input-field" value={form.project} onChange={e => setForm({...form, project: e.target.value})} />
+                      <select className="input-field" value={form.project} onChange={e => setForm({...form, project: e.target.value})}>
+                        <option value="">-- Ninguno --</option>
+                        {users.filter(u => u.role === 'project').map(u => (
+                          <option key={u.id} value={u.name}>{u.name}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="input-group">
                       <label className="input-label">Centro Base</label>
