@@ -240,8 +240,7 @@ export default function UserManagement() {
                 </select>
               </div>
 
-              {form.role === 'promotor' && (
-                <>
+
                   <div className={styles.formRow}>
                     <div className="input-group">
                       <label className="input-label">Asignar GPV (Nombre)</label>
@@ -282,8 +281,7 @@ export default function UserManagement() {
                       <input type="email" className="input-field" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="ejemplo@empresa.com" />
                     </div>
                   </div>
-                </>
-              )}
+
 
               <div className={styles.modalActions}>
                 <button type="button" className="btn btn-outline" onClick={() => setShowModal(false)} disabled={loading}>Cancelar</button>
