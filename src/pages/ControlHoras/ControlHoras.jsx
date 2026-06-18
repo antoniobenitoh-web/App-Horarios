@@ -76,7 +76,7 @@ export default function ControlHoras() {
              String(u.manager?.am || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
              String(u.manager?.project || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() ||
              String(u.manager?.trainer || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() ||
-             user.role === 'coordinadora')
+             String(u.manager?.coordinadora || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase())
           );
           setTeam(myTeam);
           // Auto-seleccionar el primero si no hay ninguno
