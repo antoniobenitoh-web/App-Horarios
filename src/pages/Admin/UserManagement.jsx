@@ -21,7 +21,7 @@ export default function UserManagement() {
     am: '',
     coordinadora: '',
     trainer: '',
-    project: '',
+    administradora: '',
     centro: '',
     fechaIncorporacion: '',
     email: '',
@@ -63,23 +63,31 @@ export default function UserManagement() {
     if (u) {
       setEditingUser(u);
       setForm({
-        name: u.name,
-        username: u.username,
-        password: u.password,
-        role: u.role,
+        name: u.name || '',
+        username: u.username || '',
+        password: u.password || '',
+        role: u.role || 'promotor',
         gpv: u.manager?.gpv || '',
         am: u.manager?.am || '',
         coordinadora: u.manager?.coordinadora || '',
         trainer: u.manager?.trainer || '',
-        project: u.manager?.project || '',
+        administradora: u.manager?.administradora || '',
         centro: u.centro || '',
-        fechaIncorporacion: u.fechaIncorporacion ? String(u.fechaIncorporacion).split('T')[0] : '',
+        fechaIncorporacion: u.fechaIncorporacion || '',
         email: u.email || '',
         region: u.region || ''
       });
     } else {
       setEditingUser(null);
-      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', trainer: '', project: '', centro: '', fechaIncorporacion: '', email: '', region: '' });
+      setForm({ 
+        name: '', username: '', password: '', role: 'promotor', 
+        gpv: '', 
+        am: user.role === 'am' ? user.name : '', 
+        coordinadora: user.role === 'coordinadora' ? user.name : '', 
+        trainer: '', 
+        administradora: '', 
+        centro: '', fechaIncorporacion: '', email: '', region: '' 
+      });
     }
     setShowModal(true);
   };
@@ -98,7 +106,7 @@ export default function UserManagement() {
             am: form.am,
             coordinadora: form.coordinadora,
             trainer: form.trainer,
-            project: form.project
+            administradora: form.administradora
           },
           centro: form.centro,
           fechaIncorporacion: form.fechaIncorporacion,
@@ -124,12 +132,12 @@ export default function UserManagement() {
     }
   };
 
-  if (user.role !== 'coordinadora' && user.role !== 'am' && user.role !== 'project') {
+  if (user.role !== 'coordinadora' && user.role !== 'am' && user.role !== 'administradora') {
     return <div className="card">No tienes permiso para ver esta página.</div>;
   }
 
   const visibleUsers = users.filter(u => {
-    if (user.role === 'project') return true;
+    if (user.role === 'administradora') return true;
     if (user.role === 'coordinadora' || user.role === 'am') {
       return u.role === 'promotor' || u.role === 'gpv';
     }
@@ -243,10 +251,10 @@ export default function UserManagement() {
                 <select className="input-field" value={form.role} onChange={e => setForm({...form, role: e.target.value})}>
                   <option value="promotor">Promotor</option>
                   <option value="gpv">GPV</option>
-                  <option value="am">Area Manager</option>
-                  <option value="coordinadora">Coordinadora</option>
-                  <option value="trainer">Trainer</option>
-                  <option value="project">Project Manager</option>
+                  {user.role !== 'am' && <option value="am">Area Manager</option>}
+                  {user.role === 'administradora' && <option value="coordinadora">Coordinadora</option>}
+                  {user.role === 'administradora' && <option value="trainer">Trainer</option>}
+                  {user.role === 'administradora' && <option value="administradora">Administradora</option>}
                 </select>
               </div>
 
@@ -293,10 +301,10 @@ export default function UserManagement() {
                   </div>
                   <div className={styles.formRow}>
                     <div className="input-group">
-                      <label className="input-label">Asignar Project Manager</label>
-                      <select className="input-field" value={form.project} onChange={e => setForm({...form, project: e.target.value})}>
+                      <label className="input-label">Asignar Administradora</label>
+                      <select className="input-field" value={form.administradora} onChange={e => setForm({...form, administradora: e.target.value})}>
                         <option value="">-- Ninguno --</option>
-                        {users.filter(u => u.role === 'project').map(u => (
+                        {users.filter(u => u.role === 'administradora').map(u => (
                           <option key={u.id} value={u.name}>{u.name}</option>
                         ))}
                       </select>
