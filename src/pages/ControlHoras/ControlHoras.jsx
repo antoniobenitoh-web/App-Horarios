@@ -58,6 +58,7 @@ export default function ControlHoras() {
   
   const [selectedPromotor, setSelectedPromotor] = useState(user.role === 'promotor' ? user.name : null);
   const [busqueda, setBusqueda] = useState(''); // Por si quieren buscar entre los botones
+  const [filtroRegion, setFiltroRegion] = useState('todas');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
@@ -144,7 +145,11 @@ export default function ControlHoras() {
   const acumBadge = getBadge(balanceAcumulado);
 
   const b = busqueda.toLowerCase();
-  const filteredTeam = team.filter(p => 
+  
+  const teamFiltradoPorRegion = filtroRegion === 'todas' ? team : team.filter(u => u.region === filtroRegion);
+  const regionesDisponibles = Array.from(new Set(team.map(u => u.region).filter(r => r && r.trim() !== ''))).sort();
+  
+  const filteredTeam = teamFiltradoPorRegion.filter(p => 
     p.name.toLowerCase().includes(b) || (p.centro && p.centro.toLowerCase().includes(b))
   );
 
@@ -195,14 +200,29 @@ export default function ControlHoras() {
       {/* Lista vertical de Promotores (Solo Managers) */}
       {user.role !== 'promotor' && (
         <div className="card" style={{ marginBottom: '1rem', padding: '1rem' }}>
-          <div className={styles.promotorHeader}>
+          <div className={styles.promotorHeader} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
             <h3 style={{ fontSize: '1.1rem', color: 'var(--text-light-primary)', margin: 0 }}>Promotor</h3>
-            <div className={styles.promotorSearch}>
+            {(user.role === 'project' || user.role === 'coordinadora') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-tertiary)', padding: '0.35rem 0.6rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
+                <MapPin size={14} color="var(--accent-primary)" />
+                <select 
+                  value={filtroRegion} 
+                  onChange={e => setFiltroRegion(e.target.value)}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+                >
+                  <option value="todas" style={{ background: '#1a1a1a', color: '#ffffff' }}>Todas las regiones</option>
+                  {regionesDisponibles.map(r => (
+                    <option key={r} value={r} style={{ background: '#1a1a1a', color: '#ffffff' }}>{r}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className={styles.promotorSearch} style={{ position: 'relative' }}>
               <Search size={14} style={{ position: 'absolute', left: '0.5rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
               <input
                 style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-light-primary)', padding: '0.35rem 0.5rem 0.35rem 1.8rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.8rem', outline: 'none' }}
                 type="text"
-                placeholder="Buscar..."
+                placeholder="Buscar promotor/centro..."
                 value={busqueda}
                 onChange={e => setBusqueda(e.target.value)}
               />

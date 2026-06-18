@@ -24,7 +24,8 @@ export default function UserManagement() {
     project: '',
     centro: '',
     fechaIncorporacion: '',
-    email: ''
+    email: '',
+    region: ''
   });
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
@@ -73,11 +74,12 @@ export default function UserManagement() {
         project: u.manager?.project || '',
         centro: u.centro || '',
         fechaIncorporacion: u.fechaIncorporacion ? String(u.fechaIncorporacion).split('T')[0] : '',
-        email: u.email || ''
+        email: u.email || '',
+        region: u.region || ''
       });
     } else {
       setEditingUser(null);
-      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', trainer: '', project: '', centro: '', fechaIncorporacion: '', email: '' });
+      setForm({ name: '', username: '', password: '', role: 'promotor', gpv: '', am: '', coordinadora: '', trainer: '', project: '', centro: '', fechaIncorporacion: '', email: '', region: '' });
     }
     setShowModal(true);
   };
@@ -312,6 +314,12 @@ export default function UserManagement() {
                     <div className="input-group">
                       <label className="input-label">Email de Trabajo</label>
                       <input type="email" className="input-field" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="ejemplo@empresa.com" />
+                    </div>
+                  </div>
+                  <div className={styles.formRow}>
+                    <div className="input-group">
+                      <label className="input-label">Región</label>
+                      <input className="input-field" value={form.region} onChange={e => setForm({...form, region: e.target.value})} placeholder="Ej: Cataluña, Madrid..." />
                     </div>
                   </div>
 

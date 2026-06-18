@@ -27,6 +27,7 @@ export default function Equipo() {
   const [busqueda, setBusqueda] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtroTurno, setFiltroTurno] = useState('todos');
+  const [filtroRegion, setFiltroRegion] = useState('todas');
   const [selectedWeek, setSelectedWeek] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [mesesDisponibles, setMesesDisponibles] = useState([]);
@@ -110,9 +111,17 @@ export default function Equipo() {
     fetchEquipo();
   }, [user, GAS_URL, selectedWeek]);
 
+  // Obtener regiones únicas
+  const regionesDisponibles = Array.from(new Set(equipoFetch.map(p => p.region).filter(r => r && r.trim() !== ''))).sort();
+
+  // Filtrar por región
+  const equipoFiltradoPorRegion = filtroRegion === 'todas' 
+    ? equipoFetch 
+    : equipoFetch.filter(p => p.region === filtroRegion);
+
   // Agrupar promotores por centro
   const centrosMap = {};
-  for (let p of equipoFetch) {
+  for (let p of equipoFiltradoPorRegion) {
     if (!centrosMap[p.centro]) {
       centrosMap[p.centro] = { id: p.centro, nombre: p.centro, promotores: [] };
     }
@@ -206,6 +215,23 @@ export default function Equipo() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           
+          {/* Selector de Región (Solo Project y Coordinadora) */}
+          {(user.role === 'project' || user.role === 'coordinadora') && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
+              <MapPin size={14} color="var(--accent-primary)" />
+              <select 
+                value={filtroRegion} 
+                onChange={e => setFiltroRegion(e.target.value)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
+              >
+                <option value="todas" style={{ background: '#1a1a1a', color: '#ffffff' }}>Todas las regiones</option>
+                {regionesDisponibles.map(r => (
+                  <option key={r} value={r} style={{ background: '#1a1a1a', color: '#ffffff' }}>{r}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Selector de Mes */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
             <Calendar size={14} color="var(--accent-primary)" />
