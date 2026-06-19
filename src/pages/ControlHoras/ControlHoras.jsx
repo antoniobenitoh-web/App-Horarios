@@ -50,6 +50,7 @@ export default function ControlHoras() {
   const { user } = useAuth();
   
   const [team, setTeam] = useState([]);
+  const [teamError, setTeamError] = useState(null);
   const [semanasRaw, setSemanasRaw] = useState([]); // Todas las semanas
   const [semanas, setSemanas] = useState([]); // Semanas filtradas por mes
   
@@ -67,7 +68,10 @@ export default function ControlHoras() {
   // 1. Cargar equipo
   useEffect(() => {
     const fetchTeam = async () => {
-      if (user.role === 'promotor' || !GAS_URL) return;
+      if (user.role === 'promotor' || !GAS_URL) {
+        if (!GAS_URL) setTeamError('Falta GAS_URL');
+        return;
+      }
       try {
         const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getUsers' }) });
         const data = await res.json();
@@ -86,9 +90,12 @@ export default function ControlHoras() {
             );
           }
           setTeam(myTeam);
-          // Por defecto, sin promotores seleccionados (Visión Global)
+          if (myTeam.length === 0) setTeamError(`No se encontraron promotores asignados a ${user.name} (${user.role}).`);
+        } else {
+          setTeamError(`Error del backend al cargar equipo: ${data.error || 'Desconocido'}`);
         }
       } catch (err) {
+        setTeamError(`Error de red al cargar equipo: ${err.message}`);
         console.error("Error loading team", err);
       }
     };
@@ -127,9 +134,15 @@ export default function ControlHoras() {
       setError(null);
       
       try {
+        const payload = { action: 'getControlHoras', names: namesToFetch };
+        // Backwards compatibility with old backend
+        if (namesToFetch.length > 0) {
+          payload.name = namesToFetch[0];
+        }
+        
         const res = await fetch(GAS_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'getControlHoras', names: namesToFetch })
+          body: JSON.stringify(payload)
         });
         const data = await res.json();
         
@@ -298,6 +311,12 @@ export default function ControlHoras() {
             </div>
           </div>
           
+          {teamError && (
+            <div style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', padding: '1rem', borderRadius: 'var(--border-radius-md)', marginBottom: '1rem', border: '1px solid var(--danger)' }}>
+              <strong>Error cargando equipo:</strong> {teamError}
+            </div>
+          )}
+
           {/* Grilla de Checkboxes */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.5rem', maxHeight: '250px', overflowY: 'auto', paddingRight: '0.25rem' }}>
             {filteredTeamBusqueda.map((p) => {
