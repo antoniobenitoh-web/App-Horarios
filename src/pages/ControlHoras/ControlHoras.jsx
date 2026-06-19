@@ -71,19 +71,14 @@ export default function ControlHoras() {
         const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'getUsers' }) });
         const data = await res.json();
         if (data.success) {
-          let myTeam = [];
-          if (user.role === 'administradora') {
-            myTeam = data.users.filter(u => u.role === 'promotor');
-          } else {
-            myTeam = data.users.filter(u => 
-              u.role === 'promotor' && 
-              (String(u.manager?.gpv || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
-               String(u.manager?.am || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
-               String(u.manager?.administradora || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() ||
-               String(u.manager?.trainer || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() ||
-               String(u.manager?.coordinadora || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase())
-            );
-          }
+          const myTeam = data.users.filter(u => 
+            u.role === 'promotor' && 
+            (String(u.manager?.gpv || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
+             String(u.manager?.am || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() || 
+             String(u.manager?.project || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() ||
+             String(u.manager?.trainer || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase() ||
+             String(u.manager?.coordinadora || "").trim().toLowerCase() === String(user.name || "").trim().toLowerCase())
+          );
           setTeam(myTeam);
           // Auto-seleccionar el primero si no hay ninguno
           if (myTeam.length > 0 && !selectedPromotor) {
@@ -207,7 +202,7 @@ export default function ControlHoras() {
         <div className="card" style={{ marginBottom: '1rem', padding: '1rem' }}>
           <div className={styles.promotorHeader} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
             <h3 style={{ fontSize: '1.1rem', color: 'var(--text-light-primary)', margin: 0 }}>Promotor</h3>
-            {(user.role === 'administradora' || user.role === 'coordinadora') && (
+            {(user.role === 'project' || user.role === 'coordinadora') && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-tertiary)', padding: '0.35rem 0.6rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
                 <MapPin size={14} color="var(--accent-primary)" />
                 <select 
