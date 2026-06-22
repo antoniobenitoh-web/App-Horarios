@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './UserManagement.module.css';
-import { Users, Edit2, Key, Plus, RefreshCw, AlertCircle } from 'lucide-react';
+import { Users, Edit2, Key, Plus, RefreshCw, AlertCircle, MapPin, Search } from 'lucide-react';
 
 export default function UserManagement() {
   const { user } = useAuth();
@@ -421,4 +421,4 @@ export default function UserManagement() {
       )}
     </div>
   );
-}
+}```
