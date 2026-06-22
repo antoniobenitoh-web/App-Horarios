@@ -11,6 +11,11 @@ export default function UserManagement() {
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   
+  // Filtros
+  const [filtroRegion, setFiltroRegion] = useState('todas');
+  const [filtroCentro, setFiltroCentro] = useState('todos');
+  const [busquedaNombre, setBusquedaNombre] = useState('');
+  
   // Estado del formulario
   const [form, setForm] = useState({
     name: '',
@@ -136,12 +141,37 @@ export default function UserManagement() {
     return <div className="card">No tienes permiso para ver esta página.</div>;
   }
 
+  // 1. Filtrar por permisos de rol
   const visibleUsers = users.filter(u => {
     if (user.role === 'administradora') return true;
-    if (user.role === 'coordinadora' || user.role === 'am') {
-      return u.role === 'promotor' || u.role === 'gpv';
+    
+    const userNameLower = String(user.name || "").trim().toLowerCase();
+    const isPromotorOrGPV = u.role === 'promotor' || u.role === 'gpv';
+    
+    if (user.role === 'am' && isPromotorOrGPV) {
+      return String(u.manager?.am || "").trim().toLowerCase() === userNameLower;
     }
+    
+    if (user.role === 'coordinadora' && u.role === 'promotor') {
+      return String(u.manager?.coordinadora || "").trim().toLowerCase() === userNameLower;
+    }
+    
     return false;
+  });
+
+  // 2. Extraer listas para los desplegables de filtros
+  const regionesDisponibles = Array.from(new Set(visibleUsers.map(u => u.region).filter(r => r && r.trim() !== ''))).sort();
+  const centrosDisponibles = Array.from(new Set(visibleUsers.map(u => u.centro).filter(c => c && c.trim() !== 'Sin asignar'))).sort();
+
+  // 3. Aplicar filtros de la UI
+  const finalUsers = visibleUsers.filter(u => {
+    const matchesRegion = filtroRegion === 'todas' || u.region === filtroRegion;
+    const matchesCentro = filtroCentro === 'todos' || u.centro === filtroCentro;
+    const matchesBusqueda = busquedaNombre === '' || 
+      (u.name && u.name.toLowerCase().includes(busquedaNombre.toLowerCase())) || 
+      (u.username && u.username.toLowerCase().includes(busquedaNombre.toLowerCase()));
+      
+    return matchesRegion && matchesCentro && matchesBusqueda;
   });
 
   return (
@@ -179,6 +209,52 @@ export default function UserManagement() {
         </div>
       )}
 
+      {/* Barra de Filtros */}
+      <div className="card" style={{ marginBottom: '1.5rem', padding: '1.25rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+          {(user.role === 'administradora' || user.role === 'coordinadora') && (
+            <div style={{ flex: '1 1 200px', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-tertiary)', padding: '0.5rem 0.8rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
+              <MapPin size={16} color="var(--accent-primary)" />
+              <select 
+                value={filtroRegion} 
+                onChange={e => { setFiltroRegion(e.target.value); setFiltroCentro('todos'); }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+              >
+                <option value="todas" style={{ background: '#1a1a1a', color: '#ffffff' }}>Todas las regiones</option>
+                {regionesDisponibles.map(r => (
+                  <option key={r} value={r} style={{ background: '#1a1a1a', color: '#ffffff' }}>{r}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          
+          <div style={{ flex: '1 1 200px', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-tertiary)', padding: '0.5rem 0.8rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)' }}>
+            <MapPin size={16} color="var(--info)" />
+            <select 
+              value={filtroCentro} 
+              onChange={e => setFiltroCentro(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+            >
+              <option value="todos" style={{ background: '#1a1a1a', color: '#ffffff' }}>Todos los centros</option>
+              {centrosDisponibles.map(c => (
+                <option key={c} value={c} style={{ background: '#1a1a1a', color: '#ffffff' }}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ flex: '1 1 200px', position: 'relative' }}>
+            <Search size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
+            <input
+              style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-light-primary)', padding: '0.5rem 0.8rem 0.5rem 2.2rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem', outline: 'none' }}
+              type="text"
+              placeholder="Buscar por nombre o usuario..."
+              value={busquedaNombre}
+              onChange={e => setBusquedaNombre(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
@@ -193,7 +269,7 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody>
-              {visibleUsers.map(u => (
+              {finalUsers.map(u => (
                 <tr key={u.id}>
                   <td data-label="Nombre"><strong>{u.name}</strong></td>
                   <td data-label="Usuario"><span className={styles.userBadge}>{u.username}</span></td>
@@ -210,11 +286,12 @@ export default function UserManagement() {
                   </td>
                 </tr>
               ))}
-              {visibleUsers.length === 0 && !loading && GAS_URL && (
+              {finalUsers.length === 0 && !loading && GAS_URL && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '3rem' }}>No hay usuarios visibles en este nivel.</td>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '3rem' }}>No se encontraron usuarios con estos filtros.</td>
                 </tr>
               )}
+
               {loading && GAS_URL && (
                 <tr>
                   <td colSpan="6" style={{ textAlign: 'center', padding: '3rem' }}>Cargando usuarios desde Google Sheets...</td>
