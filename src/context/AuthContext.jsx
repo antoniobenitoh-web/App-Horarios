@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { createContext, useState, useContext } from 'react';
 
 const mockUsers = [

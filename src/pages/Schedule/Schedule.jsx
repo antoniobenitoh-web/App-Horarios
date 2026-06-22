@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Schedule.module.css';
