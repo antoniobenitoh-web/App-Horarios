@@ -164,15 +164,26 @@ export default function UserManagement() {
   const regionesDisponibles = Array.from(new Set(visibleUsers.map(u => u.region).filter(r => r && r.trim() !== ''))).sort();
   const centrosDisponibles = Array.from(new Set(visibleUsers.map(u => u.centro).filter(c => c && c.trim() !== 'Sin asignar'))).sort();
 
-  // 3. Aplicar filtros de la UI
+  // 3. Aplicar filtros de la UI y ordenar por rol
   const finalUsers = visibleUsers.filter(u => {
     const matchesRegion = filtroRegion === 'todas' || u.region === filtroRegion;
     const matchesCentro = filtroCentro === 'todos' || u.centro === filtroCentro;
     const matchesBusqueda = busquedaNombre === '' || 
-      (u.name && u.name.toLowerCase().includes(busquedaNombre.toLowerCase())) || 
-      (u.username && u.username.toLowerCase().includes(busquedaNombre.toLowerCase()));
+      (u.name && String(u.name).toLowerCase().includes(String(busquedaNombre).toLowerCase())) || 
+      (u.username && String(u.username).toLowerCase().includes(String(busquedaNombre).toLowerCase()));
       
     return matchesRegion && matchesCentro && matchesBusqueda;
+  }).sort((a, b) => {
+    const roleOrder = {
+      'administradora': 1,
+      'am': 2,
+      'coordinadora': 3,
+      'gpv': 4,
+      'promotor': 5
+    };
+    const orderA = roleOrder[String(a.role).toLowerCase()] || 99;
+    const orderB = roleOrder[String(b.role).toLowerCase()] || 99;
+    return orderA - orderB;
   });
 
   return (
@@ -274,7 +285,7 @@ export default function UserManagement() {
                 <tr key={u.id}>
                   <td data-label="Nombre"><strong>{u.name}</strong></td>
                   <td data-label="Usuario"><span className={styles.userBadge}>{u.username}</span></td>
-                  <td data-label="Rol"><span className={`${styles.roleBadge} ${styles['role_' + u.role]}`}>{u.role.toUpperCase()}</span></td>
+                  <td data-label="Rol"><span className={`${styles.roleBadge} ${styles['role_' + u.role]}`}>{String(u.role || '').toUpperCase()}</span></td>
                   <td data-label="Contraseña"><span className={styles.pwdCensored}>••••••</span> <span className={styles.pwdReal}>{u.password}</span></td>
                   <td data-label="Responsables" className={styles.managersCell}>
                     {u.manager?.gpv && <div>GPV: {u.manager.gpv}</div>}
