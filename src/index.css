@@ -185,8 +185,8 @@ a:hover {
 
 .input-label {
   font-size: 0.85rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  color: var(--salesland-primary);
+  font-weight: 600;
 }
 
 .input-field {

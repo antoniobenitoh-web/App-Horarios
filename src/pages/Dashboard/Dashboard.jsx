@@ -122,7 +122,7 @@ export default function Dashboard() {
               { rol: 'Trainer', nombre: user.manager.trainer },
               { rol: 'Administradora', nombre: user.manager.administradora },
             ].map(({ rol, nombre }) => (
-              <div key={rol} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '1rem' }}>
+              <div key={rol} style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', borderRadius: '10px', padding: '1rem' }}>
                 <p style={{ fontSize: '0.72rem', color: 'var(--accent-primary)', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.3rem' }}>{rol}</p>
                 <p style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '0.95rem' }}>{nombre}</p>
               </div>
