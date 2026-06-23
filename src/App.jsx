@@ -25,18 +25,22 @@ function App() {
   if (showSplash) {
     return (
       <div style={{ 
-        height: '100vh', 
+        height: '100dvh', 
         width: '100vw', 
         backgroundColor: 'var(--salesland-primary)', 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 9999
       }}>
         <img 
           src={import.meta.env.BASE_URL + "icon-512.png"} 
           alt="Cargando App Horarios" 
-          style={{ width: '120px', height: '120px', animation: 'pulse 2s infinite', borderRadius: '24px' }} 
+          style={{ width: '180px', height: '180px', animation: 'pulse 2s infinite', borderRadius: '36px' }} 
         />
         <style>
           {`
