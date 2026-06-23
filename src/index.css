@@ -1,33 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* ─── Xiaomi x Salesland Corporate Dark Theme ─── */
+  /* ─── Xiaomi x Salesland Corporate Theme ─── */
 
   /* Backgrounds */
-  --bg-primary: #f0f2f5;        /* Light page background */
-  --bg-secondary: #1a1a1a;      /* Dark panels — stand out from bg */
-  --bg-tertiary: #252525;       /* Elevated panel surfaces */
+  --bg-primary: #0b1a42;        /* Deep navy page background */
+  --bg-secondary: #12285a;      /* Lighter navy panels */
+  --bg-tertiary: #193570;       /* Elevated surfaces */
 
-  /* Text (Global - Dark for Light Background) */
-  --text-primary: #1a1a1a;
-  --text-secondary: #4a4a4a;
-  --text-tertiary: #6b6b6b;
+  /* Text (Global - Light for Dark Background) */
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #cbd5e1;
   
   /* Text for Dark Panels */
-  --text-light-primary: #f5f5f5;
-  --text-light-secondary: #a0a0a0;
-  --text-light-tertiary: #888888;
+  --text-light-primary: #ffffff;
+  --text-light-secondary: #e2e8f0;
+  --text-light-tertiary: #cbd5e1;
 
   /* Xiaomi Orange — primary accent */
   --accent-primary: #FF6700;
   --accent-hover: #e05c00;
-  --accent-light: rgba(255, 103, 0, 0.12);
+  --accent-light: rgba(255, 103, 0, 0.15);
   --accent-gradient: linear-gradient(135deg, #FF6700, #ff8c00);
 
   /* Salesland Navy — secondary accent */
-  --salesland-primary: #1b3a6b;
-  --salesland-hover: #15305a;
-  --salesland-light: rgba(27, 58, 107, 0.25);
+  --salesland-primary: #0b1a42;
+  --salesland-hover: #12285a;
+  --salesland-light: rgba(11, 26, 66, 0.25);
 
   /* Status colors */
   --success: #22c55e;
@@ -36,15 +36,15 @@
   --info: #3b82f6;
 
   /* Glassmorphism / UI Elements */
-  --glass-bg: rgba(26, 26, 26, 0.95);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
-  --backdrop-blur: blur(12px);
+  --glass-bg: rgba(18, 40, 90, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --backdrop-blur: blur(16px);
 
   /* Borders & Radius */
-  --border-radius-sm: 6px;
-  --border-radius-md: 12px;
-  --border-radius-lg: 20px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 14px;
+  --border-radius-lg: 24px;
   --border-radius-full: 9999px;
 
   /* Transitions */
