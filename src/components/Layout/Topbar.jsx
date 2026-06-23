@@ -117,11 +117,11 @@ export default function Topbar() {
   return (
     <header className={styles.topbar}>
       <div className={styles.topbarLeft}>
-        <div className={styles.logo} style={{ padding: '0.25rem', background: 'transparent', boxShadow: 'none' }}>
-          <img src={import.meta.env.BASE_URL + "icon-192.png"} alt="Salesland Xiaomi" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
+        <div className={styles.logo} style={{ padding: '0', background: 'transparent', boxShadow: 'none' }}>
+          <img src={import.meta.env.BASE_URL + "Logo_salesland_white.png"} alt="Salesland" style={{ height: '28px', objectFit: 'contain' }} />
         </div>
         <div className={styles.brandGroup} style={{ marginLeft: '0.5rem' }}>
-          <h2 className={styles.brandTitle} style={{ color: 'white', fontWeight: '600', letterSpacing: '1px' }}>salesland</h2>
+          {/* Text removed since it's inside the logo */}
         </div>
       </div>
 

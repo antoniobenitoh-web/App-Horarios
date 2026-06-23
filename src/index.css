@@ -5,8 +5,8 @@
 
   /* Backgrounds */
   --bg-primary: #f0f2f5;        /* Light page background (gris claro) */
-  --bg-secondary: #ffffff;      /* White cards */
-  --bg-tertiary: #f8fafc;       /* Elevated surfaces */
+  --bg-secondary: #0A2472;      /* Lighter blue for data bubbles/cards */
+  --bg-tertiary: #113399;       /* Elevated surfaces */
 
   /* Text (Global - Dark for Light Background) */
   --text-primary: #1e293b;
@@ -25,9 +25,9 @@
   --accent-gradient: linear-gradient(135deg, #FF6700, #ff8c00);
 
   /* Salesland Navy — secondary accent */
-  --salesland-primary: #0b1a42;
-  --salesland-hover: #12285a;
-  --salesland-light: rgba(11, 26, 66, 0.25);
+  --salesland-primary: #01114A;
+  --salesland-hover: #052485;
+  --salesland-light: rgba(1, 17, 74, 0.25);
 
   /* Status colors */
   --success: #22c55e;
