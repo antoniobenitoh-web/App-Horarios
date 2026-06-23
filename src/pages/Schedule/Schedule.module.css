@@ -131,7 +131,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -223,7 +223,7 @@
 .dayRow :global(.dayNameEl),
 .dayRow :global(.dayDateEl),
 .dayRow .totalHours {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
   transition: color 0.2s;
 }
 
@@ -544,7 +544,7 @@
 .calendarDate {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   align-self: flex-start;
 }
 
@@ -561,7 +561,7 @@
 .calendarHours {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -586,7 +586,7 @@
 }
 
 .calendarSpecialText {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -618,7 +618,7 @@
   }
   .calendarDate {
     font-size: 0.9rem;
-    color: #ffffff !important;
+    color: var(--text-primary) !important;
   }
   .calendarEvent {
     padding: 0.2rem;

@@ -168,8 +168,8 @@ td:hover .pwdReal { display: inline-block; }
 
 .modalContent {
   background: var(--bg-tertiary); /* Gris elevado para contraste sin ser negro */
-  color: var(--text-light-primary);
-  --text-primary: var(--text-light-primary);
+  color: var(--text-primary);
+  
   --text-secondary: var(--text-light-secondary);
   --text-tertiary: var(--text-light-tertiary);
   border: 1px solid rgba(255, 255, 255, 0.1);
