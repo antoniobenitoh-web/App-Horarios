@@ -212,7 +212,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.05);
   transition: background 0.2s, color 0.2s;
   background: #ffffff;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .dayRow:last-of-type {
@@ -229,7 +229,7 @@
 
 .dayRow :global(.hoursCellEl),
 .dayRow :global(.restLabelEl) {
-  color: #e5e5e5;
+  color: var(--text-secondary);
   transition: color 0.2s;
 }
 
@@ -244,14 +244,14 @@
 .dayRow:active :global(.dayNameEl),
 .dayRow:active :global(.dayDateEl),
 .dayRow:active .totalHours {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
 }
 
 .dayRow:hover :global(.hoursCellEl),
 .dayRow:hover :global(.restLabelEl),
 .dayRow:active :global(.hoursCellEl),
 .dayRow:active :global(.restLabelEl) {
-  color: #4a4a4a !important;
+  color: var(--text-primary) !important;
 }
 
 .dayRowRest {

@@ -348,7 +348,7 @@ export default function ControlHoras() {
                     style={{ accentColor: 'var(--accent-primary)', width: '16px', height: '16px', cursor: 'pointer' }}
                   />
                   <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <span style={{ fontWeight: isChecked ? '600' : '500', color: isChecked ? 'var(--accent-primary)' : 'var(--text-light-primary)', fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <span style={{ fontWeight: isChecked ? '600' : '500', color: isChecked ? 'var(--accent-primary)' : 'var(--text-primary)', fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {p.name}
                     </span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
