@@ -25,9 +25,9 @@
   --accent-gradient: linear-gradient(135deg, #FF6700, #ff8c00);
 
   /* Salesland Corporate Navy */
-  --salesland-primary: #104A60;
-  --salesland-hover: #155a75;
-  --salesland-light: rgba(16, 74, 96, 0.25);
+  --salesland-primary: #083a50;
+  --salesland-hover: #0a4a66;
+  --salesland-light: rgba(8, 58, 80, 0.25);
 
   /* Status colors */
   --success: #22c55e;
