@@ -117,12 +117,11 @@ export default function Topbar() {
   return (
     <header className={styles.topbar}>
       <div className={styles.topbarLeft}>
-        <div className={styles.logo}>
-          <CalendarDays size={22} color="white" />
+        <div className={styles.logo} style={{ padding: '0.25rem', background: 'transparent', boxShadow: 'none' }}>
+          <img src="/icon-192.png" alt="Salesland Xiaomi" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
         </div>
-        <div className={styles.brandGroup}>
-          <h2 className={styles.brandTitle}>Portal Promotores</h2>
-          <span className={styles.brandSub}>Xiaomi · Salesland</span>
+        <div className={styles.brandGroup} style={{ marginLeft: '0.5rem' }}>
+          <h2 className={styles.brandTitle} style={{ color: 'white' }}>Portal Promotores</h2>
         </div>
       </div>
 

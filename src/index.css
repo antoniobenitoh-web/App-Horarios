@@ -4,14 +4,14 @@
   /* ─── Xiaomi x Salesland Corporate Theme ─── */
 
   /* Backgrounds */
-  --bg-primary: #0b1a42;        /* Deep navy page background */
-  --bg-secondary: #12285a;      /* Lighter navy panels */
-  --bg-tertiary: #193570;       /* Elevated surfaces */
+  --bg-primary: #f0f2f5;        /* Light page background (gris claro) */
+  --bg-secondary: #ffffff;      /* White cards */
+  --bg-tertiary: #f8fafc;       /* Elevated surfaces */
 
-  /* Text (Global - Light for Dark Background) */
-  --text-primary: #ffffff;
-  --text-secondary: #e2e8f0;
-  --text-tertiary: #cbd5e1;
+  /* Text (Global - Dark for Light Background) */
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
   
   /* Text for Dark Panels */
   --text-light-primary: #ffffff;
