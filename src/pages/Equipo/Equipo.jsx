@@ -225,9 +225,9 @@ export default function Equipo() {
                 onChange={e => setFiltroRegion(e.target.value)}
                 style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
               >
-                <option value="todas" style={{ background: '#1a1a1a', color: '#ffffff' }}>Todas las regiones</option>
+                <option value="todas" style={{ background: '#15305a', color: '#ffffff' }}>Todas las regiones</option>
                 {regionesDisponibles.map(r => (
-                  <option key={r} value={r} style={{ background: '#1a1a1a', color: '#ffffff' }}>{r}</option>
+                  <option key={r} value={r} style={{ background: '#15305a', color: '#ffffff' }}>{r}</option>
                 ))}
               </select>
             </div>
@@ -243,10 +243,10 @@ export default function Equipo() {
             >
               {mesesDisponibles.length > 0 ? (
                 mesesDisponibles.map(m => (
-                  <option key={m.mes} value={m.mes} style={{ background: '#1a1a1a', color: '#ffffff' }}>{m.mes}</option>
+                  <option key={m.mes} value={m.mes} style={{ background: '#15305a', color: '#ffffff' }}>{m.mes}</option>
                 ))
               ) : (
-                <option value="" style={{ background: '#1a1a1a', color: '#ffffff' }}>Cargando meses...</option>
+                <option value="" style={{ background: '#15305a', color: '#ffffff' }}>Cargando meses...</option>
               )}
             </select>
           </div>
@@ -261,10 +261,10 @@ export default function Equipo() {
             >
               {semanasDisponibles.length > 0 ? (
                 semanasDisponibles.map(w => (
-                  <option key={w} value={w} style={{ background: '#1a1a1a', color: '#ffffff' }}>Semana {w}</option>
+                  <option key={w} value={w} style={{ background: '#15305a', color: '#ffffff' }}>Semana {w}</option>
                 ))
               ) : (
-                <option value={selectedWeek} style={{ background: '#1a1a1a', color: '#ffffff' }}>Semana {selectedWeek}</option>
+                <option value={selectedWeek} style={{ background: '#15305a', color: '#ffffff' }}>Semana {selectedWeek}</option>
               )}
             </select>
           </div>
