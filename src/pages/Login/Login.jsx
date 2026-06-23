@@ -26,11 +26,10 @@ export default function Login() {
     <div className={styles.loginContainer}>
       <div className={styles.glassCard}>
         <div className={styles.header}>
-          <div className={styles.logo}>
-            <CalendarDays size={32} color="white" />
+          <div className={styles.logo} style={{ padding: '0', background: 'transparent', boxShadow: 'none' }}>
+            <img src={import.meta.env.BASE_URL + "icon-192.png"} alt="Salesland Xiaomi" style={{ width: '80px', height: '80px', borderRadius: '16px' }} />
           </div>
-          <p className={styles.brandSubtitle}>Xiaomi · Salesland</p>
-          <h1>Portal Promotores</h1>
+          <h1>App Horarios</h1>
           <p>Inicia sesión en tu cuenta</p>
         </div>
 
