@@ -229,7 +229,7 @@ export default function Topbar() {
             <span className={styles.userName}>{user.name}</span>
             <span className={styles.userRole}>{user.role.toUpperCase()}</span>
           </div>
-          <UserCircle size={32} style={{ color: 'var(--accent-primary)' }} />
+          <UserCircle size={32} style={{ color: '#ffffff' }} />
         </div>
 
         <button onClick={handleLogout} className={styles.logoutBtn} title="Cerrar sesión">

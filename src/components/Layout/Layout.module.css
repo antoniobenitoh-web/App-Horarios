@@ -157,12 +157,12 @@
 .userName {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .userRole {
   font-size: 0.65rem;
-  color: var(--accent-primary);
+  color: #e2e8f0;
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
