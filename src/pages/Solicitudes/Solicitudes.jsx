@@ -21,6 +21,7 @@ const estadoLabel = { pendiente: 'Pendiente', aprobada: 'Aprobada', rechazada: '
 export default function Solicitudes() {
   const { user } = useAuth();
   const [solicitudes, setSolicitudes] = useState(initialSolicitudes);
+  const [promotorStats, setPromotorStats] = useState(null);
   const [filtro, setFiltro] = useState('todas');
   const [expanded, setExpanded] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -58,8 +59,25 @@ export default function Solicitudes() {
     }
   };
 
+  const fetchStats = async () => {
+    if (!GAS_URL || user.role !== 'promotor') return;
+    try {
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getPromotorStats', name: user.name, username: user.username })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPromotorStats(data.stats);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   React.useEffect(() => {
     fetchSolicitudes();
+    fetchStats();
   }, [user, GAS_URL]);
 
   React.useEffect(() => {
@@ -165,10 +183,10 @@ export default function Solicitudes() {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className={styles.header} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
         <div>
-          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Solicitudes de Cambio</h2>
-          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Gestión de modificaciones de horario</span>
+          <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Solicitudes</h2>
+          <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Gestión de días y modificaciones de horario</span>
         </div>
         {isPromotor && (
           <button className="btn btn-primary" onClick={() => setShowForm(s => !s)}>
@@ -236,6 +254,58 @@ export default function Solicitudes() {
           </button>
         ))}
       </div>
+
+      {/* Dashboard Promotor */}
+      {isPromotor && promotorStats && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+          
+          {/* Días Trabajados */}
+          <div className="card">
+            <h3 style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Días Trabajados</h3>
+            <p style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--salesland-primary)' }}>{promotorStats.diasTrabajados}</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>Desde inicio calculable</p>
+          </div>
+
+          {/* Vacaciones */}
+          <div className="card">
+            <h3 style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Vacaciones</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Generadas:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.vacaciones.generadas}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Disfrutadas:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.vacaciones.disfrutadas}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Pendientes:</span>
+              <span style={{ fontWeight: 'bold', color: promotorStats.vacaciones.pendientes < 0 ? 'var(--danger)' : 'var(--salesland-primary)' }}>
+                {promotorStats.vacaciones.pendientes}
+              </span>
+            </div>
+          </div>
+
+          {/* Sábados de Calidad */}
+          <div className="card">
+            <h3 style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Sábados de Calidad</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Generados:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.sabados.generadas}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Disfrutados:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.sabados.disfrutadas}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Pendientes:</span>
+              <span style={{ fontWeight: 'bold', color: promotorStats.sabados.pendientes < 0 ? 'var(--danger)' : 'var(--salesland-primary)' }}>
+                {promotorStats.sabados.pendientes}
+              </span>
+            </div>
+          </div>
+
+        </div>
+      )}
 
       {/* Lista */}
       <div className={styles.lista}>
