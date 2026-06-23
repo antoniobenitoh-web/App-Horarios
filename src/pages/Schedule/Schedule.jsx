@@ -189,7 +189,7 @@ export default function Schedule() {
         </div>
       </div>
 
-      <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#15305a', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem', width: 'fit-content', margin: '0 auto 1rem auto' }}>
+      <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#ffffff', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem', width: 'fit-content', margin: '0 auto 1rem auto' }}>
         <button type="button" onClick={handlePrevMonth} disabled={currentMonthIndex <= 0} style={{ background: 'transparent', border: 'none', color: currentMonthIndex <= 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: currentMonthIndex <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
           <ChevronLeft size={18} />
         </button>

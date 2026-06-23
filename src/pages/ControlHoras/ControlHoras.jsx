@@ -227,7 +227,7 @@ export default function ControlHoras() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-          <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#15305a', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', minWidth: '220px' }}>
+          <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#ffffff', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', minWidth: '220px' }}>
             <button type="button" onClick={handlePrevMonth} disabled={selectedMonth <= 0} style={{ background: 'transparent', border: 'none', color: selectedMonth <= 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: selectedMonth <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
               <ChevronLeft size={18} />
             </button>
@@ -278,9 +278,9 @@ export default function ControlHoras() {
                   onChange={e => { setFiltroRegion(e.target.value); setFiltroCentro('todos'); setSelectedPromotors([]); }}
                   style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
                 >
-                  <option value="todas" style={{ background: '#15305a', color: '#ffffff' }}>Todas las regiones</option>
+                  <option value="todas" style={{ background: '#ffffff', color: '#1e293b' }}>Todas las regiones</option>
                   {regionesDisponibles.map(r => (
-                    <option key={r} value={r} style={{ background: '#15305a', color: '#ffffff' }}>{r}</option>
+                    <option key={r} value={r} style={{ background: '#ffffff', color: '#1e293b' }}>{r}</option>
                   ))}
                 </select>
               </div>
@@ -293,9 +293,9 @@ export default function ControlHoras() {
                 onChange={e => { setFiltroCentro(e.target.value); setSelectedPromotors([]); }}
                 style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
               >
-                <option value="todos" style={{ background: '#15305a', color: '#ffffff' }}>Todos los centros</option>
+                <option value="todos" style={{ background: '#ffffff', color: '#1e293b' }}>Todos los centros</option>
                 {centrosDisponibles.map(c => (
-                  <option key={c} value={c} style={{ background: '#15305a', color: '#ffffff' }}>{c}</option>
+                  <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c}</option>
                 ))}
               </select>
             </div>

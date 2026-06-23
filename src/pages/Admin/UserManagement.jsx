@@ -232,9 +232,9 @@ export default function UserManagement() {
                 onChange={e => { setFiltroRegion(e.target.value); setFiltroCentro('todos'); }}
                 style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
               >
-                <option value="todas" style={{ background: '#15305a', color: '#ffffff' }}>Todas las regiones</option>
+                <option value="todas" style={{ background: '#ffffff', color: '#1e293b' }}>Todas las regiones</option>
                 {regionesDisponibles.map(r => (
-                  <option key={r} value={r} style={{ background: '#15305a', color: '#ffffff' }}>{r}</option>
+                  <option key={r} value={r} style={{ background: '#ffffff', color: '#1e293b' }}>{r}</option>
                 ))}
               </select>
             </div>
@@ -247,9 +247,9 @@ export default function UserManagement() {
               onChange={e => setFiltroCentro(e.target.value)}
               style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
             >
-              <option value="todos" style={{ background: '#15305a', color: '#ffffff' }}>Todos los centros</option>
+              <option value="todos" style={{ background: '#ffffff', color: '#1e293b' }}>Todos los centros</option>
               {centrosDisponibles.map(c => (
-                <option key={c} value={c} style={{ background: '#15305a', color: '#ffffff' }}>{c}</option>
+                <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c}</option>
               ))}
             </select>
           </div>

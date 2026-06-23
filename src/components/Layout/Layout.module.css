@@ -207,7 +207,7 @@
   top: calc(100% + 12px);
   right: 0;
   width: 340px;
-  background: #15305a;
+  background: #ffffff;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 16px 48px rgba(0,0,0,0.4);
@@ -317,7 +317,7 @@
 }
 
 .profileModal {
-  background: #15305a;
+  background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   width: 100%;

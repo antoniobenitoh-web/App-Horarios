@@ -4,9 +4,9 @@
   /* ─── Xiaomi x Salesland Corporate Theme ─── */
 
   /* Backgrounds */
-  --bg-primary: #f0f2f5;        /* Light page background (gris claro) */
-  --bg-secondary: #0A2472;      /* Lighter blue for data bubbles/cards */
-  --bg-tertiary: #113399;       /* Elevated surfaces */
+  --bg-primary: #f4f6f8;        /* Soft gray page background */
+  --bg-secondary: #ffffff;      /* Pure white cards */
+  --bg-tertiary: #f8fafc;       /* Elevated surfaces */
 
   /* Text (Global - Dark for Light Background) */
   --text-primary: #1e293b;
@@ -24,10 +24,10 @@
   --accent-light: rgba(255, 103, 0, 0.15);
   --accent-gradient: linear-gradient(135deg, #FF6700, #ff8c00);
 
-  /* Salesland Navy — secondary accent */
-  --salesland-primary: #01114A;
-  --salesland-hover: #052485;
-  --salesland-light: rgba(1, 17, 74, 0.25);
+  /* Salesland Corporate Navy */
+  --salesland-primary: #104A60;
+  --salesland-hover: #155a75;
+  --salesland-light: rgba(16, 74, 96, 0.25);
 
   /* Status colors */
   --success: #22c55e;
@@ -147,21 +147,18 @@ a:hover {
 .card {
   background-color: var(--bg-secondary);
   border-radius: var(--border-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 1.5rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   
-  /* Overwrite text for dark panels */
-  color: var(--text-light-primary);
-  --text-primary: var(--text-light-primary);
-  --text-secondary: var(--text-light-secondary);
-  --text-tertiary: var(--text-light-tertiary);
+  /* Text for light panels */
+  color: var(--text-primary);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .glass-panel {
