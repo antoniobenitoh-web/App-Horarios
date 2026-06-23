@@ -249,52 +249,96 @@ export default function Solicitudes() {
           {/* Días Trabajados */}
           <div className="card">
             <h3 style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Días Trabajados</h3>
-            <p style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--salesland-primary)' }}>{promotorStats.diasTrabajados}</p>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>Desde inicio calculable</p>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <p style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--salesland-primary)', lineHeight: '1.2' }}>{promotorStats.diasTrabajados.hoy}</p>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Días hasta fecha actual</p>
+            </div>
+            
+            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Hasta fin de año (2026):</span>
+                <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.diasTrabajados.finDeAno}</span>
+              </div>
+            </div>
           </div>
 
           {/* Vacaciones */}
           <div className="card">
             <h3 style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Vacaciones</h3>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Generadas:</span>
-              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.vacaciones.generadas}</span>
+            
+            <div style={{ marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px dashed var(--border-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Disponibles hasta fin de año (2026):</span>
+                <span style={{ fontWeight: 'bold', color: 'var(--salesland-primary)' }}>{promotorStats.vacaciones.generadasFinDeAno}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>A día de hoy:</span>
+                <span style={{ fontWeight: 'bold', color: 'var(--text-primary)', fontSize: '0.85rem' }}>{promotorStats.vacaciones.generadasHoy}</span>
+              </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Disfrutadas:</span>
-              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.vacaciones.disfrutadas}</span>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Aprobadas:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.vacaciones.aprobadas}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Pendientes:</span>
-              <span style={{ fontWeight: 'bold', color: promotorStats.vacaciones.pendientes < 0 ? 'var(--danger)' : 'var(--salesland-primary)' }}>
-                {promotorStats.vacaciones.pendientes}
-              </span>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Pendientes (Total 2026):</span>
+                <span style={{ fontWeight: 'bold', color: promotorStats.vacaciones.pendientesFinDeAno < 0 ? 'var(--danger)' : 'var(--salesland-primary)' }}>
+                  {promotorStats.vacaciones.pendientesFinDeAno}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Pendientes (A día de hoy):</span>
+                <span style={{ fontWeight: 'bold', color: promotorStats.vacaciones.pendientesHoy < 0 ? 'var(--danger)' : 'var(--text-primary)', fontSize: '0.85rem' }}>
+                  {promotorStats.vacaciones.pendientesHoy}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Sábados de Calidad */}
           <div className="card">
             <h3 style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Sábados de Calidad</h3>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Generados:</span>
-              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.sabados.generadas}</span>
+            
+            <div style={{ marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px dashed var(--border-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Disponibles hasta fin de año (2026):</span>
+                <span style={{ fontWeight: 'bold', color: 'var(--salesland-primary)' }}>{promotorStats.sabados.generadasFinDeAno}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>A día de hoy:</span>
+                <span style={{ fontWeight: 'bold', color: 'var(--text-primary)', fontSize: '0.85rem' }}>{promotorStats.sabados.generadasHoy}</span>
+              </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Disfrutados:</span>
-              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.sabados.disfrutadas}</span>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>Aprobados:</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{promotorStats.sabados.aprobadas}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Pendientes:</span>
-              <span style={{ fontWeight: 'bold', color: promotorStats.sabados.pendientes < 0 ? 'var(--danger)' : 'var(--salesland-primary)' }}>
-                {promotorStats.sabados.pendientes}
-              </span>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>Pendientes (Total 2026):</span>
+                <span style={{ fontWeight: 'bold', color: promotorStats.sabados.pendientesFinDeAno < 0 ? 'var(--danger)' : 'var(--salesland-primary)' }}>
+                  {promotorStats.sabados.pendientesFinDeAno}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Pendientes (A día de hoy):</span>
+                <span style={{ fontWeight: 'bold', color: promotorStats.sabados.pendientesHoy < 0 ? 'var(--danger)' : 'var(--text-primary)', fontSize: '0.85rem' }}>
+                  {promotorStats.sabados.pendientesHoy}
+                </span>
+              </div>
             </div>
           </div>
 
         </div>
       )}
 
-            {/* Contenedor Principal de Solicitudes */}
+      {/* Contenedor Principal de Solicitudes */}
       <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
           {/* Filtros */}
