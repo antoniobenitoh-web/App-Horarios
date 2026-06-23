@@ -242,19 +242,6 @@ export default function Solicitudes() {
         </div>
       )}
 
-      {/* Filtros */}
-      <div className={styles.filtros}>
-        {['todas', 'pendiente', 'aprobada', 'rechazada'].map(f => (
-          <button key={f} className={`${styles.filtroBtn} ${filtro === f ? styles.filtroActivo : ''}`}
-            onClick={() => setFiltro(f)}>
-            {f.charAt(0).toUpperCase() + f.slice(1)}
-            <span className={styles.filtroCount}>
-              {f === 'todas' ? solicitudes.length : solicitudes.filter(s => s.estado === f).length}
-            </span>
-          </button>
-        ))}
-      </div>
-
       {/* Dashboard Promotor */}
       {isPromotor && promotorStats && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
@@ -307,7 +294,25 @@ export default function Solicitudes() {
         </div>
       )}
 
-      {/* Lista */}
+            {/* Contenedor Principal de Solicitudes */}
+      <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
+          {/* Filtros */}
+          <div className={styles.filtros} style={{ margin: 0 }}>
+            {['todas', 'pendiente', 'aprobada', 'rechazada'].map(f => (
+              <button key={f} className={`${styles.filtroBtn} ${filtro === f ? styles.filtroActivo : ''}`}
+                onClick={() => setFiltro(f)}>
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+                <span className={styles.filtroCount}>
+                  {f === 'todas' ? solicitudes.length : solicitudes.filter(s => s.estado === f).length}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ padding: '1.5rem', backgroundColor: 'transparent' }}>
+          {/* Lista */}
+
       <div className={styles.lista}>
         {loading ? (
           <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
@@ -431,6 +436,8 @@ export default function Solicitudes() {
             <p>No hay solicitudes con este filtro.</p>
           </div>
         )}
+      </div>
+      </div>
       </div>
     </div>
   );
