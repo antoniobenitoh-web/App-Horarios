@@ -230,7 +230,7 @@ export default function UserManagement() {
               <select 
                 value={filtroRegion} 
                 onChange={e => { setFiltroRegion(e.target.value); setFiltroCentro('todos'); }}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
               >
                 <option value="todas" style={{ background: '#ffffff', color: '#1e293b' }}>Todas las regiones</option>
                 {regionesDisponibles.map(r => (
@@ -245,7 +245,7 @@ export default function UserManagement() {
             <select 
               value={filtroCentro} 
               onChange={e => setFiltroCentro(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
             >
               <option value="todos" style={{ background: '#ffffff', color: '#1e293b' }}>Todos los centros</option>
               {centrosDisponibles.map(c => (
@@ -257,7 +257,7 @@ export default function UserManagement() {
           <div style={{ flex: '1 1 200px', position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
             <input
-              style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-light-primary)', padding: '0.5rem 0.8rem 0.5rem 2.2rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem', outline: 'none' }}
+              style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', padding: '0.5rem 0.8rem 0.5rem 2.2rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem', outline: 'none' }}
               type="text"
               placeholder="Buscar por nombre o usuario..."
               value={busquedaNombre}

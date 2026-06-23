@@ -19,10 +19,10 @@
   --text-light-tertiary: #cbd5e1;
 
   /* Xiaomi Orange — primary accent */
-  --accent-primary: #FF6700;
-  --accent-hover: #e05c00;
-  --accent-light: rgba(255, 103, 0, 0.15);
-  --accent-gradient: linear-gradient(135deg, #FF6700, #ff8c00);
+  --accent-primary: #0d6386;
+  --accent-hover: #094359;
+  --accent-light: rgba(13, 99, 134, 0.15);
+  --accent-gradient: linear-gradient(135deg, #0d6386, #094359);
 
   /* Salesland Corporate Navy */
   --salesland-primary: #094359;

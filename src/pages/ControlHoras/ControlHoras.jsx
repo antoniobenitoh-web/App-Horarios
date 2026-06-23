@@ -228,13 +228,13 @@ export default function ControlHoras() {
         
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
           <div className={styles.monthSelector} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: '#ffffff', padding: '0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid rgba(255,255,255,0.05)', minWidth: '220px' }}>
-            <button type="button" onClick={handlePrevMonth} disabled={selectedMonth <= 0} style={{ background: 'transparent', border: 'none', color: selectedMonth <= 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: selectedMonth <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+            <button type="button" onClick={handlePrevMonth} disabled={selectedMonth <= 0} style={{ background: 'transparent', border: 'none', color: selectedMonth <= 0 ? 'rgba(0,0,0,0.1)' : 'var(--salesland-primary)', cursor: selectedMonth <= 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
               <ChevronLeft size={18} />
             </button>
             <span style={{ fontWeight: '600', fontSize: '0.9rem', color: 'var(--accent-primary)', minWidth: '100px', textAlign: 'center', flex: 1 }}>
               {getMonthNameYear(selectedMonth)}
             </span>
-            <button type="button" onClick={handleNextMonth} disabled={selectedMonth >= 11} style={{ background: 'transparent', border: 'none', color: selectedMonth >= 11 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.85)', cursor: selectedMonth >= 11 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
+            <button type="button" onClick={handleNextMonth} disabled={selectedMonth >= 11} style={{ background: 'transparent', border: 'none', color: selectedMonth >= 11 ? 'rgba(0,0,0,0.1)' : 'var(--salesland-primary)', cursor: selectedMonth >= 11 ? 'default' : 'pointer', display: 'flex', alignItems: 'center' }}>
               <ChevronRight size={18} />
             </button>
           </div>
@@ -251,7 +251,7 @@ export default function ControlHoras() {
       {user.role !== 'promotor' && (
         <div className="card" style={{ marginBottom: '1.5rem', padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--text-light-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Users size={18} color="var(--accent-primary)" />
               Selección de Equipo
             </h3>
@@ -276,7 +276,7 @@ export default function ControlHoras() {
                 <select 
                   value={filtroRegion} 
                   onChange={e => { setFiltroRegion(e.target.value); setFiltroCentro('todos'); setSelectedPromotors([]); }}
-                  style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
                 >
                   <option value="todas" style={{ background: '#ffffff', color: '#1e293b' }}>Todas las regiones</option>
                   {regionesDisponibles.map(r => (
@@ -291,7 +291,7 @@ export default function ControlHoras() {
               <select 
                 value={filtroCentro} 
                 onChange={e => { setFiltroCentro(e.target.value); setSelectedPromotors([]); }}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-light-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: '500', cursor: 'pointer', width: '100%' }}
               >
                 <option value="todos" style={{ background: '#ffffff', color: '#1e293b' }}>Todos los centros</option>
                 {centrosDisponibles.map(c => (
@@ -303,7 +303,7 @@ export default function ControlHoras() {
             <div style={{ flex: '1 1 200px', position: 'relative' }}>
               <Search size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
               <input
-                style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-light-primary)', padding: '0.5rem 0.8rem 0.5rem 2.2rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem', outline: 'none' }}
+                style={{ width: '100%', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', padding: '0.5rem 0.8rem 0.5rem 2.2rem', borderRadius: 'var(--border-radius-md)', fontSize: '0.85rem', outline: 'none' }}
                 type="text"
                 placeholder="Buscar promotor..."
                 value={busqueda}
