@@ -65,7 +65,7 @@ function App() {
             <Route path="horario" element={<Schedule />} />
             <Route path="solicitudes" element={<Solicitudes />} />
             <Route path="equipo" element={<ErrorBoundary><Equipo /></ErrorBoundary>} />
-            <Route path="horas" element={<ErrorBoundary><ControlHoras /></ErrorBoundary>} />
+            <Route path="horas" element={<ErrorBoundary><ControlHoras /></ErrorBoundary>} />\n            <Route path="control-equipo" element={<ErrorBoundary><ControlEquipo /></ErrorBoundary>} />
             <Route path="usuarios" element={<UserManagement />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

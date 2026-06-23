@@ -156,6 +156,13 @@ export default function Topbar() {
               <Clock size={18} />
               <span>Control Horas</span>
             </NavLink>
+
+            {(user.role === "gpv" || user.role === "am" || user.role === "coordinadora" || user.role === "administradora") && (
+              <NavLink to="/control-equipo" className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}>
+                <Users size={18} />
+                <span>Control Equipo</span>
+              </NavLink>
+            )}
           </>
         )}
 
