@@ -87,8 +87,8 @@ export default function ControlEquipo() {
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <Users size={32} color="var(--salesland-primary)" />
           <div>
-            <h1 style={{ margin: 0 }}>Control Equipo</h1>
-            <p style={{ margin: 0, color: "var(--text-secondary)" }}>Visión global del estado de promotores</p>
+            <h2 style={{ color: 'var(--accent-primary)', fontSize: '1.4rem', marginBottom: '0.2rem' }}>Control Equipo</h2>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Visión global del estado de promotores</span>
           </div>
         </div>
       </div>
