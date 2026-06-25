@@ -405,7 +405,7 @@ export default function Equipo() {
 
                       {/* HORARIO SEMANAL (Desplegado si el promotor está activo) */}
                       {promotorExpanded[p.id] && (
-                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(0,0,0,0.15)' }}>
+                        <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'var(--bg-tertiary)' }}>
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
                               {p.semana?.map((dia, dIdx) => {
@@ -419,16 +419,16 @@ export default function Equipo() {
                                 else if (lowerHoras.includes('vacaciones')) { rowBg = 'rgba(124,58,237,0.15)'; }
                                 else if (lowerHoras.includes('baja')) { rowBg = 'rgba(220,38,38,0.15)'; }
 
-                                // We assume the date is somewhat parsable or we rely on dIdx compared to today?
-                                // In Equipo.jsx, diaSemana is "Lunes 22". We might not have the full date in `dia` unless the backend sends it. 
-                                // Let's just use the background coloring.
-                                
+                                const isPast = dia.fecha && dia.fecha < todayIso;
+                                const pastStyle = isPast ? { opacity: 0.55, filter: 'grayscale(0.5)' } : {};
+
                                 return (
                                 <div key={dIdx} style={{ 
                                   display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
                                   padding: '0.5rem 0.75rem', 
                                   background: rowBg,
-                                  borderBottom: dIdx < p.semana.length - 1 ? '1px solid var(--border-color)' : 'none'
+                                  borderBottom: dIdx < p.semana.length - 1 ? '1px solid var(--border-color)' : 'none',
+                                  ...pastStyle
                                 }}>
                                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', width: '30%' }}>
                                     {dia.diaSemana}
