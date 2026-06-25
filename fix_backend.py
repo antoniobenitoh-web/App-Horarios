@@ -1,121 +1,114 @@
-import os
+import re
 
-filepath = "/Users/tony/.gemini/antigravity/brain/98abe59f-933a-438e-9ef2-58c71e22ca6d/Codigo_Servidor_Final.js"
-with open(filepath, "r", encoding="utf-8") as f:
-    content = f.read()
+with open('/Users/tony/.gemini/antigravity/brain/98abe59f-933a-438e-9ef2-58c71e22ca6d/Codigo_Servidor_Final.js', 'r', encoding='utf-8') as f:
+    lines = f.readlines()
 
-function_code = """
-/* ======== ESTADÍSTICAS PROMOTOR (VACACIONES/SÁBADOS) ======== */
+start_idx = -1
+end_idx = -1
 
-function handleGetPromotorStats(data) {
-  const { name, username } = data;
-  const safeName = String(name).trim().toLowerCase();
-  
-  const sheetUsers = getSheet(SHEET_USERS);
-  const rowsUsers = sheetUsers.getDataRange().getValues();
-  let fechaIncorporacionStr = null;
-  let multiplicadorStr = "0.08";
-  
-  for (let i = 1; i < rowsUsers.length; i++) {
-    const rowUser = String(rowsUsers[i][2]).trim().toLowerCase();
-    const rowName = String(rowsUsers[i][1]).trim().toLowerCase();
-    if (rowUser === String(username).trim().toLowerCase() || rowName === safeName) {
-      fechaIncorporacionStr = rowsUsers[i][11]; 
-      if (rowsUsers[i][14] !== undefined && rowsUsers[i][14] !== "") {
-        multiplicadorStr = String(rowsUsers[i][14]).trim().replace(",", ".");
-      }
-      break;
-    }
-  }
+for i, line in enumerate(lines):
+    if "else if (tipo === 'sabado_calidad') {" in line:
+        start_idx = i
+        break
 
-  let multiplicador = parseFloat(multiplicadorStr) || 0.08;
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  let baseDate = new Date(currentYear, 0, 1);
-  
-  if (fechaIncorporacionStr) {
-    let incDate;
-    if (fechaIncorporacionStr instanceof Date) {
-      incDate = fechaIncorporacionStr;
-    } else {
-      const parts = String(fechaIncorporacionStr).trim().match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-      if (parts) {
-        incDate = new Date(parts[3], parseInt(parts[2])-1, parts[1]);
-      } else {
-        incDate = new Date(fechaIncorporacionStr);
-      }
-    }
-    if (!isNaN(incDate) && incDate.getFullYear() === currentYear) {
-      baseDate = incDate;
-    }
-  }
-  
-  const diffTime = today.getTime() - baseDate.getTime();
-  let diasTrabajados = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-  if (diasTrabajados < 0) diasTrabajados = 0;
-  
-  const vacacionesGeneradas = Math.round((diasTrabajados * multiplicador) * 10) / 10;
-  const sabadosGeneradas = Math.round(((6 / 365) * diasTrabajados) * 10) / 10;
-  
-  let vacacionesDisfrutadas = 0;
-  let sabadosDisfrutados = 0;
-  const loadedDays = new Set();
-  
-  const sheetSchedule = getSheet(SHEET_SCHEDULE);
-  const rowsSchedule = sheetSchedule.getDataRange().getValues();
-  for (let i = 1; i < rowsSchedule.length; i++) {
-    const rowName = String(rowsSchedule[i][0]).trim().toLowerCase();
-    if (rowName === safeName) {
-      const hDate = formatSheetDate(rowsSchedule[i][2]);
-      if (hDate.startsWith(currentYear.toString())) {
-        loadedDays.add(hDate);
-        const horarioText = String(rowsSchedule[i][6]).trim().toLowerCase();
-        if (horarioText.includes("vacacion") || horarioText.includes("vacación")) {
-          vacacionesDisfrutadas++;
-        } else if (horarioText.includes("sabado de calidad") || horarioText.includes("sábado de calidad") || horarioText.includes("calidad")) {
-          sabadosDisfrutados++;
-        }
-      }
-    }
-  }
-  
-  const sheetSols = getSheet(SHEET_SOLICITUDES);
-  const rowsSols = sheetSols.getDataRange().getValues();
-  for (let i = 1; i < rowsSols.length; i++) {
-    const sName = String(rowsSols[i][2]).trim().toLowerCase();
-    const estado = String(rowsSols[i][7]).trim().toLowerCase();
-    if (sName === safeName && estado === 'aprobada') {
-      const sDate = formatSheetDate(rowsSols[i][3]);
-      if (sDate.startsWith(currentYear.toString())) {
-        if (!loadedDays.has(sDate)) {
-          const motivo = String(rowsSols[i][6]).trim().toLowerCase();
-          const reqHorario = String(rowsSols[i][5]).trim().toLowerCase();
-          if (motivo.includes("vacacion") || motivo.includes("vacación") || reqHorario.includes("vacacion") || reqHorario.includes("vacación")) {
-            vacacionesDisfrutadas++;
-          } else if (motivo.includes("calidad") || reqHorario.includes("calidad")) {
-            sabadosDisfrutados++;
+# Find where the block ends. We know the next lines after the block are:
+# if (updates.aprobadaPor !== undefined) sheet.getRange(i + 1, 10).setValue(updates.aprobadaPor);
+for i in range(start_idx, len(lines)):
+    if "if (updates.aprobadaPor !== undefined) sheet.getRange" in lines[i]:
+        end_idx = i
+        break
+
+# The block to replace
+new_code = """          } else if (tipo === 'sabado_calidad') {
+             const sabDateStr = diaAfectado || reqData.fechaInicio || reqData.horarioSolicitado;
+             const targetWeek = getWeekOfDate(sabDateStr);
+             
+             // Encontrar Centro
+             let miCentro = "";
+             for (let u = 1; u < usersRows.length; u++) {
+               if (String(usersRows[u][1]).trim().toLowerCase() === safeNameLower) {
+                 miCentro = String(usersRows[u][10]).trim().toLowerCase();
+                 break;
+               }
+             }
+             
+             if (miCentro) {
+               // Encontrar dia de descanso del solicitante
+               let miDescansoDate = "";
+               for (let j = 1; j < horariosRows.length; j++) {
+                 const hName = String(horariosRows[j][0]).trim().toLowerCase();
+                 const dStr = formatSheetDate(horariosRows[j][2]);
+                 if (hName === safeNameLower && getWeekOfDate(dStr) === targetWeek) {
+                    const dDate = new Date(dStr);
+                    const dayOfWeek = dDate.getDay(); // 0 is Sunday, 1 is Monday... 6 is Saturday
+                    if (dayOfWeek >= 1 && dayOfWeek <= 6) { // Lunes a Sábado
+                      const hHorario = String(horariosRows[j][6]).trim().toLowerCase();
+                      if (hHorario.includes('day off') || hHorario.includes('descanso')) {
+                         miDescansoDate = dStr;
+                      }
+                    }
+                 }
+               }
+               
+               if (miDescansoDate && miDescansoDate !== sabDateStr) {
+                  const originalData = {}; 
+                  
+                  for (let j = 1; j < horariosRows.length; j++) {
+                    const hUser = String(horariosRows[j][0]).trim().toLowerCase();
+                    const dStr = formatSheetDate(horariosRows[j][2]);
+                    
+                    if (getWeekOfDate(dStr) === targetWeek) {
+                       let isCentro = false;
+                       for (let u = 1; u < usersRows.length; u++) {
+                         if (String(usersRows[u][1]).trim().toLowerCase() === hUser && String(usersRows[u][10]).trim().toLowerCase() === miCentro) {
+                           isCentro = true; break;
+                         }
+                       }
+                       
+                       if (isCentro) {
+                         if (!originalData[hUser]) originalData[hUser] = {};
+                         if (dStr === sabDateStr) {
+                           originalData[hUser].sabRow = j;
+                           originalData[hUser].sabHorario = horariosRows[j][6];
+                           originalData[hUser].sabHoras = horariosRows[j][7];
+                         } else if (dStr === miDescansoDate) {
+                           originalData[hUser].descRow = j;
+                           originalData[hUser].descHorario = horariosRows[j][6];
+                           originalData[hUser].descHoras = horariosRows[j][7];
+                         }
+                       }
+                    }
+                  }
+                  
+                  // Hacer SWAP a todos los del centro
+                  for (const hUser in originalData) {
+                    const userOrig = originalData[hUser];
+                    if (userOrig.sabRow && userOrig.descRow) {
+                      // El horario del sábado pasa al día de descanso (ej. jueves)
+                      sheetHorarios.getRange(userOrig.descRow + 1, 7).setValue(userOrig.sabHorario);
+                      sheetHorarios.getRange(userOrig.descRow + 1, 8).setValue(userOrig.sabHoras);
+                      
+                      // El horario del día de descanso pasa al sábado
+                      if (hUser === safeNameLower) {
+                        sheetHorarios.getRange(userOrig.sabRow + 1, 7).setValue("Sábado calidad");
+                        sheetHorarios.getRange(userOrig.sabRow + 1, 8).setValue(0);
+                      } else {
+                        sheetHorarios.getRange(userOrig.sabRow + 1, 7).setValue(userOrig.descHorario);
+                        sheetHorarios.getRange(userOrig.sabRow + 1, 8).setValue(userOrig.descHoras);
+                      }
+                    }
+                  }
+               }
+             }
           }
         }
       }
-    }
-  }
-
-  const vacacionesPendientes = Math.round((vacacionesGeneradas - vacacionesDisfrutadas) * 10) / 10;
-  const sabadosPendientes = Math.round((sabadosGeneradas - sabadosDisfrutados) * 10) / 10;
-
-  return jsonResponse({
-    success: true,
-    stats: {
-      diasTrabajados,
-      vacaciones: { generadas: vacacionesGeneradas, disfrutadas: vacacionesDisfrutadas, pendientes: vacacionesPendientes },
-      sabados: { generadas: sabadosGeneradas, disfrutadas: sabadosDisfrutados, pendientes: sabadosPendientes }
-    }
-  });
-}
+      
 """
 
-if "function handleGetPromotorStats(data)" not in content:
-    content += "\n" + function_code
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(content)
-    print("Fixed!")
+lines = lines[:start_idx] + [new_code] + lines[end_idx:]
+
+with open('/Users/tony/.gemini/antigravity/brain/98abe59f-933a-438e-9ef2-58c71e22ca6d/Codigo_Servidor_Final.js', 'w', encoding='utf-8') as f:
+    f.writelines(lines)
+    
+print("Successfully replaced.")
