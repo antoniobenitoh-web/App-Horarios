@@ -25,7 +25,16 @@ export default function Solicitudes() {
   const [filtro, setFiltro] = useState('todas');
   const [expanded, setExpanded] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ dia: '', horarioActual: '', horarioSolicitado: '', motivo: '' });
+  const [form, setForm] = useState({ 
+    tipo: 'cambio_turno', 
+    dia: '', 
+    horarioActual: '', 
+    horarioSolicitado: '', 
+    horasRealizar: '', 
+    fechaInicio: '', 
+    fechaFin: '', 
+    motivo: '' 
+  });
   const [submitted, setSubmitted] = useState(false);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const location = useLocation();
@@ -95,7 +104,7 @@ export default function Solicitudes() {
 
   const handleDateChange = async (e) => {
     const newDate = e.target.value;
-    setForm({ ...form, dia: newDate, horarioActual: 'Buscando...' });
+    setForm(prev => ({ ...prev, dia: newDate, horarioActual: 'Buscando...' }));
     
     if (newDate && GAS_URL) {
       setLoadingSchedule(true);
@@ -122,12 +131,25 @@ export default function Solicitudes() {
     e.preventDefault();
     if (!GAS_URL) return;
 
+    let payloadDetails = { ...form };
+    let jsonHorarioSolicitado = form.horarioSolicitado;
+    
+    if (form.tipo === 'cambio_turno' || form.tipo === 'vacaciones' || form.tipo === 'sabado_calidad') {
+      jsonHorarioSolicitado = JSON.stringify({
+        tipo: form.tipo,
+        horarioSolicitado: form.horarioSolicitado,
+        horasRealizar: form.horasRealizar,
+        fechaInicio: form.fechaInicio,
+        fechaFin: form.fechaFin
+      });
+    }
+
     const solicitud = {
       promotorUsername: user.username,
       promotorName: user.name,
-      dia: form.dia,
-      horarioActual: form.horarioActual,
-      horarioSolicitado: form.horarioSolicitado,
+      dia: form.dia || form.fechaInicio || new Date().toISOString().split('T')[0],
+      horarioActual: form.horarioActual || '-',
+      horarioSolicitado: jsonHorarioSolicitado,
       motivo: form.motivo,
       fechaCreacion: new Date().toLocaleDateString('sv-SE') // Uses YYYY-MM-DD natively
     };
@@ -141,7 +163,10 @@ export default function Solicitudes() {
       if (data.success) {
         await fetchSolicitudes();
         setShowForm(false);
-        setForm({ dia: '', horarioActual: '', horarioSolicitado: '', motivo: '' });
+        setForm({ 
+          tipo: 'cambio_turno', dia: '', horarioActual: '', horarioSolicitado: '', 
+          horasRealizar: '', fechaInicio: '', fechaFin: '', motivo: '' 
+        });
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3000);
       }
@@ -207,31 +232,80 @@ export default function Solicitudes() {
       {showForm && (
         <div className={`card ${styles.formCard}`}>
           <h3 style={{ marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '0.75rem' }}>
-            Nueva Solicitud de Cambio
+            Nueva Solicitud
           </h3>
           <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.formRow}>
-              <div className="input-group">
-                <label className="input-label">Día afectado</label>
-                <input className="input-field" type="date"
-                  value={form.dia} onChange={handleDateChange} required />
-              </div>
-              <div className="input-group">
-                <label className="input-label">Horario actual</label>
-                <input className="input-field" type="text"
-                  value={form.horarioActual} readOnly
-                  style={{ backgroundColor: 'rgba(255,255,255,0.02)', color: 'var(--text-tertiary)', cursor: 'not-allowed' }}
-                  placeholder="Se autocompleta al elegir fecha" />
-              </div>
-              <div className="input-group">
-                <label className="input-label">Horario solicitado</label>
-                <input className="input-field" type="text" placeholder="ej: 12:00 - 20:00"
-                  value={form.horarioSolicitado} onChange={e => setForm({ ...form, horarioSolicitado: e.target.value })} required />
-              </div>
+            <div className="input-group" style={{ marginBottom: '1rem' }}>
+              <label className="input-label">Motivo (Tipo de solicitud)</label>
+              <select className="input-field" value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })}>
+                <option value="cambio_turno">Cambio de turno</option>
+                <option value="vacaciones">Vacaciones</option>
+                <option value="sabado_calidad">Sábado de calidad</option>
+              </select>
             </div>
-            <div className="input-group">
-              <label className="input-label">Motivo</label>
-              <textarea className={`input-field ${styles.textarea}`} placeholder="Explica el motivo del cambio..."
+            
+            {form.tipo === 'cambio_turno' && (
+              <div className={styles.formRow}>
+                <div className="input-group">
+                  <label className="input-label">Día afectado</label>
+                  <input className="input-field" type="date"
+                    value={form.dia} onChange={handleDateChange} required />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Horario actual</label>
+                  <input className="input-field" type="text"
+                    value={form.horarioActual} readOnly
+                    style={{ backgroundColor: 'rgba(255,255,255,0.02)', color: 'var(--text-tertiary)', cursor: 'not-allowed' }}
+                    placeholder="Se autocompleta al elegir fecha" />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Horario solicitado</label>
+                  <input className="input-field" type="text" placeholder="ej: 12:00 - 20:00"
+                    value={form.horarioSolicitado} onChange={e => setForm({ ...form, horarioSolicitado: e.target.value })} required />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Horas a realizar</label>
+                  <input className="input-field" type="number" step="0.5" placeholder="ej: 8"
+                    value={form.horasRealizar} onChange={e => setForm({ ...form, horasRealizar: e.target.value })} required />
+                </div>
+              </div>
+            )}
+
+            {form.tipo === 'vacaciones' && (
+              <div className={styles.formRow}>
+                <div className="input-group">
+                  <label className="input-label">Fecha inicial</label>
+                  <input className="input-field" type="date"
+                    value={form.fechaInicio} onChange={e => setForm({ ...form, fechaInicio: e.target.value })} required />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Fecha fin</label>
+                  <input className="input-field" type="date"
+                    value={form.fechaFin} onChange={e => setForm({ ...form, fechaFin: e.target.value })} required />
+                </div>
+              </div>
+            )}
+
+            {form.tipo === 'sabado_calidad' && (
+              <div className={styles.formRow}>
+                <div className="input-group">
+                  <label className="input-label">Sábado petición</label>
+                  <input className="input-field" type="date"
+                    value={form.dia} onChange={e => {
+                      const d = new Date(e.target.value);
+                      if (d.getDay() !== 6 && e.target.value !== '') {
+                        alert("Solo puedes seleccionar un Sábado.");
+                        return;
+                      }
+                      setForm({ ...form, dia: e.target.value });
+                    }} required />
+                </div>
+              </div>
+            )}
+
+            <div className="input-group" style={{ marginTop: '1rem' }}>
+              <label className="input-label">Justificación / Motivo</label>
+              <textarea className={`input-field ${styles.textarea}`} placeholder="Explica el motivo de la petición..."
                 value={form.motivo} onChange={e => setForm({ ...form, motivo: e.target.value })} required />
             </div>
             <div className={styles.formActions}>
@@ -366,11 +440,30 @@ export default function Solicitudes() {
           <div className="card" style={{ textAlign: 'center', padding: '2rem', color: 'var(--danger)' }}>
             <p>Error: {error}</p>
           </div>
-        ) : lista.map(sol => (
+        ) : lista.map(sol => {
+          let details = null;
+          try {
+            if (sol.horarioSolicitado && sol.horarioSolicitado.startsWith('{')) {
+              details = JSON.parse(sol.horarioSolicitado);
+            }
+          } catch(e) {}
+          
+          const isOld = !details;
+          const tipo = details ? details.tipo : 'cambio_turno';
+          
+          let tipoLabel = 'Cambio Turno';
+          let tipoColor = 'var(--info)';
+          if (tipo === 'vacaciones') { tipoLabel = 'Vacaciones'; tipoColor = '#7c3aed'; }
+          else if (tipo === 'sabado_calidad') { tipoLabel = 'Sábado Calidad'; tipoColor = 'var(--accent-primary)'; }
+          
+          return (
           <div key={sol.id} className={`card ${styles.solicitudCard}`}>
             <div className={styles.solicitudHeader} onClick={() => setExpanded(expanded === sol.id ? null : sol.id)}>
               <div className={styles.solicitudMeta}>
                 <span className={styles.solicitudId}>Solicitud #{sol.id}</span>
+                <span style={{ backgroundColor: `${tipoColor}20`, color: tipoColor, padding: '0.2rem 0.5rem', borderRadius: 'var(--border-radius-sm)', fontSize: '0.7rem', fontWeight: 'bold' }}>
+                  {tipoLabel}
+                </span>
                 <div className={`${styles.badge} ${estadoBadge[sol.estado]}`}>
                   {estadoIcon[sol.estado]}
                   {estadoLabel[sol.estado]}
@@ -398,8 +491,15 @@ export default function Solicitudes() {
               </div>
               <div className={styles.solicitudInfo}>
                 <span><User size={14} /> {sol.promotor}</span>
-                <span><CalendarDays size={14} /> {sol.dia}</span>
-                <span><Clock size={14} /> {sol.horarioSolicitado}</span>
+                {tipo === 'vacaciones' ? (
+                  <span><CalendarDays size={14} /> {details.fechaInicio} al {details.fechaFin}</span>
+                ) : (
+                  <span><CalendarDays size={14} /> {sol.dia}</span>
+                )}
+                
+                {tipo === 'cambio_turno' && (
+                  <span><Clock size={14} /> {isOld ? sol.horarioSolicitado : details.horarioSolicitado} ({details?.horasRealizar || '-'}h)</span>
+                )}
               </div>
               <button className={styles.expandBtn}>
                 {expanded === sol.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -408,17 +508,19 @@ export default function Solicitudes() {
 
             {expanded === sol.id && (
               <div className={styles.solicitudDetalle}>
-                <div className={styles.detalleGrid}>
-                  <div className={styles.detalleItem}>
-                    <span className={styles.detalleLabel}>Horario Actual</span>
-                    <span className={styles.detalleValor}>{sol.horarioActual}</span>
+                {tipo === 'cambio_turno' && (
+                  <div className={styles.detalleGrid}>
+                    <div className={styles.detalleItem}>
+                      <span className={styles.detalleLabel}>Horario Actual</span>
+                      <span className={styles.detalleValor}>{sol.horarioActual}</span>
+                    </div>
+                    <div className={styles.detalleArrow}>→</div>
+                    <div className={styles.detalleItem}>
+                      <span className={styles.detalleLabel}>Horario Solicitado</span>
+                      <span className={`${styles.detalleValor} ${styles.detalleNuevo}`}>{isOld ? sol.horarioSolicitado : details.horarioSolicitado}</span>
+                    </div>
                   </div>
-                  <div className={styles.detalleArrow}>→</div>
-                  <div className={styles.detalleItem}>
-                    <span className={styles.detalleLabel}>Horario Solicitado</span>
-                    <span className={`${styles.detalleValor} ${styles.detalleNuevo}`}>{sol.horarioSolicitado}</span>
-                  </div>
-                </div>
+                )}
                 <div className={styles.motivoBox}>
                   <MessageSquare size={16} />
                   <p>{sol.motivo}</p>
@@ -473,7 +575,7 @@ export default function Solicitudes() {
               </div>
             )}
           </div>
-        ))}
+        )})}
         {!loading && !error && lista.length === 0 && (
           <div className={styles.emptyState}>
             <CalendarDays size={40} />
