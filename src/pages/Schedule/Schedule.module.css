@@ -647,3 +647,12 @@
     word-break: break-word;
   }
 }
+
+.pastDay {
+  opacity: 0.55;
+  filter: grayscale(0.5);
+}
+.pastDayRow {
+  opacity: 0.55;
+  filter: grayscale(0.5);
+}

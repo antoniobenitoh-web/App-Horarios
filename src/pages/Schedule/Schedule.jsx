@@ -29,6 +29,17 @@ export default function Schedule() {
   const [horarioMes, setHorarioMes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const todayIso = new Date().toISOString().split('T')[0];
+  const getIsoFromDateString = (dateStr) => {
+    if (!dateStr) return '';
+    if (dateStr.includes('-')) return dateStr;
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+    return '';
+  };
   const [confirmedWeeks, setConfirmedWeeks] = useState(() => {
     try {
       const stored = localStorage.getItem(`confirmed_v2_${user.name}`);
@@ -248,16 +259,19 @@ export default function Schedule() {
 
                   const isSpecial = !!specialColor;
 
+                  const cellIso = getIsoFromDateString(shift.fecha);
+                  const isPast = cellIso && cellIso < todayIso;
+
                   return (
-                    <div key={`${wIdx}-${dIdx}`} className={styles.calendarCell}>
-                      <span className={styles.calendarDate}>{dateNum}</span>
+                    <div key={`${wIdx}-${dIdx}`} className={`${styles.calendarCell} ${isPast ? styles.pastDay : ''}`} style={{ backgroundColor: isSpecial ? specialColor : cfg.bg }}>
+                      <span className={styles.calendarDate} style={{ color: isSpecial ? '#fff' : 'var(--text-primary)' }}>{dateNum}</span>
                       {!isSpecial ? (
                         <div className={styles.calendarEvent} style={{ '--event-color': cfg.color }}>
                           <span className={styles.calendarHours}>{shift.horas}</span>
                           <span className={styles.calendarShift} style={{ color: cfg.color }}>{shiftType}</span>
                         </div>
                       ) : (
-                        <div className={styles.calendarSpecial} style={{ backgroundColor: specialColor }}>
+                        <div className={styles.calendarSpecial} style={{ backgroundColor: 'transparent' }}>
                           <span className={styles.calendarSpecialText}>{specialLabel}</span>
                         </div>
                       )}
@@ -338,8 +352,11 @@ export default function Schedule() {
               else if (lowerHoras.includes('vacaciones')) horasStyle.color = '#7c3aed';
               else if (lowerHoras.includes('baja')) horasStyle.color = '#dc2626';
 
+              const cellIso = getIsoFromDateString(shift.fecha);
+              const isPast = cellIso && cellIso < todayIso;
+
               return (
-                <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''}`}>
+                <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''} ${isPast ? styles.pastDayRow : ''}`}>
                   <div className={styles.colDay}>
                     <div className={styles.dayLabel}>
                       <span className={`${styles.dayName} dayNameEl`}>{shift.dia}</span>

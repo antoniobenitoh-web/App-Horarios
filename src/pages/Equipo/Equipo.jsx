@@ -55,9 +55,24 @@ export default function Equipo() {
         const data = await res.json();
         if (data.success && data.meses && data.meses.length > 0) {
           setMesesDisponibles(data.meses);
-          setSelectedMonth(data.meses[0].mes);
-          setSemanasDisponibles(data.meses[0].semanas);
-          setSelectedWeek(data.meses[0].semanas[0]);
+          
+          const todayDate = new Date();
+          const d = new Date(Date.UTC(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()));
+          const dayNum = d.getUTCDay() || 7;
+          d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+          const currentWeekNum = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+          const currentWeekStr = `Semana ${currentWeekNum}`;
+          
+          const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+          const currentMonthStr = `${mesesNombres[todayDate.getMonth()]} ${todayDate.getFullYear()}`;
+          
+          const targetMonthObj = data.meses.find(m => m.mes.toLowerCase() === currentMonthStr.toLowerCase()) || data.meses[0];
+          setSelectedMonth(targetMonthObj.mes);
+          setSemanasDisponibles(targetMonthObj.semanas);
+          
+          const targetWeekStr = targetMonthObj.semanas.find(s => s.toLowerCase() === currentWeekStr.toLowerCase()) || targetMonthObj.semanas[0];
+          setSelectedWeek(targetWeekStr);
         } else {
           setLoading(false); // No hay meses, terminar carga
         }
@@ -75,9 +90,11 @@ export default function Equipo() {
     const mesObj = mesesDisponibles.find(m => m.mes === selectedMonth);
     if (mesObj && mesObj.semanas) {
       setSemanasDisponibles(mesObj.semanas);
-      setSelectedWeek(mesObj.semanas[0]);
+      if (!mesObj.semanas.includes(selectedWeek)) {
+        setSelectedWeek(mesObj.semanas[0]);
+      }
     }
-  }, [selectedMonth, mesesDisponibles]);
+  }, [selectedMonth, mesesDisponibles, selectedWeek]);
 
   // Cargar equipo cuando cambia la semana
   React.useEffect(() => {
