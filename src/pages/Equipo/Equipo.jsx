@@ -2,18 +2,36 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Equipo.module.css';
-import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar, ChevronDown, ChevronUp, User, CheckCircle2 } from 'lucide-react';
+import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar, ChevronDown, ChevronUp, User, CheckCircle2, Coffee } from 'lucide-react';
+
+const shiftConfig = {
+  'Mañana':  { color: '#f97316', bg: 'rgba(249,115,22,0.15)'  },
+  'Tarde':   { color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'  },
+  'Partido': { color: '#a855f7', bg: 'rgba(168,85,247,0.15)'  },
+  'Descanso':{ color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
+};
 
 const turnoIcon = {
-  'Mañana': <Sun size={14} color="var(--warning)" />,
-  'Tarde': <Moon size={14} color="var(--accent-primary)" />,
-  'Partido': <Clock size={14} color="var(--info)" />,
-  'Descanso': <Sun size={14} color="var(--text-secondary)" />
+  'Mañana': <Sun size={14} color="#f97316" />,
+  'Tarde': <Moon size={14} color="#3b82f6" />,
+  'Partido': <Clock size={14} color="#a855f7" />,
+  'Descanso': <Coffee size={14} color="#22c55e" />
 };
 
 export default function Equipo() {
   const { user } = useAuth();
   const GAS_URL = import.meta.env.VITE_GAS_URL;
+  
+  const todayIso = new Date().toISOString().split('T')[0];
+  const getIsoFromDateString = (dateStr) => {
+    if (!dateStr) return '';
+    if (dateStr.includes('-')) return dateStr;
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+    return '';
+  };
   
   const getISOWeek = (date) => {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -23,7 +41,7 @@ export default function Equipo() {
     return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
   };
   
-  const todayIso = new Date().toISOString().split('T')[0];
+
 
   const [busqueda, setBusqueda] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -390,11 +408,26 @@ export default function Equipo() {
                         <div style={{ padding: '0.5rem 1rem 1rem 1rem', background: 'rgba(0,0,0,0.15)' }}>
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
-                              {p.semana?.map((dia, dIdx) => (
+                              {p.semana?.map((dia, dIdx) => {
+                                const cfg = shiftConfig[dia.iconTurno] || shiftConfig['Descanso'];
+                                let rowBg = cfg.bg;
+                                
+                                const lowerHoras = (dia.horas || '').toLowerCase();
+                                if (lowerHoras.includes('festivo')) { rowBg = 'rgba(29,78,216,0.15)'; }
+                                else if (lowerHoras.includes('day off') || lowerHoras === '-' || lowerHoras === 'descanso') { rowBg = 'rgba(34,197,94,0.15)'; }
+                                else if (lowerHoras.includes('permiso')) { rowBg = 'rgba(159,18,57,0.15)'; }
+                                else if (lowerHoras.includes('vacaciones')) { rowBg = 'rgba(124,58,237,0.15)'; }
+                                else if (lowerHoras.includes('baja')) { rowBg = 'rgba(220,38,38,0.15)'; }
+
+                                // We assume the date is somewhat parsable or we rely on dIdx compared to today?
+                                // In Equipo.jsx, diaSemana is "Lunes 22". We might not have the full date in `dia` unless the backend sends it. 
+                                // Let's just use the background coloring.
+                                
+                                return (
                                 <div key={dIdx} style={{ 
                                   display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
                                   padding: '0.5rem 0.75rem', 
-                                  background: dia.iconTurno === 'Descanso' ? 'transparent' : 'rgba(255,255,255,0.05)',
+                                  background: rowBg,
                                   borderBottom: dIdx < p.semana.length - 1 ? '1px solid var(--border-color)' : 'none'
                                 }}>
                                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', width: '30%' }}>
@@ -414,7 +447,8 @@ export default function Equipo() {
                                     {turnoIcon[dia.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
                                   </span>
                                 </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           ) : (
                             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textAlign: 'center', margin: '0.5rem 0' }}>Sin horarios registrados esta semana.</p>

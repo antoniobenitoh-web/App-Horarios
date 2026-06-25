@@ -5,10 +5,10 @@ import styles from './Schedule.module.css';
 import { ChevronLeft, ChevronRight, CheckCircle2, Calendar, MapPin, Clock, Sun, Moon, Coffee, CalendarDays } from 'lucide-react';
 
 const shiftConfig = {
-  'Mañana':  { icon: <Sun size={15} />,     color: 'var(--warning)',        bg: 'rgba(245,158,11,0.12)'  },
-  'Tarde':   { icon: <Moon size={15} />,    color: 'var(--accent-primary)', bg: 'rgba(255,103,0,0.12)'   },
-  'Partido': { icon: <Clock size={15} />,   color: 'var(--info)',           bg: 'rgba(59,130,246,0.12)'  },
-  'Descanso':{ icon: <Coffee size={15} />,  color: 'var(--success)',        bg: 'rgba(34,197,94,0.1)'    },
+  'Mañana':  { icon: <Sun size={15} />,     color: '#f97316', bg: 'rgba(249,115,22,0.15)'  },
+  'Tarde':   { icon: <Moon size={15} />,    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'  },
+  'Partido': { icon: <Clock size={15} />,   color: '#a855f7', bg: 'rgba(168,85,247,0.15)'  },
+  'Descanso':{ icon: <Coffee size={15} />,  color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
 };
 
 const normalizeTurno = (t) => {
@@ -263,13 +263,14 @@ export default function Schedule() {
                   // Detectar casos especiales (Descanso, Vacaciones, Permiso, Baja, Festivo, Day off)
                   const lowerHoras = shift.horas.toLowerCase();
                   let specialColor = null;
+                  let specialBg = null;
                   let specialLabel = shift.horas;
                   
-                  if (lowerHoras.includes('festivo')) specialColor = '#0284c7';
-                  else if (lowerHoras.includes('day off') || shiftType === 'Descanso' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#16a34a'; specialLabel = 'Descanso'; }
-                  else if (lowerHoras.includes('permiso')) specialColor = '#c026d3';
-                  else if (lowerHoras.includes('vacaciones')) specialColor = '#7c3aed';
-                  else if (lowerHoras.includes('baja')) specialColor = '#dc2626';
+                  if (lowerHoras.includes('festivo')) { specialColor = '#1d4ed8'; specialBg = 'rgba(29,78,216,0.15)'; }
+                  else if (lowerHoras.includes('day off') || shiftType === 'Descanso' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#22c55e'; specialBg = 'rgba(34,197,94,0.15)'; specialLabel = 'Descanso'; }
+                  else if (lowerHoras.includes('permiso')) { specialColor = '#9f1239'; specialBg = 'rgba(159,18,57,0.15)'; }
+                  else if (lowerHoras.includes('vacaciones')) { specialColor = '#7c3aed'; specialBg = 'rgba(124,58,237,0.15)'; }
+                  else if (lowerHoras.includes('baja')) { specialColor = '#dc2626'; specialBg = 'rgba(220,38,38,0.15)'; }
 
                   const isSpecial = !!specialColor;
 
@@ -277,8 +278,8 @@ export default function Schedule() {
                   const isPast = cellIso && cellIso < todayIso;
 
                   return (
-                    <div key={`${wIdx}-${dIdx}`} className={`${styles.calendarCell} ${isPast ? styles.pastDay : ''}`} style={{ backgroundColor: isSpecial ? specialColor : cfg.bg }}>
-                      <span className={styles.calendarDate} style={{ color: isSpecial ? '#fff' : 'var(--text-primary)' }}>{dateNum}</span>
+                    <div key={`${wIdx}-${dIdx}`} className={`${styles.calendarCell} ${isPast ? styles.pastDay : ''}`} style={{ backgroundColor: isSpecial ? specialBg : cfg.bg }}>
+                      <span className={styles.calendarDate} style={{ color: isSpecial ? specialColor : 'var(--text-primary)' }}>{dateNum}</span>
                       {!isSpecial ? (
                         <div className={styles.calendarEvent} style={{ '--event-color': cfg.color }}>
                           <span className={styles.calendarHours}>{shift.horas}</span>
@@ -286,7 +287,7 @@ export default function Schedule() {
                         </div>
                       ) : (
                         <div className={styles.calendarSpecial} style={{ backgroundColor: 'transparent' }}>
-                          <span className={styles.calendarSpecialText}>{specialLabel}</span>
+                          <span className={styles.calendarSpecialText} style={{ color: specialColor, fontWeight: 'bold' }}>{specialLabel}</span>
                         </div>
                       )}
                     </div>
@@ -359,18 +360,21 @@ export default function Schedule() {
               const isRest = shiftType === 'Descanso' || shift.horas.toLowerCase().includes('descanso');
 
               let horasStyle = { fontWeight: 'bold' };
+              let rowBg = cfg.bg;
+              
               const lowerHoras = shift.horas.toLowerCase();
-              if (lowerHoras.includes('festivo')) horasStyle.color = '#0284c7';
-              else if (lowerHoras.includes('day off')) horasStyle.color = '#16a34a';
-              else if (lowerHoras.includes('permiso')) horasStyle.color = '#c026d3';
-              else if (lowerHoras.includes('vacaciones')) horasStyle.color = '#7c3aed';
-              else if (lowerHoras.includes('baja')) horasStyle.color = '#dc2626';
+              if (lowerHoras.includes('festivo')) { horasStyle.color = '#1d4ed8'; rowBg = 'rgba(29,78,216,0.15)'; }
+              else if (lowerHoras.includes('day off')) { horasStyle.color = '#22c55e'; rowBg = 'rgba(34,197,94,0.15)'; }
+              else if (lowerHoras.includes('permiso')) { horasStyle.color = '#9f1239'; rowBg = 'rgba(159,18,57,0.15)'; }
+              else if (lowerHoras.includes('vacaciones')) { horasStyle.color = '#7c3aed'; rowBg = 'rgba(124,58,237,0.15)'; }
+              else if (lowerHoras.includes('baja')) { horasStyle.color = '#dc2626'; rowBg = 'rgba(220,38,38,0.15)'; }
+              else if (isRest) { horasStyle.color = '#22c55e'; rowBg = 'rgba(34,197,94,0.15)'; }
 
               const cellIso = getIsoFromDateString(shift.fecha);
               const isPast = cellIso && cellIso < todayIso;
 
               return (
-                <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''} ${isPast ? styles.pastDayRow : ''}`} style={{ backgroundColor: isRest && Object.keys(horasStyle).length > 1 ? horasStyle.color + '20' : cfg.bg }}>
+                <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''} ${isPast ? styles.pastDayRow : ''}`} style={{ backgroundColor: rowBg }}>
                   <div className={styles.colDay}>
                     <div className={styles.dayLabel}>
                       <span className={`${styles.dayName} dayNameEl`}>{shift.dia}</span>
