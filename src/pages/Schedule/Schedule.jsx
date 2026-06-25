@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Schedule.module.css';
-import { ChevronLeft, ChevronRight, CheckCircle2, Calendar, MapPin, Clock, Sun, Moon, Coffee, CalendarDays } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2, Calendar, MapPin, Clock, Sun, Moon, Coffee, CalendarDays, AlertTriangle } from 'lucide-react';
 
 const shiftConfig = {
   'Mañana':  { icon: <Sun size={15} />,     color: '#f97316', bg: 'rgba(249,115,22,0.15)'  },
@@ -25,6 +25,7 @@ export default function Schedule() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('Semana 1');
   const [viewMode, setViewMode] = useState('monthly');
+  const [showPointAnimation, setShowPointAnimation] = useState(false);
   const [activeMonth, setActiveMonth] = useState(null);
   const [horarioMes, setHorarioMes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -147,6 +148,26 @@ export default function Schedule() {
   const isConfirmed = !!confirmedWeeks[activeTab];
   const confirmDate = confirmedWeeks[activeTab];
 
+  const triggerAnimationIfNeeded = (mode, tab) => {
+    if (mode === 'weekly' && !confirmedWeeks[tab]) {
+      setShowPointAnimation(false);
+      setTimeout(() => setShowPointAnimation(true), 50);
+      setTimeout(() => setShowPointAnimation(false), 5000);
+    } else {
+      setShowPointAnimation(false);
+    }
+  };
+
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    triggerAnimationIfNeeded(mode, activeTab);
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    triggerAnimationIfNeeded(viewMode, tab);
+  };
+
   const currentMonthData = horarioMes.find(m => m.mes === activeMonth) || { semanas: [] };
   const currentWeekData = currentMonthData.semanas.find(s => s.id === activeTab);
   const totalHours = currentWeekData ? currentWeekData.detalle.reduce((acc, s) => acc + (Number(s.total) || 0), 0) : 0;
@@ -191,25 +212,30 @@ export default function Schedule() {
         {user.role === 'promotor' && currentWeekData && viewMode === 'weekly' && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {isConfirmed ? (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(34,197,94,0.1)', color: 'var(--success)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-full)', fontSize: '0.75rem', fontWeight: '600', border: '1px solid rgba(34,197,94,0.3)' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--success)', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <CheckCircle2 size={14} /> Confirmado
               </span>
             ) : (
-              <button onClick={handleConfirm} className="glow-effect" style={{ background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: 'var(--border-radius-full)', padding: '0.3rem 0.8rem', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(255,103,0,0.3)' }}>
-                <Clock size={14} /> Pendiente
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {showPointAnimation && (
+                  <span className={styles.bouncePoint}>👉</span>
+                )}
+                <button onClick={handleConfirm} className="glow-effect" style={{ background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: 'var(--border-radius-full)', padding: '0.3rem 0.8rem', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(255,103,0,0.3)' }}>
+                  Confirmar semana
+                </button>
+              </div>
             )}
           </div>
         )}
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5rem', marginBottom: '1rem' }}>
-        <div className={styles.viewToggle}>
-          <button className={`${styles.viewToggleBtn} ${viewMode === 'monthly' ? styles.viewToggleBtnActive : ''}`} onClick={() => setViewMode('monthly')}>
-            <Calendar size={16} /> Mensual
+        <div className={styles.viewToggleGroup}>
+          <button className={`${styles.viewToggleBtn} ${viewMode === 'monthly' ? styles.viewToggleBtnActive : ''}`} onClick={() => handleViewModeChange('monthly')}>
+            <Calendar size={14} /> Mensual
           </button>
-          <button className={`${styles.viewToggleBtn} ${viewMode === 'weekly' ? styles.viewToggleBtnActive : ''}`} onClick={() => setViewMode('weekly')}>
-            <CalendarDays size={16} /> Semanal
+          <button className={`${styles.viewToggleBtn} ${viewMode === 'weekly' ? styles.viewToggleBtnActive : ''}`} onClick={() => handleViewModeChange('weekly')}>
+            <CalendarDays size={14} /> Semanal
           </button>
         </div>
       </div>
@@ -234,7 +260,8 @@ export default function Schedule() {
         <div className={styles.calendarContainer}>
           {user.role === 'promotor' && (
              <div className={styles.monthlyWarning}>
-               Para confirmar tu horario, debes cambiar a la vista <strong>Semanal</strong> y revisar cada semana.
+               <AlertTriangle size={20} color="var(--accent-primary)" style={{ flexShrink: 0 }} />
+               <span>Para confirmar tu horario, debes cambiar a la vista <strong>Semanal</strong> y revisar cada semana.</span>
              </div>
           )}
           <div className={styles.calendarHeader}>
@@ -302,12 +329,11 @@ export default function Schedule() {
       {!loading && !error && currentMonthData.semanas.length > 0 && viewMode === 'weekly' && (
         <>
           <div className={styles.weekTabs}>
-            {currentMonthData.semanas.map((week) => (
-              <button
-                key={week.id}
-                type="button"
+            {currentMonthData.semanas.map(week => (
+              <button 
+                key={week.id} 
                 className={`${styles.weekTab} ${activeTab === week.id ? styles.weekTabActive : ''}`}
-                onClick={() => setActiveTab(week.id)}
+                onClick={() => handleTabChange(week.id)}
               >
                 <span className={styles.weekTabLabel}>Semana {week.semana}</span>
                 <span className={styles.weekTabRange}>{week.dias}</span>
