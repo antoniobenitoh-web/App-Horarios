@@ -393,7 +393,9 @@ export default function Equipo() {
                               if (hoy) {
                                 return (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.15rem' }}>
-                                    {iconMap[hoy.iconTurno] || <Sun size={12} color="var(--text-secondary)"/>}
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', background: 'var(--bg-secondary)', borderRadius: '50%', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                                      {iconMap[hoy.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
+                                    </div>
                                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Hoy: <span style={{ color: 'var(--text-primary)' }}>{hoy.horas}</span></span>
                                   </div>
                                 );
@@ -449,7 +451,7 @@ export default function Equipo() {
                                     )}
                                   </div>
                                   <span style={{ width: '20px', display: 'flex', justifyContent: 'center' }}>
-                                    {turnoIcon[dia.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
+                                    {iconMap[dia.iconTurno] || <Sun size={14} color="var(--text-secondary)"/>}
                                   </span>
                                 </div>
                                 );
