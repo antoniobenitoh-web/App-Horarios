@@ -5,19 +5,22 @@ import styles from './Schedule.module.css';
 import { ChevronLeft, ChevronRight, CheckCircle2, Calendar, MapPin, Clock, Sun, Moon, Coffee, CalendarDays, AlertTriangle } from 'lucide-react';
 
 const shiftConfig = {
-  'Mañana':  { icon: <Sun size={15} />,     color: '#f97316', bg: 'rgba(249,115,22,0.15)'  },
-  'Tarde':   { icon: <Moon size={15} />,    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'  },
-  'Partido': { icon: <Clock size={15} />,   color: '#a855f7', bg: 'rgba(168,85,247,0.15)'  },
-  'Descanso':{ icon: <Coffee size={15} />,  color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
+  'Mañanas':  { icon: <Sun size={15} />,     color: '#f97316', bg: 'rgba(249,115,22,0.15)'   },
+  'Tardes':   { icon: <Moon size={15} />,    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'   },
+  'Partido':  { icon: <Clock size={15} />,   color: '#a855f7', bg: 'rgba(168,85,247,0.15)'   },
+  'Day off': { icon: <Coffee size={15} />,  color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
+  'Sábado calidad': { icon: <Coffee size={15} />, color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
+  'Vacaciones': { icon: <Sun size={15} />, color: '#7c3aed', bg: 'rgba(124, 58, 237, 0.15)' }
 };
 
 const normalizeTurno = (t) => {
   if (!t) return null;
   const l = t.toLowerCase().trim();
-  if (l.includes('mañana') || l.includes('manana')) return 'Mañana';
-  if (l.includes('tarde')) return 'Tarde';
+  if (l.includes('mañana')) return 'Mañanas';
+  if (l.includes('tarde')) return 'Tardes';
   if (l.includes('partido')) return 'Partido';
-  if (l.includes('descanso')) return 'Descanso';
+  if (l.includes('day off') || l.includes('descanso')) return 'Day off';
+  if (l.includes('sábado calidad') || l.includes('sabado calidad')) return 'Sábado calidad';
   return null;
 };
 
@@ -67,7 +70,6 @@ export default function Schedule() {
         if (data.success) {
           setHorarioMes(data.schedule);
           
-          // Sync confirmaciones back from the backend
           const backendConfirms = {};
           data.schedule.forEach(m => {
             m.semanas.forEach(s => {
@@ -79,10 +81,7 @@ export default function Schedule() {
           
           setConfirmedWeeks(prev => {
             const merged = { ...prev, ...backendConfirms };
-            // Ensure any local confirm that doesn't exist in backend is REMOVED! (reset sync)
             const trueSynced = { ...backendConfirms };
-            // Wait, to allow true reset: ONLY trust backend if backend sends confirmed
-            // Actually, if we just use backendConfirms it will correctly RESET if deleted from sheets!
             localStorage.setItem(`confirmed_v2_${user.name}`, JSON.stringify(trueSynced));
             return trueSynced;
           });
@@ -126,7 +125,6 @@ export default function Schedule() {
       return updated;
     });
 
-    // Send to backend
     if (GAS_URL) {
       try {
         await fetch(GAS_URL, {
@@ -146,7 +144,6 @@ export default function Schedule() {
   };
 
   const isConfirmed = !!confirmedWeeks[activeTab];
-  const confirmDate = confirmedWeeks[activeTab];
 
   const triggerAnimationIfNeeded = (mode, tab) => {
     if (mode === 'weekly' && !confirmedWeeks[tab]) {
@@ -275,26 +272,24 @@ export default function Schedule() {
                 {week.detalle.map((shift, dIdx) => {
                   let shiftType = normalizeTurno(shift.turno);
                   if (!shiftType) { 
-                    shiftType = 'Mañana';
-                    if (shift.horas === 'Descanso' || shift.horas === '-') shiftType = 'Descanso';
-                    else if (shift.horas.includes('/')) shiftType = 'Partido';
-                    else if (shift.horas.startsWith('14') || shift.horas.startsWith('15') || shift.horas.startsWith('16')) shiftType = 'Tarde';
+                    shiftType = 'Mañanas';
+                    if (shift.horas === 'Day off' || shift.horas === '-' || shift.horas === 'Descanso') shiftType = 'Day off';
+                    if (shift.horas.toLowerCase().includes('sábado calidad')) shiftType = 'Sábado calidad';
                   }
                   
-                  const cfg = shiftConfig[shiftType] || shiftConfig['Descanso'];
+                  const cfg = shiftConfig[shiftType] || shiftConfig['Day off'];
                   
-                  // Formatear el número del día (soportando YYYY-MM-DD y DD/MM/YYYY)
                   const isIso = shift.fecha.includes('-');
                   const dateNum = parseInt(isIso ? shift.fecha.split('-')[2] : shift.fecha.split('/')[0], 10);
 
-                  // Detectar casos especiales (Descanso, Vacaciones, Permiso, Baja, Festivo, Day off)
                   const lowerHoras = shift.horas.toLowerCase();
                   let specialColor = null;
                   let specialBg = null;
                   let specialLabel = shift.horas;
                   
-                  if (lowerHoras.includes('festivo')) { specialColor = '#1d4ed8'; specialBg = 'rgba(29,78,216,0.15)'; }
-                  else if (lowerHoras.includes('day off') || shiftType === 'Descanso' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#22c55e'; specialBg = 'rgba(34,197,94,0.15)'; specialLabel = 'Descanso'; }
+                  if (lowerHoras.includes('festivo')) { specialColor = '#0ea5e9'; specialBg = 'rgba(14,165,233,0.15)'; specialLabel = 'Festivo'; }
+                  else if (lowerHoras.includes('sábado calidad') || shiftType === 'Sábado calidad') { specialColor = '#4ade80'; specialBg = 'rgba(74,222,128,0.15)'; specialLabel = 'Sábado Calidad'; }
+                  else if (lowerHoras.includes('day off') || shiftType === 'Day off' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#22c55e'; specialBg = 'rgba(34,197,94,0.15)'; specialLabel = 'Day off'; }
                   else if (lowerHoras.includes('permiso')) { specialColor = '#9f1239'; specialBg = 'rgba(159,18,57,0.15)'; }
                   else if (lowerHoras.includes('vacaciones')) { specialColor = '#7c3aed'; specialBg = 'rgba(124,58,237,0.15)'; }
                   else if (lowerHoras.includes('baja')) { specialColor = '#dc2626'; specialBg = 'rgba(220,38,38,0.15)'; }
@@ -373,17 +368,15 @@ export default function Schedule() {
             </div>
 
             {currentWeekData?.detalle?.map((shift, idx) => {
-              // Determinar turno visual
               let shiftType = normalizeTurno(shift.turno);
-              if (!shiftType) { // Fallback por si hay filas antiguas
-                shiftType = 'Mañana';
-                if (shift.horas === 'Descanso' || shift.horas === '-') shiftType = 'Descanso';
-                else if (shift.horas.includes('/')) shiftType = 'Partido';
-                else if (shift.horas.startsWith('14') || shift.horas.startsWith('15') || shift.horas.startsWith('16')) shiftType = 'Tarde';
+              if (!shiftType) { 
+                shiftType = 'Mañanas';
+                if (shift.horas === 'Day off' || shift.horas === '-' || shift.horas === 'Descanso') shiftType = 'Day off';
+                if (shift.horas.toLowerCase().includes('sábado calidad')) shiftType = 'Sábado calidad';
               }
               
-              const cfg = shiftConfig[shiftType] || shiftConfig['Descanso'];
-              const isRest = shiftType === 'Descanso' || shift.horas.toLowerCase().includes('descanso');
+              const cfg = shiftConfig[shiftType] || shiftConfig['Day off'];
+              const isRest = shiftType === 'Day off' || shiftType === 'Sábado calidad' || shift.horas.toLowerCase().includes('day off') || shift.horas.toLowerCase().includes('descanso');
 
               let horasStyle = { fontWeight: 'bold' };
               let rowBg = cfg.bg;
@@ -414,8 +407,8 @@ export default function Schedule() {
                   </div>
 
                   <div className={styles.colHours}>
-                    {isRest && Object.keys(horasStyle).length === 1 ? (
-                      <span className={`${styles.restLabel} restLabelEl`}>— Descanso —</span>
+                    {isRest ? (
+                      <span className={`${styles.restLabel} restLabelEl`}>{shiftType === 'Sábado calidad' ? '— Sábado calidad —' : '— Day off —'}</span>
                     ) : (
                       <div className={`${styles.hoursCell} hoursCellEl`} style={horasStyle}>
                         <Clock size={14} style={{ color: horasStyle.color ? 'inherit' : 'var(--text-tertiary)', flexShrink: 0 }} />

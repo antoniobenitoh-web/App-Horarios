@@ -5,17 +5,21 @@ import styles from './Equipo.module.css';
 import { Users, MapPin, Clock, Sun, Moon, Search, Filter, Calendar, ChevronDown, ChevronUp, User, CheckCircle2, Coffee } from 'lucide-react';
 
 const shiftConfig = {
-  'Mañana':  { color: '#f97316', bg: 'rgba(249,115,22,0.15)'  },
-  'Tarde':   { color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'  },
-  'Partido': { color: '#a855f7', bg: 'rgba(168,85,247,0.15)'  },
-  'Descanso':{ color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
+  'Mañanas': { color: '#f97316', bg: 'rgba(249,115,22,0.15)'   },
+  'Tardes':  { color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'   },
+  'Partido': { color: '#a855f7', bg: 'rgba(168,85,247,0.15)'   },
+  'Day off': { color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
+  'Sábado calidad': { color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
+  'Vacaciones': { color: '#7c3aed', bg: 'rgba(124, 58, 237, 0.15)' }
 };
 
-const turnoIcon = {
-  'Mañana': <Sun size={14} color="#f97316" />,
-  'Tarde': <Moon size={14} color="#3b82f6" />,
+const iconMap = {
+  'Mañanas': <Sun size={14} color="#f97316" />,
+  'Tardes':  <Moon size={14} color="#3b82f6" />,
   'Partido': <Clock size={14} color="#a855f7" />,
-  'Descanso': <Coffee size={14} color="#22c55e" />
+  'Day off': <Coffee size={14} color="#22c55e" />,
+  'Sábado calidad': <Coffee size={14} color="#4ade80" />,
+  'Vacaciones': <Sun size={14} color="#7c3aed" />
 };
 
 export default function Equipo() {
@@ -304,7 +308,7 @@ export default function Equipo() {
             </select>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            {['todos', 'Mañana', 'Tarde', 'Partido'].map(t => (
+            {['todos', 'Mañanas', 'Tardes', 'Partido'].map(t => (
               <button
                 key={t}
                 onClick={() => setFiltroTurno(t)}
@@ -320,7 +324,7 @@ export default function Equipo() {
                   outline: 'none'
                 }}
               >
-                {t !== 'todos' && turnoIcon[t]}
+                {t !== 'todos' && iconMap[t]}
                 {t === 'todos' ? 'Todos' : t}
               </button>
             ))}
@@ -389,7 +393,7 @@ export default function Equipo() {
                               if (hoy) {
                                 return (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.15rem' }}>
-                                    {turnoIcon[hoy.iconTurno] || <Sun size={12} color="var(--text-secondary)"/>}
+                                    {iconMap[hoy.iconTurno] || <Sun size={12} color="var(--text-secondary)"/>}
                                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Hoy: <span style={{ color: 'var(--text-primary)' }}>{hoy.horas}</span></span>
                                   </div>
                                 );
@@ -409,15 +413,16 @@ export default function Equipo() {
                           {p.semana && p.semana.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)', overflow: 'hidden' }}>
                               {p.semana?.map((dia, dIdx) => {
-                                const cfg = shiftConfig[dia.iconTurno] || shiftConfig['Descanso'];
+                                const cfg = shiftConfig[dia.iconTurno] || { color: '#ccc', bg: 'rgba(0,0,0,0.05)' };
                                 let rowBg = cfg.bg;
                                 
                                 const lowerHoras = (dia.horas || '').toLowerCase();
-                                if (lowerHoras.includes('festivo')) { rowBg = 'rgba(29,78,216,0.15)'; }
+                                if (lowerHoras.includes('vacaciones')) { rowBg = 'rgba(124,58,237,0.15)'; }
+                                else if (lowerHoras.includes('baja')) { rowBg = 'rgba(220,38,38,0.15)'; }
+                                else if (lowerHoras.includes('festivo')) { rowBg = 'rgba(14,165,233,0.15)'; }
+                                else if (lowerHoras.includes('sábado calidad')) { rowBg = 'rgba(74,222,128,0.15)'; }
                                 else if (lowerHoras.includes('day off') || lowerHoras === '-' || lowerHoras === 'descanso') { rowBg = 'rgba(34,197,94,0.15)'; }
                                 else if (lowerHoras.includes('permiso')) { rowBg = 'rgba(159,18,57,0.15)'; }
-                                else if (lowerHoras.includes('vacaciones')) { rowBg = 'rgba(124,58,237,0.15)'; }
-                                else if (lowerHoras.includes('baja')) { rowBg = 'rgba(220,38,38,0.15)'; }
 
                                 const isPast = dia.fecha && dia.fecha < todayIso;
                                 const pastStyle = isPast ? { opacity: 0.55, filter: 'grayscale(0.5)' } : {};
