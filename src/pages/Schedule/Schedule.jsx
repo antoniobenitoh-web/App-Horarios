@@ -274,7 +274,7 @@ export default function Schedule() {
                   if (!shiftType) { 
                     shiftType = 'Mañanas';
                     if (shift.horas === 'Day off' || shift.horas === '-' || shift.horas === 'Descanso') shiftType = 'Day off';
-                    if (shift.horas.toLowerCase().includes('sábado calidad')) shiftType = 'Sábado calidad';
+                    if (shift.horas.toLowerCase().includes('sábado calidad') || shift.horas.toLowerCase().includes('sabado calidad')) shiftType = 'Sábado calidad';
                   }
                   
                   const cfg = shiftConfig[shiftType] || shiftConfig['Day off'];
@@ -288,7 +288,7 @@ export default function Schedule() {
                   let specialLabel = shift.horas;
                   
                   if (lowerHoras.includes('festivo')) { specialColor = '#0ea5e9'; specialBg = 'rgba(14,165,233,0.15)'; specialLabel = 'Festivo'; }
-                  else if (lowerHoras.includes('sábado calidad') || shiftType === 'Sábado calidad') { specialColor = 'var(--accent-primary)'; specialBg = 'var(--accent-light)'; specialLabel = 'Sábado Calidad'; }
+                  else if (lowerHoras.includes('sábado calidad') || lowerHoras.includes('sabado calidad') || shiftType === 'Sábado calidad') { specialColor = 'var(--accent-primary)'; specialBg = 'var(--accent-light)'; specialLabel = 'Sábado Calidad'; }
                   else if (lowerHoras.includes('day off') || shiftType === 'Day off' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#22c55e'; specialBg = 'rgba(34,197,94,0.15)'; specialLabel = 'Day off'; }
                   else if (lowerHoras.includes('permiso')) { specialColor = '#9f1239'; specialBg = 'rgba(159,18,57,0.15)'; }
                   else if (lowerHoras.includes('vacaciones')) { specialColor = '#7c3aed'; specialBg = 'rgba(124,58,237,0.15)'; }
@@ -372,7 +372,7 @@ export default function Schedule() {
               if (!shiftType) { 
                 shiftType = 'Mañanas';
                 if (shift.horas === 'Day off' || shift.horas === '-' || shift.horas === 'Descanso') shiftType = 'Day off';
-                if (shift.horas.toLowerCase().includes('sábado calidad')) shiftType = 'Sábado calidad';
+                if (shift.horas.toLowerCase().includes('sábado calidad') || shift.horas.toLowerCase().includes('sabado calidad')) shiftType = 'Sábado calidad';
               }
               
               const cfg = shiftConfig[shiftType] || shiftConfig['Day off'];

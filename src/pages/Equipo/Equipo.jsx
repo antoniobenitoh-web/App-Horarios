@@ -420,7 +420,7 @@ export default function Equipo() {
                                 if (lowerHoras.includes('vacaciones')) { rowBg = 'rgba(124,58,237,0.15)'; }
                                 else if (lowerHoras.includes('baja')) { rowBg = 'rgba(220,38,38,0.15)'; }
                                 else if (lowerHoras.includes('festivo')) { rowBg = 'rgba(14,165,233,0.15)'; }
-                                else if (lowerHoras.includes('sábado calidad')) { rowBg = 'var(--accent-light)'; }
+                                else if (lowerHoras.includes('sábado calidad') || lowerHoras.includes('sabado calidad')) { rowBg = 'var(--accent-light)'; }
                                 else if (lowerHoras.includes('day off') || lowerHoras === '-' || lowerHoras === 'descanso') { rowBg = 'rgba(34,197,94,0.15)'; }
                                 else if (lowerHoras.includes('permiso')) { rowBg = 'rgba(159,18,57,0.15)'; }
 
