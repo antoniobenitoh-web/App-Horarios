@@ -9,7 +9,7 @@ const shiftConfig = {
   'Tardes':  { color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'   },
   'Partido': { color: '#a855f7', bg: 'rgba(168,85,247,0.15)'   },
   'Day off': { color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
-  'Sábado calidad': { color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
+  'Sábado calidad': { color: 'var(--accent-primary)', bg: 'var(--accent-light)' },
   'Vacaciones': { color: '#7c3aed', bg: 'rgba(124, 58, 237, 0.15)' }
 };
 
@@ -18,7 +18,7 @@ const iconMap = {
   'Tardes':  <Moon size={14} color="#3b82f6" />,
   'Partido': <Clock size={14} color="#a855f7" />,
   'Day off': <Coffee size={14} color="#22c55e" />,
-  'Sábado calidad': <Coffee size={14} color="#4ade80" />,
+  'Sábado calidad': <Coffee size={14} color="var(--accent-primary)" />,
   'Vacaciones': <Sun size={14} color="#7c3aed" />
 };
 
@@ -420,7 +420,7 @@ export default function Equipo() {
                                 if (lowerHoras.includes('vacaciones')) { rowBg = 'rgba(124,58,237,0.15)'; }
                                 else if (lowerHoras.includes('baja')) { rowBg = 'rgba(220,38,38,0.15)'; }
                                 else if (lowerHoras.includes('festivo')) { rowBg = 'rgba(14,165,233,0.15)'; }
-                                else if (lowerHoras.includes('sábado calidad')) { rowBg = 'rgba(74,222,128,0.15)'; }
+                                else if (lowerHoras.includes('sábado calidad')) { rowBg = 'var(--accent-light)'; }
                                 else if (lowerHoras.includes('day off') || lowerHoras === '-' || lowerHoras === 'descanso') { rowBg = 'rgba(34,197,94,0.15)'; }
                                 else if (lowerHoras.includes('permiso')) { rowBg = 'rgba(159,18,57,0.15)'; }
 

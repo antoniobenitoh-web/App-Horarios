@@ -9,7 +9,7 @@ const shiftConfig = {
   'Tardes':   { icon: <Moon size={15} />,    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)'   },
   'Partido':  { icon: <Clock size={15} />,   color: '#a855f7', bg: 'rgba(168,85,247,0.15)'   },
   'Day off': { icon: <Coffee size={15} />,  color: '#22c55e', bg: 'rgba(34,197,94,0.15)'   },
-  'Sábado calidad': { icon: <Coffee size={15} />, color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
+  'Sábado calidad': { icon: <Coffee size={15} />, color: 'var(--accent-primary)', bg: 'var(--accent-light)' },
   'Vacaciones': { icon: <Sun size={15} />, color: '#7c3aed', bg: 'rgba(124, 58, 237, 0.15)' }
 };
 
@@ -288,7 +288,7 @@ export default function Schedule() {
                   let specialLabel = shift.horas;
                   
                   if (lowerHoras.includes('festivo')) { specialColor = '#0ea5e9'; specialBg = 'rgba(14,165,233,0.15)'; specialLabel = 'Festivo'; }
-                  else if (lowerHoras.includes('sábado calidad') || shiftType === 'Sábado calidad') { specialColor = '#4ade80'; specialBg = 'rgba(74,222,128,0.15)'; specialLabel = 'Sábado Calidad'; }
+                  else if (lowerHoras.includes('sábado calidad') || shiftType === 'Sábado calidad') { specialColor = 'var(--accent-primary)'; specialBg = 'var(--accent-light)'; specialLabel = 'Sábado Calidad'; }
                   else if (lowerHoras.includes('day off') || shiftType === 'Day off' || lowerHoras.includes('descanso') || shift.horas === '-') { specialColor = '#22c55e'; specialBg = 'rgba(34,197,94,0.15)'; specialLabel = 'Day off'; }
                   else if (lowerHoras.includes('permiso')) { specialColor = '#9f1239'; specialBg = 'rgba(159,18,57,0.15)'; }
                   else if (lowerHoras.includes('vacaciones')) { specialColor = '#7c3aed'; specialBg = 'rgba(124,58,237,0.15)'; }
