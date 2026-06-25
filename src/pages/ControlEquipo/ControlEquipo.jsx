@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Users, Filter, CalendarDays, Sun, Clock, MapPin } from "lucide-react";
+import { Users, Filter, CalendarDays, Sun, Clock, MapPin, Store, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import styles from "./ControlEquipo.module.css";
 
@@ -93,36 +93,47 @@ export default function ControlEquipo() {
         </div>
       </div>
 
-      {/* Filtros */}
-      <div className={styles.filtersRow}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginRight: "1rem", color: "var(--text-tertiary)" }}>
-          <Filter size={20} />
-          <span style={{ fontWeight: 600 }}>Filtros:</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginRight: "0.5rem", color: "var(--text-tertiary)" }}>
+          <Filter size={16} />
+          <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Filtros:</span>
         </div>
 
         {(isSuperAdmin || isCoord) && (
-          <div className={styles.filterGroup}>
-            <label>Región</label>
-            <select className={styles.filterSelect} value={filtros.region} onChange={e => handleFilterChange("region", e.target.value)}>
-              <option value="">Todas las regiones</option>
-              {regions.map(r => <option key={r} value={r}>{r}</option>)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
+            <MapPin size={14} color="var(--accent-primary)" />
+            <select 
+              value={filtros.region} 
+              onChange={e => handleFilterChange("region", e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
+            >
+              <option value="" style={{ background: '#ffffff', color: '#1e293b' }}>Todas las regiones</option>
+              {regions.map(r => <option key={r} value={r} style={{ background: '#ffffff', color: '#1e293b' }}>{r}</option>)}
             </select>
           </div>
         )}
 
-        <div className={styles.filterGroup}>
-          <label>Tienda / Centro</label>
-          <select className={styles.filterSelect} value={filtros.tienda} onChange={e => handleFilterChange("tienda", e.target.value)}>
-            <option value="">Todas las tiendas</option>
-            {tiendas.map(t => <option key={t} value={t}>{t}</option>)}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
+          <Store size={14} color="var(--accent-primary)" />
+          <select 
+            value={filtros.tienda} 
+            onChange={e => handleFilterChange("tienda", e.target.value)}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
+          >
+            <option value="" style={{ background: '#ffffff', color: '#1e293b' }}>Todas las tiendas</option>
+            {tiendas.map(t => <option key={t} value={t} style={{ background: '#ffffff', color: '#1e293b' }}>{t}</option>)}
           </select>
         </div>
 
-        <div className={styles.filterGroup}>
-          <label>Promotor</label>
-          <select className={styles.filterSelect} value={filtros.promotor} onChange={e => handleFilterChange("promotor", e.target.value)}>
-            <option value="">Todos los promotores</option>
-            {promotorNames.map(p => <option key={p} value={p}>{p}</option>)}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem 0.6rem', borderRadius: 'var(--border-radius-full)', border: '1px solid var(--glass-border)' }}>
+          <User size={14} color="var(--accent-primary)" />
+          <select 
+            value={filtros.promotor} 
+            onChange={e => handleFilterChange("promotor", e.target.value)}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer' }}
+          >
+            <option value="" style={{ background: '#ffffff', color: '#1e293b' }}>Todos los promotores</option>
+            {promotorNames.map(p => <option key={p} value={p} style={{ background: '#ffffff', color: '#1e293b' }}>{p}</option>)}
           </select>
         </div>
       </div>
