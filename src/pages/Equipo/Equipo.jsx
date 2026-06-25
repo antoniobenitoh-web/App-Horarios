@@ -71,7 +71,7 @@ export default function Equipo() {
           setSelectedMonth(targetMonthObj.mes);
           setSemanasDisponibles(targetMonthObj.semanas);
           
-          const targetWeekStr = targetMonthObj.semanas.find(s => s.toLowerCase() === currentWeekStr.toLowerCase()) || targetMonthObj.semanas[0];
+          const targetWeekStr = targetMonthObj.semanas.find(s => s.toString().toLowerCase() === currentWeekStr.toLowerCase() || s.toString() === currentWeekNum.toString()) || targetMonthObj.semanas[0];
           setSelectedWeek(targetWeekStr);
         } else {
           setLoading(false); // No hay meses, terminar carga

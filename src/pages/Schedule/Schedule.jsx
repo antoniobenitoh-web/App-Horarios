@@ -87,9 +87,23 @@ export default function Schedule() {
           });
 
           if (data.schedule.length > 0) {
-            setActiveMonth(data.schedule[0].mes);
-            if (data.schedule[0].semanas.length > 0) {
-              setActiveTab(data.schedule[0].semanas[0].id);
+            const todayDate = new Date();
+            const d = new Date(Date.UTC(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const currentWeekNum = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+            const currentWeekStr = `Semana ${currentWeekNum}`;
+            
+            const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const currentMonthStr = `${mesesNombres[todayDate.getMonth()]} ${todayDate.getFullYear()}`;
+            
+            const targetMonthObj = data.schedule.find(m => m.mes.toLowerCase() === currentMonthStr.toLowerCase()) || data.schedule[0];
+            setActiveMonth(targetMonthObj.mes);
+            
+            if (targetMonthObj.semanas.length > 0) {
+              const targetWeekObj = targetMonthObj.semanas.find(s => s.semana.toString() === currentWeekNum.toString() || s.id.toLowerCase() === currentWeekStr.toLowerCase()) || targetMonthObj.semanas[0];
+              setActiveTab(targetWeekObj.id);
             }
           }
         } else {
@@ -356,7 +370,7 @@ export default function Schedule() {
               const isPast = cellIso && cellIso < todayIso;
 
               return (
-                <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''} ${isPast ? styles.pastDayRow : ''}`}>
+                <div key={idx} className={`${styles.dayRow} ${isRest ? styles.dayRowRest : ''} ${isPast ? styles.pastDayRow : ''}`} style={{ backgroundColor: isRest && Object.keys(horasStyle).length > 1 ? horasStyle.color + '20' : cfg.bg }}>
                   <div className={styles.colDay}>
                     <div className={styles.dayLabel}>
                       <span className={`${styles.dayName} dayNameEl`}>{shift.dia}</span>
