@@ -14,6 +14,7 @@ export default function Topbar() {
   
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
+  const [activePopupNotif, setActivePopupNotif] = useState(null);
   
   // Profile state
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -47,6 +48,12 @@ export default function Topbar() {
                 isDbNotif: true
               });
             });
+            
+            // Buscar si hay alguna notificación de revisión de horario no leída para mostrar como emergente
+            const pendingPopup = dbData.notificaciones.find(n => n.tipo === 'revision_horario' && !n.leida);
+            if (pendingPopup) {
+              setActivePopupNotif(pendingPopup);
+            }
           }
         } catch(e) { console.error("Error fetching DB notifs", e); }
 
@@ -319,6 +326,50 @@ export default function Topbar() {
                   {isSaving ? 'Guardando...' : 'Guardar Nueva Contraseña'}
                 </button>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activePopupNotif && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.profileModal} style={{ border: '2px solid var(--accent-primary)' }}>
+            <div className={styles.profileHeader} style={{ background: 'rgba(255, 103, 0, 0.05)' }}>
+              <h3 style={{ color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <AlertCircle size={20} /> Aviso de Revisión de Horarios
+              </h3>
+            </div>
+            <div className={styles.profileBody} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p style={{ color: 'var(--text-primary)', fontSize: '0.95rem', lineHeight: '1.5', margin: 0 }}>
+                {activePopupNotif.mensaje}
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                <button 
+                  onClick={async () => {
+                    try {
+                      await fetch(GAS_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'markNotificacionLeida', id: activePopupNotif.id })
+                      });
+                      setNotifs(current => current.map(x => x.id === activePopupNotif.id ? { ...x, read: true } : x));
+                    } catch(e) {}
+                    setActivePopupNotif(null);
+                  }}
+                  style={{
+                    background: 'var(--accent-primary)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.5rem 1.25rem',
+                    borderRadius: 'var(--border-radius-md)',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    boxShadow: '0 4px 12px rgba(255,103,0,0.2)'
+                  }}
+                >
+                  Entendido
+                </button>
+              </div>
             </div>
           </div>
         </div>
