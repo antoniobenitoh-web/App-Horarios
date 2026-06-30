@@ -96,7 +96,7 @@ export default function Schedule() {
             const currentWeekStr = `Semana ${currentWeekNum}`;
             
             const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            const currentMonthStr = `${mesesNombres[todayDate.getMonth()]} ${todayDate.getFullYear()}`;
+            const currentMonthStr = `${mesesNombres[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
             
             const targetMonthObj = data.schedule.find(m => m.mes.toLowerCase() === currentMonthStr.toLowerCase()) || data.schedule[0];
             setActiveMonth(targetMonthObj.mes);

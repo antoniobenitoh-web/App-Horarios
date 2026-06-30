@@ -87,7 +87,7 @@ export default function Equipo() {
           const currentWeekStr = `Semana ${currentWeekNum}`;
           
           const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-          const currentMonthStr = `${mesesNombres[todayDate.getMonth()]} ${todayDate.getFullYear()}`;
+          const currentMonthStr = `${mesesNombres[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
           
           const targetMonthObj = data.meses.find(m => m.mes.toLowerCase() === currentMonthStr.toLowerCase()) || data.meses[0];
           setSelectedMonth(targetMonthObj.mes);
@@ -140,7 +140,24 @@ export default function Equipo() {
         });
         const data = await res.json();
         if (data.success) {
-          setEquipoFetch(data.equipo);
+          const normalized = data.equipo.map(p => {
+            if (!p.semana) return p;
+            return {
+              ...p,
+              semana: p.semana.map(dia => {
+                let norm = dia.iconTurno;
+                if (dia.iconTurno) {
+                  const lower = dia.iconTurno.toLowerCase();
+                  if (lower.includes('mañana') || lower.includes('manana')) norm = 'Mañanas';
+                  else if (lower.includes('tarde')) norm = 'Tardes';
+                  else if (lower.includes('partido')) norm = 'Partido';
+                  else if (lower.includes('descanso') || lower.includes('day off') || lower.includes('libre')) norm = 'Day off';
+                }
+                return { ...dia, iconTurno: norm };
+              })
+            };
+          });
+          setEquipoFetch(normalized);
         }
       } catch(err) {
         console.error(err);

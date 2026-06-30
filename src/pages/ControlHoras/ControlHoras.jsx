@@ -62,7 +62,11 @@ export default function ControlHoras() {
   const [busqueda, setBusqueda] = useState('');
   const [filtroRegion, setFiltroRegion] = useState('todas');
   const [filtroCentro, setFiltroCentro] = useState('todos');
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const todayDate = new Date();
+  const d = new Date(Date.UTC(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const [selectedMonth, setSelectedMonth] = useState(d.getUTCMonth());
 
   const GAS_URL = import.meta.env.VITE_GAS_URL;
 
